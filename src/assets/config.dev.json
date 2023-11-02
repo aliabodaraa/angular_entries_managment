@@ -1,0 +1,5 @@
+{
+    "KEYCLOAK_URL": "http://54.227.55.65",
+    "KEYCLOAK_REALM": "nuxeo",
+    "KEYCLOAK_CLIENT_ID": "meeting-web"
+}

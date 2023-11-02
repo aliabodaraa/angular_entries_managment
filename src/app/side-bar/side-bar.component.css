@@ -1,0 +1,7 @@
+.ali{
+    position: fixed;
+    right: 0;
+    top: 16px;
+    z-index: 9999;
+    background-color: crimson;
+}

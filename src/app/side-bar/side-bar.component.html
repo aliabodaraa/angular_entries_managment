@@ -1,0 +1,6 @@
+
+	<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+	  <a *ngIf="isTokenValid" [routerLinkActive]="['active']" [routerLink]="['organizers']" class="nav-link" id="v-pills-organizers-tab1" data-bs-toggle="pill" data-bs-target="#v-pills-organizers" type="button" role="tab" aria-controls="v-pills-organizers">Orgnizers</a>
+	  <a *ngIf="isTokenValid" [routerLinkActive]="['active']" [routerLink]="['activities']" class="nav-link" id="v-pills-activities-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-activities" type="button" role="tab" aria-controls="v-pills-activities">Activities</a>
+	  <a *ngIf="!isTokenValid" class="nav-link" id="v-pills-keycloak-login-tab2" data-bs-toggle="pill" data-bs-target="#v-pills-keycloak-login" type="button" role="tab" aria-controls="v-pills-keycloak-login" (click)="login()">Login with Keycloak</a>
+	</div>
