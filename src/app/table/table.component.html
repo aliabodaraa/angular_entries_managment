@@ -1,0 +1,109 @@
+
+<!-- <form>
+	<div class="mb-3 row">
+		<label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+		<div class="col-xs-3 col-sm-auto">
+			<input
+				id="table-complete-search"
+				type="text"
+				class="form-control"
+				name="searchTerm"
+				[(ngModel)]="searchTerm"
+			/>
+		</div>
+		<span class="col col-form-label" *ngIf="loading$ | async">
+			<div class="spinner-border text-primary spinner-border-sm" role="status">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+		</span>
+	</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col" sortable="name" (click)="onSort({column:'name'})">Country</th>
+				<th scope="col" sortable="area" (click)="onSort({column:'area'})">Area</th>
+				<th scope="col" sortable="population" (click)="onSort({column:'population'})">Population</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let entry of entrys$ | async">
+				<th scope="row">{{ entry.id }}</th>
+				<td>
+					<img
+						[src]="'https://upload.wikimedia.org/wikipedia/commons/' + entry.flag"
+						class="me-2"
+						style="width: 20px"
+					/>
+					<ngb-highlight [result]="entry.name" [term]="searchTerm"></ngb-highlight>
+				</td>
+				<td><ngb-highlight [result]="entry.area | number" [term]="searchTerm"></ngb-highlight></td>
+				<td><ngb-highlight [result]="entry.population | number" [term]="searchTerm"></ngb-highlight></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="d-flex justify-content-between p-2">
+		<ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="page" [pageSize]="pageSize">
+		</ngb-pagination>
+
+		<select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="pageSize">
+			<option [ngValue]="2">2 items per page</option>
+			<option [ngValue]="4">4 items per page</option>
+			<option [ngValue]="6">6 items per page</option>
+			<option [ngValue]="8">8 items per page</option>
+			<option [ngValue]="10">10 items per page</option>
+			<option [ngValue]="12">12 items per page</option>
+			<option [ngValue]="14">14 items per page</option>
+			<option [ngValue]="16">16 items per page</option>
+			<option [ngValue]="18">18 items per page</option>
+			<option [ngValue]="20">20 items per page</option>
+		</select>
+	</div>
+</form> -->
+    <span class="col col-form-label" *ngIf="loading$ | async">
+        <div class="spinner-border text-primary spinner-border-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </span>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">title</th>
+                <th scope="col">website</th>
+                <th scope="col">creation_data</th>
+                <th scope="col">modified_date</th>
+                <th scope="col">creator</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let entry of entries$ | async">
+                <th scope="row">{{ entry.uid }}</th>
+                <td>{{entry.title}}</td>
+                <td> {{entry.website}}</td>
+                <td> {{entry.creation_data}}</td>
+                <td> {{entry.modified_date}}</td>
+                <td> {{entry.creator}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination [collectionSize]="totalSize" [(page)]="pageIndex" [pageSize]="pageSize">
+        </ngb-pagination>
+
+        <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="pageSize">
+            <option [ngValue]="1">1 items per page</option>
+            <option [ngValue]="2">2 items per page</option>
+            <option [ngValue]="3">3 items per page</option>
+            <option [ngValue]="4">4 items per page</option>
+            <option [ngValue]="5">5 items per page</option>
+            <option [ngValue]="6">6 items per page</option>
+            <option [ngValue]="7">7 items per page</option>
+            <option [ngValue]="8">8 items per page</option>
+            <option [ngValue]="9">9 items per page</option>
+            <option [ngValue]="10">10 items per page</option>
+        </select>
+    </div>

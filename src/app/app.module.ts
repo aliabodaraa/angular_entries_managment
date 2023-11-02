@@ -26,6 +26,7 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { ConfigInitService } from './init/config-init.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TableComponent } from './table/table.component';
 // const checkUserLoggingStatus = (
 //   routeTo: ActivatedRouteSnapshot,
 //   state: RouterStateSnapshot
@@ -40,7 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 const routes: Routes = [
   //Guests Routes
-  { path: '', component: OrganizersComponent },
+  { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
 
   { path: 'organizers/new', component: OrganizerFormComponent },
   { path: 'organizers/:id', component: OrganizerFormComponent },
@@ -70,6 +71,7 @@ const routes: Routes = [
     ActivityFormComponent,
     ActivitiesComponent,
     SideBarComponent,
+    TableComponent,
   ],
   imports: [
     NgbModule,

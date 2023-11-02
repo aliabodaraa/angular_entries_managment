@@ -5,11 +5,11 @@ import { PageProviderEnum } from '../models/data-request-api';
 @Injectable({
   providedIn: 'root',
 })
-export class OrganizerService {
+export class ActivityService {
   constructor(private dataHttpService: DataHttpService) {}
 
   getData(pageSize: number, currentPageIndex: number) {
-    return this.dataHttpService.getData(PageProviderEnum.PP_Organizar, {
+    return this.dataHttpService.getData(PageProviderEnum.PP_Activity, {
       pageSize: pageSize,
       currentPageIndex: currentPageIndex,
       properties: '*',
