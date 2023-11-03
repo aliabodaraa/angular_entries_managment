@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { OrganizersComponent } from './organizers/organizers.component';
 import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
-import { HomeComponent } from './home/home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivityFormComponent } from './activity-form/activity-form.component';
@@ -65,7 +64,6 @@ const routes: Routes = [
   declarations: [
     BsNavbarComponent,
     AppComponent,
-    HomeComponent,
     OrganizersComponent,
     OrganizerFormComponent,
     ActivityFormComponent,

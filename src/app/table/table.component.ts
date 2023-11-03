@@ -1,17 +1,14 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import {
-  BehaviorSubject,
-  Observable,
-  ReplaySubject,
-  Subject,
-  Subscribable,
-  Subscriber,
-  Subscription,
-} from 'rxjs';
-import { OrganizerService } from '../services/organizer.service';
-import { EntryType, PageResponse } from '../models/data-request-api';
-import { ActivityService } from '../services/activity.service';
+  PageRequestParams,
+  ProviderPageEnum,
+  ProviderTypeEnum,
+  EntryType,
+} from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
+import { DataHttpService } from '../services/dataHttp.service';
+import { ActivatedRoute } from '@angular/router';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -24,73 +21,54 @@ interface State {
 })
 export class TableComponent {
   private _loading$ = new BehaviorSubject<boolean>(true);
-  private _search$ = new ReplaySubject<void>(20);
-
+  private trigger_change$ = new Subject<void>();
   private _entries$ = new BehaviorSubject<any[]>([]);
-
-  private currentService: OrganizerService | ActivityService;
   private _state: State = {
     pageIndex: 0,
     pageSize: 5,
     totalSize: 10,
   };
+  public provider_type: ProviderTypeEnum =
+    this.route.snapshot.url[0].path.includes('organizers')
+      ? ProviderTypeEnum.Organizer
+      : ProviderTypeEnum.Activity;
   constructor(
-    private organizerService?: OrganizerService,
-    private activityService?: ActivityService
+    private dataHttpService: DataHttpService,
+    private route: ActivatedRoute
   ) {
-    this.currentService =
-      this.organizerService instanceof OrganizerService
-        ? (this.organizerService as OrganizerService)
-        : (this.activityService as ActivityService);
-    this._search$
+    this.trigger_change$
       .pipe(
         tap(() => this._loading$.next(true)),
         debounceTime(200),
-        switchMap(() =>
-          this.currentService.getData(this.pageSize, this.pageIndex - 1)
-        ),
-        tap((res) => {
-          this.totalSize = res.totalSize;
-          this._loading$.next(false);
-        }),
+        switchMap(() => this.getData()),
+        tap(() => this._loading$.next(false)),
         map((res) => {
-          let entries: EntryType[] = res.entries.map((e: any) => ({
-            uid: e.uid,
-            title: e.title,
-            website: e.website,
-            creation_data: e.properties['dc:created'],
-            modified_date: e.properties['dc:modified'],
-            creator: e.properties['dc:creator'],
-          }));
-          return {
-            totalSize: res.totalSize as number,
-            entries,
-          };
+          this.totalSize = res.totalSize;
+          return this.exctractEntriesFromResponse(res);
         }),
         delay(200),
-        tap((res) => {
-          this.totalSize = res.totalSize;
+        tap(() => {
           this._loading$.next(false);
         })
       )
-      .subscribe((result) => {
-        this._entries$.next(result.entries);
+      .subscribe((entries) => {
+        this._entries$.next(entries);
       });
-    this._search$.next();
+    this.trigger_change$.next();
   }
   get pageSize(): number {
     return this._state.pageSize;
   }
   set pageSize(pageSize: number) {
     this._state.pageSize = pageSize;
-    this._search$.next();
+    this.trigger_change$.next();
   }
   get pageIndex(): number {
     return this._state.pageIndex;
   }
   set pageIndex(pageIndex: number) {
     this._state.pageIndex = pageIndex;
-    this._search$.next();
+    this.trigger_change$.next();
   }
   get totalSize(): number {
     return this._state.totalSize;
@@ -101,8 +79,33 @@ export class TableComponent {
   get entries$() {
     return this._entries$.asObservable();
   }
-
   get loading$() {
     return this._loading$.asObservable();
+  }
+  counter(i: number) {
+    return new Array(i);
+  }
+  private getData() {
+    let pageProvider =
+      this.provider_type == ProviderTypeEnum.Organizer
+        ? ProviderPageEnum.PP_Organizar
+        : ProviderPageEnum.PP_Activity;
+    let params: PageRequestParams = {
+      pageSize: this.pageSize,
+      currentPageIndex: this.pageIndex - 1,
+      properties: '*',
+    };
+    return this.dataHttpService.getData(pageProvider, params);
+  }
+  private exctractEntriesFromResponse(res: any) {
+    let entries: EntryType[] = res.entries.map((e: any) => ({
+      uid: e.uid,
+      name: e.properties['organizer:name'],
+      website: e.properties['organizer:website'],
+      creation_data: e.properties['dc:created'],
+      modified_date: e.properties['dc:modified'],
+      creator: e.properties['dc:creator'],
+    }));
+    return entries;
   }
 }

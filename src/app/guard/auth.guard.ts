@@ -23,11 +23,14 @@ export class AuthGuard extends KeycloakAuthGuard {
     state: RouterStateSnapshot
   ): Promise<boolean | UrlTree> {
     if (!this.authenticated) {
+      console.log('state.url', window.location.origin + state.url);
+      let redirectAfterAuthentication =
+        state.url != '/organizers' ? '/organizers' : state.url; //always redirect to organizers page after authentication
       await this.keycloak.login({
-        redirectUri: window.location.origin + state.url,
+        redirectUri: window.location.origin + redirectAfterAuthentication,
       });
     }
-
+    if (state.url === '/') this.router.navigate(['/organizers']); //avoid the error when when go to root route "/"
     return this.authenticated;
   }
 }

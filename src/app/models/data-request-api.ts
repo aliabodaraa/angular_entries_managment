@@ -1,8 +1,10 @@
-import { Organizer } from '../models/organizer';
-import { Activity } from '../models/activity';
-export enum PageProviderEnum {
+export enum ProviderPageEnum {
   PP_Organizar = 'PP_Organizar',
   PP_Activity = 'PP_Activity',
+}
+export enum ProviderTypeEnum {
+  Activity = 'Activity',
+  Organizer = 'Organizer',
 }
 export type PageRequestParams = {
   pageIndex?: number;
@@ -11,12 +13,7 @@ export type PageRequestParams = {
   numberOfPages?: number;
   properties: '*';
 };
-export type PageResponse = {
-  pageCount: number;
-  // pageSize: number;
-  // pageIndex: number;
-  entries: EntryType[];
-};
+
 export type EntryType = {
   uid: string;
   title: string;

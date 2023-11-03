@@ -2,14 +2,14 @@
   <!-- Fixed navbar -->
   <bs-navbar></bs-navbar>
 </header>
-<div class="d-flex mt-2" style="margin-left: 15px ;height: 90vh;margin-bottom: 10px; flex-direction:row-reverse">
+<div class="container-fluid">
     <!-- Begin page content -->
-    <div class="slideBar d-flex flex-column border border-right w-25" style="padding-top: 100px;position: relative;background-color: #f8f9fa;top: -78px;z-index: 999999999;">
-      <app-side-bar></app-side-bar>
-    </div>
-    <div class="outlet-content position-relative d-flex flex-row-reverse w-75 p-4 w-100">
-      <div class="w-100 container-fluid">
+    <div style="display:flex">
+      <div class="p-4" style="width: -webkit-fill-available">
         <router-outlet></router-outlet>
+      </div>
+      <div>
+        <app-side-bar></app-side-bar>
       </div>
     </div>
     <!-- <footer class="footer py-3 bg-light">
