@@ -1,0 +1,29 @@
+.bi-trash3-fill{
+  cursor: pointer;
+}
+
+.add-emails-input{
+  padding-left: 97px;
+}
+.add-addresses-input{
+  padding-left: 112px;
+}
+.add-phones-input{
+  padding-left: 104px;
+}
+.elements-list{
+  padding-top: 5px;
+}
+.add-element-to-list-btn{
+  position: absolute;
+  top: 32px;
+}
+.adding-elements-wrapper{
+  position: relative;
+}
+.adding-elements-wrapper:nth-child(2),.form-group:not(:nth-child(1)){
+  margin-top: 10px;
+}
+.form-group:not(:nth-last-child(1)){
+  margin-bottom: 10px;
+}

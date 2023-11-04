@@ -26,6 +26,7 @@ import { ConfigInitService } from './init/config-init.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
+import { FormComponent } from './form/form.component';
 // const checkUserLoggingStatus = (
 //   routeTo: ActivatedRouteSnapshot,
 //   state: RouterStateSnapshot
@@ -42,14 +43,14 @@ const routes: Routes = [
   //Guests Routes
   { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
 
-  { path: 'organizers/new', component: OrganizerFormComponent },
+  { path: 'organizers/new', component: FormComponent },
   { path: 'organizers/:id', component: OrganizerFormComponent },
   {
     path: 'organizers',
     component: OrganizersComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'activities/new', component: ActivityFormComponent },
+  { path: 'activities/new', component: FormComponent },
   { path: 'activities/:id', component: ActivityFormComponent },
   {
     path: 'activities',
@@ -70,6 +71,7 @@ const routes: Routes = [
     ActivitiesComponent,
     SideBarComponent,
     TableComponent,
+    FormComponent,
   ],
   imports: [
     NgbModule,

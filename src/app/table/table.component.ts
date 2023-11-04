@@ -43,6 +43,7 @@ export class TableComponent {
         switchMap(() => this.getData()),
         tap(() => this._loading$.next(false)),
         map((res) => {
+          console.log(res);
           this.totalSize = res.totalSize;
           return this.exctractEntriesFromResponse(res);
         }),

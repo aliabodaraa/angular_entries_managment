@@ -1,0 +1,127 @@
+
+ <!-- Form Level Errors Validations-->
+ <!-- <div *ngIf="form.errors?.['invalidLogin']" class="alert alert-warning">
+    the username or password is invalid
+</div> -->
+<!-- show message will the uniqueness proccess is processing, any formControl Object has a property called "pending" that will return true if at least one asyncValidator is in progress-->
+<div *ngIf="form.errors?.['minCustom']" class="alert alert-warning">
+    0000000000000000
+</div>
+<div *ngIf="form.errors?.['emailCustom']" class="alert alert-warning">
+    1111111111111111
+</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group name">
+        <label for="name" class="form-label">Name</label>
+        <input
+        formControlName="name"
+        type="text" 
+        class="form-control" 
+        name="name" 
+        id="name" required>
+        <div *ngIf="(submitted && !!accessName?.errors) || (accessName?.touched && accessName?.invalid)" class="alert alert-danger">
+            <div *ngIf="accessName?.errors?.['required']">Name Field is Required</div>
+            <div *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName?.errors?.['minlength']?.requiredLength}}, You entered only {{accessName?.errors?.['minlength']?.actualLength}} characters</div>
+        </div>
+    </div>
+    <div class="form-group adding-elements-wrapper emails">
+        <button (click)="addEmail(email)" type="button" class="btn btn-primary add-element-to-list-btn">add email</button>
+        <label for="emails" class="form-label">Emails :</label>
+        <input 
+        type="text"
+        class="form-control add-emails-input"
+        #email
+        >
+        <ul class="list-group elements-list">
+            <li
+            *ngFor="let email of accessEmails.controls;let i=index"
+            class="list-group-item"
+            >
+                {{email.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removeEmail(email)"></i>
+                <div *ngIf="(submitted && !!email?.errors) || email?.invalid" class="alert alert-danger">
+                    <div *ngIf="email?.errors?.['minlength']">should be minimum {{email?.errors?.['minlength']?.requiredLength}}, You entered only {{email?.errors?.['minlength']?.actualLength}} characters</div>
+                    <div *ngIf="email?.errors?.['email']">Email must be a valid email address</div>
+                </div>
+            </li>
+        </ul>
+        <div *ngIf="(submitted && !!accessEmails?.errors)" class="alert alert-danger">
+            <div *ngIf="accessEmails?.errors?.['required']">Emails Field is Required</div>
+        </div>
+    </div>
+    <div class="form-group adding-elements-wrapper addresses">
+        <button (click)="addAddress(address)" type="button" class="btn btn-primary add-element-to-list-btn">add address</button>
+        <label for="addresses" class="form-label">Addresses :</label>
+        <input 
+        type="text" 
+        class="form-control add-addresses-input"
+        #address
+        >
+        <ul class="list-group elements-list">
+            <li
+            *ngFor="let address of accessAddresses.controls"
+            class="list-group-item"
+            >
+                {{address.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removeAddress(address)"></i>
+                <div *ngIf="(submitted && !!address?.errors) || address?.invalid" class="alert alert-danger">
+                    <div *ngIf="address?.errors?.['minlength']">should be minimum {{address?.errors?.['minlength']?.requiredLength}}, You entered only {{address?.errors?.['minlength']?.actualLength}} characters</div>
+                </div>
+            </li>
+        </ul>
+        <div *ngIf="(submitted && !!accessAddresses?.errors)" class="alert alert-danger">
+            <div *ngIf="accessAddresses?.errors?.['required']">Addresses Field is Required</div>
+        </div>
+    </div>
+    <div class="form-group organizationActivity">
+        <label for="organizationActivity" class="form-label">Organization Activity :</label>
+        <input
+        formControlName="organizationActivity"
+        type="text" 
+        class="form-control" 
+        name="organizationActivity" 
+        id="organizationActivity">
+        <div *ngIf="(submitted && !!accessOrganizationActivity?.errors) || (accessOrganizationActivity?.touched && accessOrganizationActivity?.invalid)" class="alert alert-danger">
+            <div *ngIf="accessOrganizationActivity?.errors?.['required']">Organization Activity Field is Required</div>
+            <div *ngIf="accessOrganizationActivity?.errors?.['minlength']">should be minimum {{accessOrganizationActivity?.errors?.['minlength']?.requiredLength}}, You entered only {{accessOrganizationActivity?.errors?.['minlength']?.actualLength}} characters</div>
+        </div>
+    </div>
+    <div class="form-group adding-elements-wrapper phones">
+        <button (click)="addPhone(phone)" type="button" class="btn btn-primary add-element-to-list-btn">add phone</button>
+        <label for="phones" class="form-label">Phones :</label>
+        <input 
+        type="text" 
+        class="form-control add-phones-input"
+        #phone
+        >
+        <ul class="list-group elements-list">
+            <li
+            *ngFor="let phone of accessPhones.controls"
+            class="list-group-item"
+            >
+            {{phone.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removePhone(phone)"></i>
+            <div *ngIf="(submitted && !!phone?.errors) || phone?.invalid" class="alert alert-danger">
+                <div *ngIf="phone?.errors?.['minlength']">should be minimum {{phone?.errors?.['minlength']?.requiredLength}}, You entered only {{phone?.errors?.['minlength']?.actualLength}} characters</div>
+                <div *ngIf="phone?.errors?.['pattern']">invalid phone</div>
+            </div>
+        </li>
+    </ul>
+    <div *ngIf="(submitted && !!accessPhones?.errors)" class="alert alert-danger">
+        <div *ngIf="accessPhones?.errors?.['required']">Phones Field is Required</div>
+    </div>
+    </div>
+    <div class="form-group website">
+        <label for="website" class="website">website</label>
+        <input [ngClass]="{ 'is-invalid': submitted && accessWebsite?.errors?.errors }"
+        formControlName="website"
+        type="url" 
+        class="form-control" 
+        name="website" 
+        id="website">
+        <div *ngIf="(submitted && !!accessWebsite?.errors) || (accessWebsite?.touched && accessWebsite?.invalid)" class="alert alert-danger">
+            <div *ngIf="accessWebsite?.errors?.['required']">Website Field is Required</div>
+            <div *ngIf="accessWebsite?.errors?.['pattern']">invalid website</div>
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-lg btn-secondary" [disabled]="!form.valid">Login</button>
+</form>

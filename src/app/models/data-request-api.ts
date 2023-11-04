@@ -15,10 +15,14 @@ export type PageRequestParams = {
 };
 
 export type EntryType = {
-  uid: string;
-  title: string;
-  website: string;
-  creation_data: string;
-  modified_date: string;
-  creator: string;
+  uid: string; //uid
+  name: string; //organizer:name
+  website: string; //organizer:website
+  creation_data: string; //dc:created
+  modified_date: string; //dc:modified
+  creator: string; //dc:creator
+  addresses: { address: string; label: string }[]; //organizer:addresses
+  emails: { emailAddress: string; label: string }[]; //organizer:emails
+  organizationActivity: string; //organizer:organizationActivity
+  phones: { phoneNumber: string; label: string }[]; //organizer:phones
 };
