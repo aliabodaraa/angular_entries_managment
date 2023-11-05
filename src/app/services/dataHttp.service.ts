@@ -34,7 +34,7 @@ export class DataHttpService {
     return this.http.post<any>(
       `http://54.227.55.65/nuxeo/api/v1/automation/${creation_identifier}`,
       JSON.stringify(data),
-      { headers: headers }
+      { headers }
     );
   }
   getEntry(entryId: string) {

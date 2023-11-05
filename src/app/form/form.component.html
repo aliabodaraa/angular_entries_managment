@@ -28,23 +28,23 @@
     </div>
     {{accessEmails.valid}}
     <div class="form-group adding-elements-wrapper emails">
-        <button (click)="addEmail(email)" type="button" class="btn btn-primary add-element-to-list-btn">add email</button>
+        <button (click)="addToFormArray(emailInput,accessEmails,'emails')" type="button" class="btn btn-primary add-element-to-list-btn">add email</button>
         <label for="emails" class="form-label">Emails :</label>
         <input 
         type="text"
         class="form-control add-emails-input"
-        #email
+        #emailInput
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let emailObj of accessEmails.controls; let ind=index"
+            *ngFor="let emailObj of accessEmails.controls; let index=index"
             class="list-group-item"
-            [style.borderTop]="accessEmails.valid && !ind ?'':'0px'"
-            [style.border]="accessEmails.valid && ind ?'':'1px solid #ff9d9d'"
+            [style.borderTop]="accessEmails.valid && !index ?'':'0px'"
+            [style.border]="accessEmails.valid && index ?'':'1px solid #ff9d9d'"
             >
             {{emailObj.get('emailAddress')?.value}}
             <!-- <span class="text-warning">Label generated dynamically :{{emailObj.get('label')?.value}} </span> -->
-            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeEmail(emailObj)"></i>
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessEmails, index)"></i>
                 <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="alert alert-danger">
                     <div *ngIf="emailObj.get('emailAddress')?.errors?.['minlength']">should be minimum {{emailObj.get('emailAddress')?.errors?.['minlength']?.requiredLength}}, You entered only {{emailObj.get('emailAddress')?.errors?.['minlength']?.actualLength}} characters</div>
                     <div *ngIf="emailObj.get('emailAddress')?.errors?.['email']">Email must be a valid email address</div>
@@ -56,21 +56,21 @@
         </div>
     </div>
     <div class="form-group adding-elements-wrapper addresses">
-        <button (click)="addAddress(address)" type="button" class="btn btn-primary add-element-to-list-btn">add address</button>
+        <button (click)="addToFormArray(addressInput,accessAddresses,'addresses')" type="button" class="btn btn-primary add-element-to-list-btn">add address</button>
         <label for="addresses" class="form-label">Addresses :</label>
         <input 
         type="text" 
         class="form-control add-addresses-input"
-        #address
+        #addressInput
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let addressObj of accessAddresses.controls"
+            *ngFor="let addressObj of accessAddresses.controls; let index=index"
             class="list-group-item"
             >
             {{addressObj.get('address')?.value}} 
             <!-- <span class="text-warning">Label generated dynamically :{{addressObj.get('label')?.value}} </span> -->
-            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeAddress(addressObj)"></i>
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessAddresses, index)"></i>
                 <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="alert alert-danger">
                     <div *ngIf="addressObj.get('address')?.errors?.['minlength']">should be minimum {{addressObj.get('address')?.errors?.['minlength']?.requiredLength}}, You entered only {{addressObj.get('address')?.errors?.['minlength']?.actualLength}} characters</div>
                 </div>
@@ -94,21 +94,21 @@
         </div>
     </div>
     <div class="form-group adding-elements-wrapper phones">
-        <button (click)="addPhone(phone)" type="button" class="btn btn-primary add-element-to-list-btn">add phone</button>
+        <button (click)="addToFormArray(phoneInput,accessPhones,'phones')" type="button" class="btn btn-primary add-element-to-list-btn">add phone</button>
         <label for="phones" class="form-label">Phones :</label>
         <input 
         type="text" 
         class="form-control add-phones-input"
-        #phone
+        #phoneInput
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let phoneObj of accessPhones.controls"
+            *ngFor="let phoneObj of accessPhones.controls; let index=index"
             class="list-group-item"
             >
             {{phoneObj.get('phoneNumber')?.value}} 
             <!-- <span class="text-warning">Label generated dynamically :{{phoneObj.get('label')?.value}} </span> -->
-            <i class="bi bi-trash3-fill text-danger float-end" (click)="removePhone(phoneObj)"></i>
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessPhones, index)"></i>
             <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="alert alert-danger">
                 <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['minlength']">should be minimum {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.requiredLength}}, You entered only {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.actualLength}} characters</div>
                 <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['pattern']">invalid phone</div>

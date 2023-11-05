@@ -1,27 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { DataHttpService } from '../services/dataHttp.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { EntryType } from '../models/data-request-api';
-
+import { Subscription } from 'rxjs';
+import { Location } from '@angular/common';
+type FormArrayKeysType = 'emails' | 'addresses' | 'phones';
+type FormArrayType = {
+  [key in FormArrayKeysType]: {
+    validators: ValidatorFn[] | ValidatorFn;
+    childrenKeys: string[];
+    childrenValidators: ValidatorFn[];
+  };
+};
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent {
+export class FormComponent implements OnDestroy {
   submitted = false;
   entry = {};
+  formArrays: FormArrayType = {
+    emails: {
+      validators: [Validators.required],
+      childrenKeys: ['emailAddress', 'label'],
+      childrenValidators: [Validators.email, Validators.minLength(8)],
+    },
+    addresses: {
+      validators: [Validators.required],
+      childrenKeys: ['address', 'label'],
+      childrenValidators: [Validators.minLength(8)],
+    },
+    phones: {
+      validators: [Validators.required],
+      childrenKeys: ['phoneNumber', 'label'],
+      childrenValidators: [
+        Validators.minLength(8),
+        Validators.pattern('^[0-9|+][0-9 -]*$'),
+      ],
+    },
+  };
+  saverSubscribtion: Subscription | null = null;
   constructor(
     private dataHttpService: DataHttpService,
-    private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {
     this.entry = this.router.getCurrentNavigation()?.extras.state?.['entry'];
     // if (!this.entry) {
@@ -47,12 +77,6 @@ export class FormComponent {
     ]),
   });
 
-  // private _createFormArrayControls(): FormControl {
-  //   return this.form.addControl(
-  //     '1',
-  //     this.form.get('organizer:addresses') as AbstractControl
-  //   );
-  // }
   get accessName() {
     return this.form.get('organizer:name') as FormControl;
   }
@@ -75,64 +99,44 @@ export class FormComponent {
   get accessWebsite() {
     return this.form.get('organizer:website') as FormControl;
   }
-  addEmail(emailHtml: HTMLInputElement) {
-    this.accessEmails.push(
-      new FormGroup({
-        emailAddress: new FormControl(emailHtml.value, [
-          Validators.email,
-          Validators.minLength(8),
-        ]),
-        label: new FormControl('label ' + Math.random() * 10),
-      })
-    );
-    emailHtml.value = '';
-  }
-  removeEmail(emails: AbstractControl) {
-    let index = this.accessEmails.controls.indexOf(emails);
-    this.accessEmails.removeAt(index);
-  }
-  addAddress(addressHtml: HTMLInputElement) {
-    //this.accessAddresses.push(new FormControl(addressHtml.value));
-    this.accessAddresses.push(
-      new FormGroup({
-        address: new FormControl(addressHtml.value, [Validators.minLength(8)]),
-        label: new FormControl('label ' + Math.random()),
-      })
-    );
-    addressHtml.value = '';
-  }
-  removeAddress(address: AbstractControl) {
-    let index = this.accessAddresses.controls.indexOf(address);
-    this.accessAddresses.removeAt(index);
-  }
-  addPhone(phoneHtml: HTMLInputElement) {
-    console.log(this.form.get('organizer:phones'));
+  addToFormArray(
+    inputHtml: HTMLInputElement,
+    formArray: FormArray,
+    formArraykey: FormArrayKeysType
+  ) {
+    let chKeys = this.formArrays[formArraykey].childrenKeys;
+    let Validators = this.formArrays[formArraykey].validators;
+    let childrenValidators = this.formArrays[formArraykey].childrenValidators;
 
-    this.accessPhones.push(
-      new FormGroup({
-        phoneNumber: new FormControl(phoneHtml.value, [
-          Validators.minLength(8),
-          Validators.pattern('^[0-9|+][0-9 -]*$'),
-        ]),
-        label: new FormControl('label ' + Math.random()),
-      })
+    formArray.push(
+      new FormGroup(
+        {
+          [chKeys[0]]: new FormControl(inputHtml.value, childrenValidators),
+          [chKeys[1]]: new FormControl('label ' + Math.random() * 10),
+        },
+        Validators
+      )
     );
-    phoneHtml.value = '';
+    inputHtml.value = '';
   }
-  removePhone(phone: AbstractControl) {
-    let index = this.accessPhones.controls.indexOf(phone as FormControl);
-    this.accessPhones.removeAt(index);
+  removeFromFormArray(formArray: FormArray, index: number) {
+    //let index = this.accessEmails.controls.indexOf(emails);
+    formArray.removeAt(index);
   }
+
   save() {
     this.submitted = true;
-    // imagine there is a service call login in this point of code
-    // let isValid = serviceAuth?.login(this.form.value);
-    // if (isValid) {
-    //   this.form.setErrors({ invalidLogin: true });
-    // }
     let data: Partial<EntryType> = this.form.value;
-    this.dataHttpService.createEntry(data).subscribe((x) => console.log(x));
+    if (this.form.valid)
+      this.saverSubscribtion = this.dataHttpService
+        .createEntry(data)
+        .subscribe((x) => {
+          this.location.back();
+        });
     console.log(this.form, this.form.get('organizer:emails'));
     //this.form.setErrors({ invalidLogin: true });
+  }
+  ngOnDestroy(): void {
+    this.saverSubscribtion?.unsubscribe();
   }
 }
