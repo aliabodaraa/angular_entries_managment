@@ -8,7 +8,7 @@ import {
 } from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { DataHttpService } from '../services/dataHttp.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -28,13 +28,21 @@ export class TableComponent {
     pageSize: 5,
     totalSize: 10,
   };
+  navigateToEntryFromEdit(entry: EntryType) {
+    this.router.navigate(['/organizers/edit'], {
+      state: {
+        entry,
+      },
+    });
+  }
   public provider_type: ProviderTypeEnum =
     this.route.snapshot.url[0].path.includes('organizers')
       ? ProviderTypeEnum.Organizer
       : ProviderTypeEnum.Activity;
   constructor(
     private dataHttpService: DataHttpService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.trigger_change$
       .pipe(
@@ -91,11 +99,13 @@ export class TableComponent {
       this.provider_type == ProviderTypeEnum.Organizer
         ? ProviderPageEnum.PP_Organizar
         : ProviderPageEnum.PP_Activity;
+
     let params: PageRequestParams = {
       pageSize: this.pageSize,
       currentPageIndex: this.pageIndex - 1,
       properties: '*',
     };
+
     return this.dataHttpService.getData(pageProvider, params);
   }
   private exctractEntriesFromResponse(res: any) {

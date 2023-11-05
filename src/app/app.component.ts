@@ -19,6 +19,7 @@ export class AppComponent {
     private auth: AuthService,
     private router: Router // private keycloakService: KeycloakService
   ) {
+    this.auth.getToken().then((x) => console.log(x));
     // console.log(this.auth.isLoggedIn().then((x) => console.log(x)));
     // this.auth.isTokenValid().then((isTokenValid) => {
     //   if (isTokenValid) this.auth.loadUserProfile().then((p) => console.log(p));

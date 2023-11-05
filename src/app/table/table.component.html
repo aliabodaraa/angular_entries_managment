@@ -24,7 +24,7 @@
                         <th scope="col">creation_data</th>
                         <th scope="col">modified_date</th>
                         <th scope="col">creator</th>
-
+                        <th scope="col">operations</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +35,7 @@
                         <td> {{entry.creation_data|date:'d/M/yyyy'}}</td>
                         <td> {{entry.modified_date|date:'d/M/yyyy'}}</td>
                         <td> {{entry.creator}}</td>
+                        <td><a (click)="navigateToEntryFromEdit(entry)">edit</a></td>
                     </tr>
                     <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
                 </tbody>

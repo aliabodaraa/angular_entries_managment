@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
+  CreationIdentifiersEnum,
+  EntryType,
   PageRequestParams,
   ProviderPageEnum,
 } from '../models/data-request-api';
@@ -16,5 +18,26 @@ export class DataHttpService {
       `http://54.227.55.65/nuxeo/api/v1/search/pp/${pageProvider}/execute`,
       { params }
     );
+  }
+  createEntry(
+    entry: Partial<EntryType>,
+    creation_identifier: CreationIdentifiersEnum = CreationIdentifiersEnum.Organizer
+  ) {
+    let data = {
+      context: entry,
+      input: '/',
+    };
+    const headers = new HttpHeaders().set(
+      'Content-Type',
+      'application/json; charset=utf-8'
+    );
+    return this.http.post<any>(
+      `http://54.227.55.65/nuxeo/api/v1/automation/${creation_identifier}`,
+      JSON.stringify(data),
+      { headers: headers }
+    );
+  }
+  getEntry(entryId: string) {
+    return this.http.get<EntryType>('/organizers/' + entryId);
   }
 }

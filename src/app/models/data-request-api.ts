@@ -13,16 +13,19 @@ export type PageRequestParams = {
   numberOfPages?: number;
   properties: '*';
 };
-
+export enum CreationIdentifiersEnum {
+  Organizer = 'AC_UA_Organizer_Create',
+  Activity = 'AC_UA_Activity_Create',
+}
 export type EntryType = {
   uid: string; //uid
-  name: string; //organizer:name
-  website: string; //organizer:website
-  creation_data: string; //dc:created
-  modified_date: string; //dc:modified
-  creator: string; //dc:creator
-  addresses: { address: string; label: string }[]; //organizer:addresses
-  emails: { emailAddress: string; label: string }[]; //organizer:emails
-  organizationActivity: string; //organizer:organizationActivity
-  phones: { phoneNumber: string; label: string }[]; //organizer:phones
+  'organizer:name': string; //organizer:name
+  'organizer:website': string; //organizer:website
+  'dc:created': string; //dc:created
+  'dc:modified': string; //dc:modified
+  'dc:creator': string; //dc:creator
+  'organizer:addresses': { address: string; label: string }[]; //organizer:addresses
+  'organizer:emails': { emailAddress: string; label: string }[]; //organizer:emails
+  'organizer:organizationActivity': string; //organizer:organizationActivity
+  'organizer:phones': { phoneNumber: string; label: string }[]; //organizer:phones
 };

@@ -10,11 +10,13 @@
 <div *ngIf="form.errors?.['emailCustom']" class="alert alert-warning">
     1111111111111111
 </div>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+{{accessEmailAddress}}
+{{this.entry|json}}
+<form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group name">
         <label for="name" class="form-label">Name</label>
         <input
-        formControlName="name"
+        formControlName="organizer:name"
         type="text" 
         class="form-control" 
         name="name" 
@@ -24,6 +26,7 @@
             <div *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName?.errors?.['minlength']?.requiredLength}}, You entered only {{accessName?.errors?.['minlength']?.actualLength}} characters</div>
         </div>
     </div>
+    {{accessEmails.valid}}
     <div class="form-group adding-elements-wrapper emails">
         <button (click)="addEmail(email)" type="button" class="btn btn-primary add-element-to-list-btn">add email</button>
         <label for="emails" class="form-label">Emails :</label>
@@ -34,13 +37,17 @@
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let email of accessEmails.controls;let i=index"
+            *ngFor="let emailObj of accessEmails.controls; let ind=index"
             class="list-group-item"
+            [style.borderTop]="accessEmails.valid && !ind ?'':'0px'"
+            [style.border]="accessEmails.valid && ind ?'':'1px solid #ff9d9d'"
             >
-                {{email.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removeEmail(email)"></i>
-                <div *ngIf="(submitted && !!email?.errors) || email?.invalid" class="alert alert-danger">
-                    <div *ngIf="email?.errors?.['minlength']">should be minimum {{email?.errors?.['minlength']?.requiredLength}}, You entered only {{email?.errors?.['minlength']?.actualLength}} characters</div>
-                    <div *ngIf="email?.errors?.['email']">Email must be a valid email address</div>
+            {{emailObj.get('emailAddress')?.value}}
+            <!-- <span class="text-warning">Label generated dynamically :{{emailObj.get('label')?.value}} </span> -->
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeEmail(emailObj)"></i>
+                <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="alert alert-danger">
+                    <div *ngIf="emailObj.get('emailAddress')?.errors?.['minlength']">should be minimum {{emailObj.get('emailAddress')?.errors?.['minlength']?.requiredLength}}, You entered only {{emailObj.get('emailAddress')?.errors?.['minlength']?.actualLength}} characters</div>
+                    <div *ngIf="emailObj.get('emailAddress')?.errors?.['email']">Email must be a valid email address</div>
                 </div>
             </li>
         </ul>
@@ -58,12 +65,14 @@
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let address of accessAddresses.controls"
+            *ngFor="let addressObj of accessAddresses.controls"
             class="list-group-item"
             >
-                {{address.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removeAddress(address)"></i>
-                <div *ngIf="(submitted && !!address?.errors) || address?.invalid" class="alert alert-danger">
-                    <div *ngIf="address?.errors?.['minlength']">should be minimum {{address?.errors?.['minlength']?.requiredLength}}, You entered only {{address?.errors?.['minlength']?.actualLength}} characters</div>
+            {{addressObj.get('address')?.value}} 
+            <!-- <span class="text-warning">Label generated dynamically :{{addressObj.get('label')?.value}} </span> -->
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeAddress(addressObj)"></i>
+                <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="alert alert-danger">
+                    <div *ngIf="addressObj.get('address')?.errors?.['minlength']">should be minimum {{addressObj.get('address')?.errors?.['minlength']?.requiredLength}}, You entered only {{addressObj.get('address')?.errors?.['minlength']?.actualLength}} characters</div>
                 </div>
             </li>
         </ul>
@@ -74,7 +83,7 @@
     <div class="form-group organizationActivity">
         <label for="organizationActivity" class="form-label">Organization Activity :</label>
         <input
-        formControlName="organizationActivity"
+        formControlName="organizer:organizationActivity"
         type="text" 
         class="form-control" 
         name="organizationActivity" 
@@ -94,13 +103,15 @@
         >
         <ul class="list-group elements-list">
             <li
-            *ngFor="let phone of accessPhones.controls"
+            *ngFor="let phoneObj of accessPhones.controls"
             class="list-group-item"
             >
-            {{phone.value}} <i class="bi bi-trash3-fill text-danger float-end" (click)="removePhone(phone)"></i>
-            <div *ngIf="(submitted && !!phone?.errors) || phone?.invalid" class="alert alert-danger">
-                <div *ngIf="phone?.errors?.['minlength']">should be minimum {{phone?.errors?.['minlength']?.requiredLength}}, You entered only {{phone?.errors?.['minlength']?.actualLength}} characters</div>
-                <div *ngIf="phone?.errors?.['pattern']">invalid phone</div>
+            {{phoneObj.get('phoneNumber')?.value}} 
+            <!-- <span class="text-warning">Label generated dynamically :{{phoneObj.get('label')?.value}} </span> -->
+            <i class="bi bi-trash3-fill text-danger float-end" (click)="removePhone(phoneObj)"></i>
+            <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="alert alert-danger">
+                <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['minlength']">should be minimum {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.requiredLength}}, You entered only {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.actualLength}} characters</div>
+                <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['pattern']">invalid phone</div>
             </div>
         </li>
     </ul>
@@ -111,7 +122,7 @@
     <div class="form-group website">
         <label for="website" class="website">website</label>
         <input [ngClass]="{ 'is-invalid': submitted && accessWebsite?.errors?.errors }"
-        formControlName="website"
+        formControlName="organizer:website"
         type="url" 
         class="form-control" 
         name="website" 
@@ -123,5 +134,5 @@
     </div>
 
 
-    <button type="submit" class="btn btn-lg btn-secondary" [disabled]="!form.valid">Login</button>
+    <button type="submit" class="btn btn-lg btn-secondary">Login</button>
 </form>

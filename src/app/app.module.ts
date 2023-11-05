@@ -27,6 +27,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { FormComponent } from './form/form.component';
+import { EntryType } from './models/data-request-api';
 // const checkUserLoggingStatus = (
 //   routeTo: ActivatedRouteSnapshot,
 //   state: RouterStateSnapshot
@@ -44,7 +45,12 @@ const routes: Routes = [
   { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
 
   { path: 'organizers/new', component: FormComponent },
-  { path: 'organizers/:id', component: OrganizerFormComponent },
+  // { path: 'organizers/:id', component: FormComponent },
+  {
+    path: 'organizers/edit',
+    component: FormComponent,
+    data: {},
+  },
   {
     path: 'organizers',
     component: OrganizersComponent,

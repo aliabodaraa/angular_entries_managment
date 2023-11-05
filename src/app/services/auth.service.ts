@@ -35,7 +35,7 @@ export class AuthService {
     return false;
   }
 
-  private getToken() {
+  getToken() {
     return this.keycloakService.getToken();
   }
 
