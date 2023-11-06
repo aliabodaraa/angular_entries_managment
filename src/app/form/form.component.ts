@@ -12,6 +12,8 @@ import {
   ActivityEntry,
   EntryType,
   OrganizeEntry,
+  PageTypeEnum,
+  ProviderTypeEnum,
   isActivityEntry,
 } from '../models/data-request-api';
 import { Subscription } from 'rxjs';
@@ -31,28 +33,9 @@ type FormArrayType = {
 })
 export class FormComponent implements OnDestroy {
   submitted = false;
-  entry: OrganizeEntry | ActivityEntry;
-  pageType: 'new' | 'edit' = 'new';
-  private formArrays: FormArrayType = {
-    emails: {
-      validators: [Validators.required],
-      childrenKeys: ['emailAddress', 'label'],
-      childrenValidators: [Validators.email, Validators.minLength(8)],
-    },
-    addresses: {
-      validators: [Validators.required],
-      childrenKeys: ['address', 'label'],
-      childrenValidators: [Validators.minLength(8)],
-    },
-    phones: {
-      validators: [Validators.required],
-      childrenKeys: ['phoneNumber', 'label'],
-      childrenValidators: [
-        Validators.minLength(8),
-        Validators.pattern('^[0-9|+][0-9 -]*$'),
-      ],
-    },
-  };
+  entry: OrganizeEntry | ActivityEntry | null = null;
+  pageType: PageTypeEnum = PageTypeEnum.New;
+  providerType: ProviderTypeEnum = ProviderTypeEnum.Organizer;
   public form = new FormGroup({
     'organizer:name': new FormControl('', [
       Validators.required,
@@ -76,15 +59,19 @@ export class FormComponent implements OnDestroy {
     private router: Router,
     private location: Location
   ) {
-    this.entry = this.router.getCurrentNavigation()?.extras.state?.['entry'];
-    // if (!this.entry) {
-    //   this.router.navigate(['']);
-    // }
-    console.log(this.entry);
+    // this.pageType =
+    //   this.router.getCurrentNavigation()?.extras.state?.['pageType'] ??
+    //   this.pageType;
+
+    this.entry = JSON.parse(localStorage.getItem('entry')!) || null;
     this.pageType =
-      this.router.getCurrentNavigation()?.extras.state?.['pageType'];
+      (localStorage.getItem('pageType') as PageTypeEnum) || this.pageType;
+    this.providerType =
+      (localStorage.getItem('providerType') as ProviderTypeEnum) || null;
+
+    console.log(this.entry);
     console.log(this.pageType);
-    if (this.pageType === 'edit' && !isActivityEntry(this.entry)) {
+    if (this.entry && !isActivityEntry(this.entry)) {
       this.entry['organizer:emails'].map((e) => {
         return this.addToFormArray(e.emailAddress, this.accessEmails, 'emails');
       });
@@ -129,15 +116,36 @@ export class FormComponent implements OnDestroy {
   get accessWebsite() {
     return this.form.get('organizer:website') as FormControl;
   }
+  private formArraysMetaData: FormArrayType = {
+    emails: {
+      validators: [Validators.required],
+      childrenKeys: ['emailAddress', 'label'],
+      childrenValidators: [Validators.email, Validators.minLength(8)],
+    },
+    addresses: {
+      validators: [Validators.required],
+      childrenKeys: ['address', 'label'],
+      childrenValidators: [Validators.minLength(8)],
+    },
+    phones: {
+      validators: [Validators.required],
+      childrenKeys: ['phoneNumber', 'label'],
+      childrenValidators: [
+        Validators.minLength(8),
+        Validators.pattern('^[0-9|+][0-9 -]*$'),
+      ],
+    },
+  };
   public addToFormArray(
     newValue: HTMLInputElement | string,
     formArray: FormArray,
     formArraykey: FormArrayKeysType
   ) {
     let enteredValue = typeof newValue !== 'string' ? newValue.value : newValue;
-    let chKeys = this.formArrays[formArraykey].childrenKeys;
-    let Validators = this.formArrays[formArraykey].validators;
-    let childrenValidators = this.formArrays[formArraykey].childrenValidators;
+    let chKeys = this.formArraysMetaData[formArraykey].childrenKeys;
+    let Validators = this.formArraysMetaData[formArraykey].validators;
+    let childrenValidators =
+      this.formArraysMetaData[formArraykey].childrenValidators;
 
     formArray.push(
       new FormGroup(
@@ -150,24 +158,24 @@ export class FormComponent implements OnDestroy {
     );
     if (typeof newValue == 'string') enteredValue = '';
   }
-  removeFromFormArray(formArray: FormArray, index: number) {
+  public removeFromFormArray(formArray: FormArray, index: number) {
     //let index = this.accessEmails.controls.indexOf(emails);
     formArray.removeAt(index);
   }
 
-  save() {
+  public save() {
     this.submitted = true;
 
     let entry_content: EntryType = this.form.value;
 
     if (this.form.valid) {
-      if (this.pageType === 'new')
+      if (this.pageType === PageTypeEnum.New) {
         this.saverSubscribtion = this.dataHttpService
           .createEntry(entry_content)
           .subscribe((x) => {
             this.location.back();
           });
-      else {
+      } else if (this.entry) {
         let entry_uid: string = this.entry.uid;
         this.saverSubscribtion = this.dataHttpService
           .updateEntry(entry_content, entry_uid)
@@ -176,9 +184,12 @@ export class FormComponent implements OnDestroy {
           });
       }
     }
-    console.log(this.form, this.form.get('organizer:emails'));
+    console.log(this.pageType);
   }
   ngOnDestroy(): void {
     this.saverSubscribtion?.unsubscribe();
+    localStorage.removeItem('entry');
+    localStorage.removeItem('pageType');
+    localStorage.removeItem('providerType');
   }
 }

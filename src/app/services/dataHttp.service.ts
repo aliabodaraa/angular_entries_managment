@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   CreationIdentifiersEnum,
+  DeletionIdentifiersEnum,
   EditionIdentifiersEnum,
   EntryType,
   PageRequestParams,
   ProviderPageEnum,
 } from '../models/data-request-api';
-
+type Data = {
+  context?: Partial<EntryType>;
+  input: string;
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -24,7 +28,7 @@ export class DataHttpService {
     entry: Partial<EntryType>,
     creation_identifier: CreationIdentifiersEnum = CreationIdentifiersEnum.Organizer
   ) {
-    let data = {
+    let data: Data = {
       context: entry,
       input: '/',
     };
@@ -38,15 +42,12 @@ export class DataHttpService {
       { headers }
     );
   }
-  getEntry(entryId: string) {
-    return this.http.get<EntryType>('/organizers/' + entryId);
-  }
   updateEntry(
     entry_content: Partial<EntryType>,
     entry_id: string,
     edition_identifier: EditionIdentifiersEnum = EditionIdentifiersEnum.Organizer
   ) {
-    let data = {
+    let data: Data = {
       context: entry_content,
       input: entry_id,
     };
@@ -56,6 +57,23 @@ export class DataHttpService {
     );
     return this.http.post<any>(
       `http://54.227.55.65/nuxeo/api/v1/automation/${edition_identifier}`,
+      JSON.stringify(data),
+      { headers }
+    );
+  }
+  deleteEntry(
+    entry_id: string,
+    deletion_identifier: DeletionIdentifiersEnum = DeletionIdentifiersEnum.Organizer
+  ) {
+    let data: Data = {
+      input: entry_id,
+    };
+    const headers = new HttpHeaders().set(
+      'Content-Type',
+      'application/json; charset=utf-8'
+    );
+    return this.http.post<any>(
+      `http://54.227.55.65/nuxeo/api/v1/automation/${deletion_identifier}`,
       JSON.stringify(data),
       { headers }
     );

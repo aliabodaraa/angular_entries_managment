@@ -7,6 +7,8 @@ import {
   EntryType,
   OrganizeEntry,
   ActivityEntry,
+  PageTypeEnum,
+  DeletionIdentifiersEnum,
 } from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { DataHttpService } from '../services/dataHttp.service';
@@ -31,15 +33,42 @@ export class TableComponent {
     pageSize: 5,
     totalSize: 10,
   };
-  navigateToEntryFromEdit(entry: EntryType) {
+  public navigateToEditPage(entry: EntryType) {
     const path = this.is_organizers ? '/organizers/edit' : '/activities/edit';
-    const pageType = 'edit';
-    this.router.navigate([path], {
-      state: {
-        entry,
-        pageType,
-      },
-    });
+    this.router.navigate(
+      [path]
+      //   , {
+      //   state: {
+      //     pageType: 'edit',
+      //     providerType: ProviderTypeEnum,
+      //   },
+      // }
+    );
+    this.storgeEntryInfo(entry);
+  }
+  public deleteEntry(entry: EntryType) {
+    let deletion_identifier = this.is_organizers
+      ? DeletionIdentifiersEnum.Organizer
+      : DeletionIdentifiersEnum.Activity;
+    console.log(entry);
+    this.dataHttpService
+      .deleteEntry(entry.uid, deletion_identifier)
+      .subscribe((res) => {
+        this.trigger_change$.next();
+        console.log('Deleted the Entry Successfully');
+      });
+  }
+  private storgeEntryInfo(entry: EntryType) {
+    localStorage.setItem('entry', JSON.stringify(entry));
+    localStorage.setItem('pageType', JSON.stringify(PageTypeEnum.Edit));
+    localStorage.setItem(
+      'providerType',
+      JSON.stringify(
+        this.is_organizers
+          ? ProviderTypeEnum.Organizer
+          : ProviderTypeEnum.Activity
+      )
+    );
   }
   public is_organizers = true;
   constructor(

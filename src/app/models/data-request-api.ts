@@ -6,6 +6,10 @@ export enum ProviderTypeEnum {
   Activity = 'Activity',
   Organizer = 'Organizer',
 }
+export enum PageTypeEnum {
+  New = 'New',
+  Edit = 'Edit',
+}
 export type PageRequestParams = {
   pageIndex?: number;
   pageSize?: number;
@@ -20,6 +24,10 @@ export enum CreationIdentifiersEnum {
 export enum EditionIdentifiersEnum {
   Organizer = 'AC_UA_Organizer_Update',
   Activity = 'AC_UA_Activity_Update',
+}
+export enum DeletionIdentifiersEnum {
+  Organizer = 'AC_UA_Organizer_Delete',
+  Activity = 'AC_UA_Activity_Delete',
 }
 type LocationType = { city: string; geographicLocation: string };
 export interface EntryType {
