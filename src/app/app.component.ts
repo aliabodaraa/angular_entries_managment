@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 // import { AuthService } from './services/auth.service';
 import { tap } from 'rxjs/operators';
@@ -6,6 +6,8 @@ import { tap } from 'rxjs/operators';
 import { KeycloakService } from 'keycloak-angular';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { AuthService } from './services/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,7 +16,11 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'ActivitiesApp';
   active = 'top';
+
   constructor(
+    @Inject(TOASTR_TOKEN) private toastr: Toastr,
+    // private toastr1: ToastrService,
+
     // private userService: UserService,
     private auth: AuthService,
     private router: Router // private keycloakService: KeycloakService
@@ -32,5 +38,21 @@ export class AppComponent {
     //   localStorage.removeItem('returnUrl');
     //   this.router.navigate([`${getReturnUrlParam}`]);
     // });
+  }
+
+  success(message: string): void {
+    this.toastr.success(message, 'Success');
+  }
+
+  info(message: string): void {
+    this.toastr.info(message, 'Info');
+  }
+
+  warning(message: string): void {
+    this.toastr.warning(message, 'Warning');
+  }
+
+  error(message: string): void {
+    this.toastr.error(message, 'Error');
   }
 }

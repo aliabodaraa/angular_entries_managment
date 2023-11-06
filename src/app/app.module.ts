@@ -27,10 +27,14 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { FormComponent } from './form/form.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
+declare const toastr: Toastr;
+
 const routes: Routes = [
   //Guests Routes
   { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
@@ -95,6 +99,8 @@ const routes: Routes = [
         deps: [HttpClient],
       },
     }),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     DecimalPipe,
@@ -103,6 +109,10 @@ const routes: Routes = [
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService, ConfigInitService],
+    },
+    {
+      provide: TOASTR_TOKEN,
+      useValue: toastr,
     },
   ],
   bootstrap: [AppComponent],

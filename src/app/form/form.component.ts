@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -18,6 +18,7 @@ import {
 } from '../models/data-request-api';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
+import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 type FormArrayKeysType = 'emails' | 'addresses' | 'phones';
 type FormArrayType = {
   [key in FormArrayKeysType]: {
@@ -57,7 +58,8 @@ export class FormComponent implements OnDestroy {
   constructor(
     private dataHttpService: DataHttpService,
     private router: Router,
-    private location: Location
+    private location: Location,
+    @Inject(TOASTR_TOKEN) private toastr: Toastr
   ) {
     // this.pageType =
     //   this.router.getCurrentNavigation()?.extras.state?.['pageType'] ??
@@ -156,7 +158,7 @@ export class FormComponent implements OnDestroy {
         Validators
       )
     );
-    if (typeof newValue == 'string') enteredValue = '';
+    if (typeof newValue !== 'string') newValue.value = '';
   }
   public removeFromFormArray(formArray: FormArray, index: number) {
     //let index = this.accessEmails.controls.indexOf(emails);
@@ -167,21 +169,42 @@ export class FormComponent implements OnDestroy {
     this.submitted = true;
 
     let entry_content: EntryType = this.form.value;
-
+    console.log(this.form);
     if (this.form.valid) {
       if (this.pageType === PageTypeEnum.New) {
         this.saverSubscribtion = this.dataHttpService
           .createEntry(entry_content)
-          .subscribe((x) => {
-            this.location.back();
-          });
+          .subscribe(
+            (x) => {
+              this.location.back();
+              this.toastr.success(
+                'Organizer',
+                'New Organizer Added Successfully'
+              );
+            },
+            (e) => {
+              this.toastr.error('Organizer', 'Adding Organizer Process Failed');
+            }
+          );
       } else if (this.entry) {
         let entry_uid: string = this.entry.uid;
         this.saverSubscribtion = this.dataHttpService
           .updateEntry(entry_content, entry_uid)
-          .subscribe((x) => {
-            this.location.back();
-          });
+          .subscribe(
+            (x) => {
+              this.location.back();
+              this.toastr.info(
+                'Organizer',
+                'New Organizer Updated Successfully'
+              );
+            },
+            (e) => {
+              this.toastr.error(
+                'Organizer',
+                'Updateding Organizer Process Failed'
+              );
+            }
+          );
       }
     }
     console.log(this.pageType);

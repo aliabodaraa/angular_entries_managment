@@ -16,6 +16,19 @@ type Data = {
   providedIn: 'root',
 })
 export class DataHttpService {
+  data: Data = { input: '/' };
+  headers = new HttpHeaders().set(
+    'Content-Type',
+    'application/json; charset=utf-8'
+  );
+
+  private setData(
+    context: Data['context'],
+    input: Data['input'] = this.data.input
+  ) {
+    this.data.input = input;
+    this.data.context = context;
+  }
   constructor(private http: HttpClient) {}
 
   getData(pageProvider: ProviderPageEnum, params: PageRequestParams) {
@@ -25,21 +38,14 @@ export class DataHttpService {
     );
   }
   createEntry(
-    entry: Partial<EntryType>,
+    entry_content: Partial<EntryType>,
     creation_identifier: CreationIdentifiersEnum = CreationIdentifiersEnum.Organizer
   ) {
-    let data: Data = {
-      context: entry,
-      input: '/',
-    };
-    const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json; charset=utf-8'
-    );
+    this.setData(entry_content);
     return this.http.post<any>(
       `http://54.227.55.65/nuxeo/api/v1/automation/${creation_identifier}`,
-      JSON.stringify(data),
-      { headers }
+      JSON.stringify(this.data),
+      { headers: this.headers }
     );
   }
   updateEntry(
@@ -47,35 +53,24 @@ export class DataHttpService {
     entry_id: string,
     edition_identifier: EditionIdentifiersEnum = EditionIdentifiersEnum.Organizer
   ) {
-    let data: Data = {
-      context: entry_content,
-      input: entry_id,
-    };
-    const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json; charset=utf-8'
-    );
+    this.setData(entry_content, entry_id);
+
     return this.http.post<any>(
       `http://54.227.55.65/nuxeo/api/v1/automation/${edition_identifier}`,
-      JSON.stringify(data),
-      { headers }
+      JSON.stringify(this.data),
+      { headers: this.headers }
     );
   }
   deleteEntry(
     entry_id: string,
     deletion_identifier: DeletionIdentifiersEnum = DeletionIdentifiersEnum.Organizer
   ) {
-    let data: Data = {
-      input: entry_id,
-    };
-    const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json; charset=utf-8'
-    );
+    this.setData({}, entry_id);
+
     return this.http.post<any>(
       `http://54.227.55.65/nuxeo/api/v1/automation/${deletion_identifier}`,
-      JSON.stringify(data),
-      { headers }
+      JSON.stringify(this.data),
+      { headers: this.headers }
     );
   }
 }

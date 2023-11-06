@@ -29,7 +29,10 @@
     </div>
     {{accessEmails.valid}}
     <div class="form-group adding-elements-wrapper emails">
-        <button (click)="addToFormArray(emailInput,accessEmails,'emails')" type="button" class="btn btn-primary add-element-to-list-btn">add email</button>
+        <button 
+        (click)="addToFormArray(emailInput,accessEmails,'emails')" 
+        type="button" class="btn btn-primary add-element-to-list-btn">
+        add email</button>
         <label for="emails" class="form-label">Emails :</label>
         <input 
         type="text"
@@ -138,5 +141,5 @@
     </div>
 
 
-    <button type="submit" class="btn btn-lg btn-secondary">Login</button>
+    <button type="submit" class="btn btn-lg btn-secondary" [disabled]="!form.valid">Login</button>
 </form>

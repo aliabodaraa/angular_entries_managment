@@ -27,6 +27,7 @@
     "bootstrap-icons": "^1.11.1",
     "keycloak-angular": "^8.4.0",
     "keycloak-js": "^15.0.2",
+    "ngx-toastr": "^9.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
