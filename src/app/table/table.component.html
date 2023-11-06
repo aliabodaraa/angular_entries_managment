@@ -2,46 +2,53 @@
     <div class="page-header">
         <div class="row">
             <div class="col-xm-6 col-sm-7 col-md-8 col-lg-10">
-                <h3>{{provider_type=="Organizer"?'Organizers':'Activities'}}</h3>
+                <h2>
+                    <!-- {{provider_type=="Organizer"?'Organizers':'Activities'}} -->
+                    <span class="col col-form-label" *ngIf="loading$ | async">
+                        <div class="spinner-border text-warning spinner-border-md spinner-style" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </span>
+                </h2>
             </div>
             <div class="col-xm-6 col-sm-5 col-md-4 col-lg-2 me-auto">
-                <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="provider_type=='Organizer'?'/organizers/new':'/activities/new'" >create {{provider_type=="Organizer"?'Organizer':'Activity'}}</button>
+                <!-- <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="provider_type=='Organizer'?'/organizers/new':'/activities/new'" >create {{provider_type=="Organizer"?'Organizer':'Activity'}}</button> -->
             </div>
         </div>
     </div>
-    <span class="col col-form-label" *ngIf="loading$ | async">
-        <div class="spinner-border text-warning spinner-border-sm" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </span>
-    <div class="table-responsive pt-2">
+    <div class="table-responsive mt-2">
             <table class="table table-light table-hover">
                 <thead class="table-dark">
-                    <tr>
+                    <tr *ngIf="entries$|async as entries_arr">
                         <!-- <th scope="col">#</th> -->
-                        <th scope="col">name</th>
-                        <th scope="col">website</th>
-                        <th scope="col">creation_data</th>
-                        <th scope="col">modified_date</th>
-                        <th scope="col">creator</th>
-                        <th scope="col">operations</th>
+                        <th scope="col" *ngFor="let entry_pair of entries_arr[0]|keyvalue">
+                            <ng-container *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                                {{entry_pair.key}}
+                            </ng-container>
+                        </th>
+                        <th scope="col" *ngIf="entries_arr.length">operations</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let entry of entries$ | async">
                         <!-- <th scope="row">{{ entry.uid }}</th> -->
-                        <td>{{entry.name}}</td>
-                        <td> {{entry.website}}</td>
-                        <td> {{entry.creation_data|date:'d/M/yyyy'}}</td>
-                        <td> {{entry.modified_date|date:'d/M/yyyy'}}</td>
-                        <td> {{entry.creator}}</td>
-                        <td><a (click)="navigateToEntryFromEdit(entry)">edit</a></td>
+                        <td *ngFor="let entry_pair of entry|keyvalue" >
+                            <ng-container *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                                <ng-container *ngIf="intoString(entry_pair.key).slice(-4).toLowerCase()!=='date';else date">
+                                    {{entry_pair.value}}
+                                </ng-container>
+                                <ng-template #date>
+                                    {{intoString(entry_pair.value)|date:'d/M/yyyy'}}
+                                </ng-template>
+                            </ng-container>
+                        </td>
+                        <td><a class="btn btn-warning" (click)="navigateToEntryFromEdit(entry)">edit</a></td>
                     </tr>
                     <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
                 </tbody>
             </table>
     </div>
-    <div class="d-flex justify-content-between p-2" *ngIf="totalSize>0">
+    <div class="d-flex justify-content-between p-2" *ngIf="totalSize>0 && entries$">
         <ngb-pagination [collectionSize]="totalSize" [(page)]="pageIndex" [pageSize]="pageSize">
         </ngb-pagination>
 

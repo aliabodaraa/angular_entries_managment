@@ -5,10 +5,13 @@ import {
   ProviderPageEnum,
   ProviderTypeEnum,
   EntryType,
+  OrganizeEntry,
+  ActivityEntry,
 } from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { DataHttpService } from '../services/dataHttp.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isActivityEntry } from '../models/data-request-api';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -29,21 +32,20 @@ export class TableComponent {
     totalSize: 10,
   };
   navigateToEntryFromEdit(entry: EntryType) {
-    this.router.navigate(['/organizers/edit'], {
+    let path = this.is_organizers ? '/organizers/edit' : '/activities/edit';
+    this.router.navigate([path], {
       state: {
         entry,
       },
     });
   }
-  public provider_type: ProviderTypeEnum =
-    this.route.snapshot.url[0].path.includes('organizers')
-      ? ProviderTypeEnum.Organizer
-      : ProviderTypeEnum.Activity;
+  public is_organizers = true;
   constructor(
     private dataHttpService: DataHttpService,
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.is_organizers = this.route.snapshot.url[0].path.includes('organizers');
     this.trigger_change$
       .pipe(
         tap(() => this._loading$.next(true)),
@@ -95,10 +97,9 @@ export class TableComponent {
     return new Array(i);
   }
   private getData() {
-    let pageProvider =
-      this.provider_type == ProviderTypeEnum.Organizer
-        ? ProviderPageEnum.PP_Organizar
-        : ProviderPageEnum.PP_Activity;
+    let pageProvider = this.is_organizers
+      ? ProviderPageEnum.PP_Organizar
+      : ProviderPageEnum.PP_Activity;
 
     let params: PageRequestParams = {
       pageSize: this.pageSize,
@@ -108,15 +109,59 @@ export class TableComponent {
 
     return this.dataHttpService.getData(pageProvider, params);
   }
+  intoString(value: unknown) {
+    return String(value);
+  }
+  columnsAllowedToAppear() {
+    let coulumns = [
+      'title',
+      'creator',
+      'description',
+      'creation_date',
+      'modified_date',
+    ];
+    if (this.is_organizers) {
+      coulumns = [
+        'name',
+        'creator',
+        'website',
+        'creation_date',
+        'modified_date',
+      ];
+    }
+    return coulumns;
+  }
   private exctractEntriesFromResponse(res: any) {
-    let entries: EntryType[] = res.entries.map((e: any) => ({
-      uid: e.uid,
-      name: e.properties['organizer:name'],
-      website: e.properties['organizer:website'],
-      creation_data: e.properties['dc:created'],
-      modified_date: e.properties['dc:modified'],
-      creator: e.properties['dc:creator'],
-    }));
+    let entries: ActivityEntry[] | OrganizeEntry[] = [];
+    if (this.is_organizers)
+      entries = res.entries.map((e: any) => ({
+        uid: e.uid,
+        creation_date: e.properties['dc:created'],
+        modified_date: e.properties['dc:modified'],
+        creator: e.properties['dc:creator'],
+        name: e.properties['organizer:name'],
+        website: e.properties['organizer:website'],
+        emails: e.properties['organizer:emails'],
+        addresses: e.properties['organizer:addresses'],
+        organizationActivity: e.properties['organizer:organizationActivity'],
+        phones: e.properties['organizer:phones'],
+      }));
+    else
+      entries = res.entries.map((e: any) => ({
+        uid: e.uid,
+        creation_date: e.properties['dc:created'],
+        modified_date: e.properties['dc:modified'],
+        creator: e.properties['dc:creator'],
+        title: e.properties['dc:title'],
+        description: e.properties['dc:description'],
+        organizers: e.properties['activity:organizers'],
+        locations: e.properties['activity:locations'],
+        startDate: e.properties['activity:startDate'],
+        endDate: e.properties['activity:endDate'],
+        timeFrom: e.properties['activity:timeFrom'],
+        timeTo: e.properties['activity:timeTo'],
+      }));
     return entries;
   }
 }
+// if (isActivityEntry(entries)) return entries else ;

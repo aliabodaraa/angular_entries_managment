@@ -6,7 +6,6 @@ import { tap } from 'rxjs/operators';
 import { KeycloakService } from 'keycloak-angular';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { AuthService } from './services/auth.service';
-import { ToastsService } from './toasts.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,8 +17,7 @@ export class AppComponent {
   constructor(
     // private userService: UserService,
     private auth: AuthService,
-    private router: Router, // private keycloakService: KeycloakService
-    public toastService: ToastsService
+    private router: Router // private keycloakService: KeycloakService
   ) {
     this.auth.getToken().then((x) => console.log(x));
     // console.log(this.auth.isLoggedIn().then((x) => console.log(x)));
@@ -34,26 +32,5 @@ export class AppComponent {
     //   localStorage.removeItem('returnUrl');
     //   this.router.navigate([`${getReturnUrlParam}`]);
     // });
-  }
-  showStandard() {
-    this.toastService.show('I am a standard toast');
-  }
-
-  showSuccess() {
-    this.toastService.show('I am a success toast', {
-      classname: 'bg-success text-light',
-      delay: 10000,
-    });
-  }
-
-  showDanger(dangerTpl: any) {
-    this.toastService.show('dangerTpl', {
-      classname: 'bg-danger text-light',
-      delay: 15000,
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.toastService.clear();
   }
 }

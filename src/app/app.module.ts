@@ -14,8 +14,6 @@ import {
   NgbModule,
   NgbNavModule,
   NgbPaginationModule,
-  NgbToast,
-  NgbTooltipModule,
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -29,17 +27,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { FormComponent } from './form/form.component';
-import { EntryType } from './models/data-request-api';
-import { ToastsComponent } from './toasts/toasts.component';
-// const checkUserLoggingStatus = (
-//   routeTo: ActivatedRouteSnapshot,
-//   state: RouterStateSnapshot
-// ) => {
-//   return inject(AuthGuard).canActivate(state.url);
-// };
-// const checkUserIsAdmin = () => {
-//   return inject(AdminAuthGuard).canActivate();
-// };
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -60,7 +48,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'activities/new', component: FormComponent },
-  { path: 'activities/:id', component: ActivityFormComponent },
+  // { path: 'activities/:id', component: ActivityFormComponent },
+  {
+    path: 'activities/edit',
+    component: FormComponent,
+    data: {},
+  },
   {
     path: 'activities',
     component: ActivitiesComponent,
@@ -70,6 +63,7 @@ const routes: Routes = [
   { path: '**', component: NotFoundComponent },
   // { path: '**', redirectTo: '' }
 ];
+
 @NgModule({
   declarations: [
     BsNavbarComponent,
@@ -81,7 +75,6 @@ const routes: Routes = [
     SideBarComponent,
     TableComponent,
     FormComponent,
-    ToastsComponent,
   ],
   imports: [
     NgbModule,
@@ -102,8 +95,6 @@ const routes: Routes = [
         deps: [HttpClient],
       },
     }),
-    NgbTooltipModule,
-    NgbToast,
   ],
   providers: [
     DecimalPipe,
