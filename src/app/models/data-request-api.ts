@@ -17,6 +17,10 @@ export enum CreationIdentifiersEnum {
   Organizer = 'AC_UA_Organizer_Create',
   Activity = 'AC_UA_Activity_Create',
 }
+export enum EditionIdentifiersEnum {
+  Organizer = 'AC_UA_Organizer_Update',
+  Activity = 'AC_UA_Activity_Update',
+}
 type LocationType = { city: string; geographicLocation: string };
 export interface EntryType {
   uid: string; //uid
@@ -48,7 +52,7 @@ export interface ActivityEntry extends EntryType {
   'activity:coverPicture': string;
 }
 export function isActivityEntry(
-  pet: ActivityEntry[] | OrganizeEntry[]
-): pet is ActivityEntry[] {
-  return (pet as ActivityEntry[])[0]['dc:description'] !== undefined;
-}
+  entry: ActivityEntry | OrganizeEntry
+): entry is ActivityEntry {
+  return (entry as ActivityEntry)['dc:description'] !== undefined;
+} //used in form-component to access the property of specific Entry Type

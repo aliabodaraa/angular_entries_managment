@@ -11,7 +11,8 @@
     1111111111111111
 </div>
 {{accessEmailAddress}}
-{{this.entry|json}}
+{{entry|json}}
+{{pageType}}
 <form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group name">
         <label for="name" class="form-label">Name</label>
@@ -35,9 +36,10 @@
         class="form-control add-emails-input"
         #emailInput
         >
-        <ul class="list-group elements-list">
+        <ul class="list-group elements-list" formArrayName="organizer:emails">
             <li
             *ngFor="let emailObj of accessEmails.controls; let index=index"
+            [formGroupName]="index"
             class="list-group-item"
             [style.borderTop]="accessEmails.valid && !index ?'':'0px'"
             [style.border]="accessEmails.valid && index ?'':'1px solid #ff9d9d'"
@@ -63,9 +65,10 @@
         class="form-control add-addresses-input"
         #addressInput
         >
-        <ul class="list-group elements-list">
+        <ul class="list-group elements-list" formArrayName="organizer:addresses">
             <li
             *ngFor="let addressObj of accessAddresses.controls; let index=index"
+            [formGroupName]="index"
             class="list-group-item"
             >
             {{addressObj.get('address')?.value}} 
@@ -101,9 +104,10 @@
         class="form-control add-phones-input"
         #phoneInput
         >
-        <ul class="list-group elements-list">
+        <ul class="list-group elements-list" formArrayName="organizer:phones">
             <li
             *ngFor="let phoneObj of accessPhones.controls; let index=index"
+            [formGroupName]="index"
             class="list-group-item"
             >
             {{phoneObj.get('phoneNumber')?.value}} 

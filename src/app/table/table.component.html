@@ -34,7 +34,7 @@
                         <!-- <th scope="row">{{ entry.uid }}</th> -->
                         <td *ngFor="let entry_pair of entry|keyvalue" >
                             <ng-container *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
-                                <ng-container *ngIf="intoString(entry_pair.key).slice(-4).toLowerCase()!=='date';else date">
+                                <ng-container *ngIf="intoString(entry_pair.key).toLowerCase()!=='dc:created' && intoString(entry_pair.key).toLowerCase()!=='dc:modified';else date">
                                     {{entry_pair.value}}
                                 </ng-container>
                                 <ng-template #date>

@@ -8,7 +8,12 @@ import {
 } from '@angular/forms';
 import { DataHttpService } from '../services/dataHttp.service';
 import { Router } from '@angular/router';
-import { EntryType } from '../models/data-request-api';
+import {
+  ActivityEntry,
+  EntryType,
+  OrganizeEntry,
+  isActivityEntry,
+} from '../models/data-request-api';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 type FormArrayKeysType = 'emails' | 'addresses' | 'phones';
@@ -26,8 +31,9 @@ type FormArrayType = {
 })
 export class FormComponent implements OnDestroy {
   submitted = false;
-  entry = {};
-  formArrays: FormArrayType = {
+  entry: OrganizeEntry | ActivityEntry;
+  pageType: 'new' | 'edit' = 'new';
+  private formArrays: FormArrayType = {
     emails: {
       validators: [Validators.required],
       childrenKeys: ['emailAddress', 'label'],
@@ -47,19 +53,7 @@ export class FormComponent implements OnDestroy {
       ],
     },
   };
-  saverSubscribtion: Subscription | null = null;
-  constructor(
-    private dataHttpService: DataHttpService,
-    private router: Router,
-    private location: Location
-  ) {
-    this.entry = this.router.getCurrentNavigation()?.extras.state?.['entry'];
-    // if (!this.entry) {
-    //   this.router.navigate(['']);
-    // }
-    console.log(this.entry);
-  }
-  form = new FormGroup({
+  public form = new FormGroup({
     'organizer:name': new FormControl('', [
       Validators.required,
       Validators.minLength(8),
@@ -76,6 +70,42 @@ export class FormComponent implements OnDestroy {
       Validators.pattern('https?://.+|http?://.+'),
     ]),
   });
+  saverSubscribtion: Subscription | null = null;
+  constructor(
+    private dataHttpService: DataHttpService,
+    private router: Router,
+    private location: Location
+  ) {
+    this.entry = this.router.getCurrentNavigation()?.extras.state?.['entry'];
+    // if (!this.entry) {
+    //   this.router.navigate(['']);
+    // }
+    console.log(this.entry);
+    this.pageType =
+      this.router.getCurrentNavigation()?.extras.state?.['pageType'];
+    console.log(this.pageType);
+    if (this.pageType === 'edit' && !isActivityEntry(this.entry)) {
+      this.entry['organizer:emails'].map((e) => {
+        return this.addToFormArray(e.emailAddress, this.accessEmails, 'emails');
+      });
+      this.entry['organizer:addresses'].map((e) => {
+        return this.addToFormArray(
+          e.address,
+          this.accessAddresses,
+          'addresses'
+        );
+      });
+      this.entry['organizer:phones'].map((p) => {
+        return this.addToFormArray(p.phoneNumber, this.accessPhones, 'phones');
+      });
+      this.form.patchValue({
+        'organizer:name': this.entry['organizer:name'],
+        'organizer:organizationActivity':
+          this.entry['organizer:organizationActivity'],
+        'organizer:website': this.entry['organizer:website'],
+      });
+    }
+  }
 
   get accessName() {
     return this.form.get('organizer:name') as FormControl;
@@ -99,11 +129,12 @@ export class FormComponent implements OnDestroy {
   get accessWebsite() {
     return this.form.get('organizer:website') as FormControl;
   }
-  addToFormArray(
-    inputHtml: HTMLInputElement,
+  public addToFormArray(
+    newValue: HTMLInputElement | string,
     formArray: FormArray,
     formArraykey: FormArrayKeysType
   ) {
+    let enteredValue = typeof newValue !== 'string' ? newValue.value : newValue;
     let chKeys = this.formArrays[formArraykey].childrenKeys;
     let Validators = this.formArrays[formArraykey].validators;
     let childrenValidators = this.formArrays[formArraykey].childrenValidators;
@@ -111,13 +142,13 @@ export class FormComponent implements OnDestroy {
     formArray.push(
       new FormGroup(
         {
-          [chKeys[0]]: new FormControl(inputHtml.value, childrenValidators),
+          [chKeys[0]]: new FormControl(enteredValue, childrenValidators),
           [chKeys[1]]: new FormControl('label ' + Math.random() * 10),
         },
         Validators
       )
     );
-    inputHtml.value = '';
+    if (typeof newValue == 'string') enteredValue = '';
   }
   removeFromFormArray(formArray: FormArray, index: number) {
     //let index = this.accessEmails.controls.indexOf(emails);
@@ -126,15 +157,26 @@ export class FormComponent implements OnDestroy {
 
   save() {
     this.submitted = true;
-    let data: Partial<EntryType> = this.form.value;
-    if (this.form.valid)
-      this.saverSubscribtion = this.dataHttpService
-        .createEntry(data)
-        .subscribe((x) => {
-          this.location.back();
-        });
+
+    let entry_content: EntryType = this.form.value;
+
+    if (this.form.valid) {
+      if (this.pageType === 'new')
+        this.saverSubscribtion = this.dataHttpService
+          .createEntry(entry_content)
+          .subscribe((x) => {
+            this.location.back();
+          });
+      else {
+        let entry_uid: string = this.entry.uid;
+        this.saverSubscribtion = this.dataHttpService
+          .updateEntry(entry_content, entry_uid)
+          .subscribe((x) => {
+            this.location.back();
+          });
+      }
+    }
     console.log(this.form, this.form.get('organizer:emails'));
-    //this.form.setErrors({ invalidLogin: true });
   }
   ngOnDestroy(): void {
     this.saverSubscribtion?.unsubscribe();

@@ -32,10 +32,12 @@ export class TableComponent {
     totalSize: 10,
   };
   navigateToEntryFromEdit(entry: EntryType) {
-    let path = this.is_organizers ? '/organizers/edit' : '/activities/edit';
+    const path = this.is_organizers ? '/organizers/edit' : '/activities/edit';
+    const pageType = 'edit';
     this.router.navigate([path], {
       state: {
         entry,
+        pageType,
       },
     });
   }
@@ -114,19 +116,19 @@ export class TableComponent {
   }
   columnsAllowedToAppear() {
     let coulumns = [
-      'title',
-      'creator',
-      'description',
-      'creation_date',
-      'modified_date',
+      'dc:title',
+      'dc:creator',
+      'dc:description',
+      'dc:created',
+      'dc:modified',
     ];
     if (this.is_organizers) {
       coulumns = [
-        'name',
-        'creator',
-        'website',
-        'creation_date',
-        'modified_date',
+        'organizer:name',
+        'dc:creator',
+        'organizer:website',
+        'dc:created',
+        'dc:modified',
       ];
     }
     return coulumns;
@@ -136,30 +138,31 @@ export class TableComponent {
     if (this.is_organizers)
       entries = res.entries.map((e: any) => ({
         uid: e.uid,
-        creation_date: e.properties['dc:created'],
-        modified_date: e.properties['dc:modified'],
-        creator: e.properties['dc:creator'],
-        name: e.properties['organizer:name'],
-        website: e.properties['organizer:website'],
-        emails: e.properties['organizer:emails'],
-        addresses: e.properties['organizer:addresses'],
-        organizationActivity: e.properties['organizer:organizationActivity'],
-        phones: e.properties['organizer:phones'],
+        'dc:created': e.properties['dc:created'],
+        'dc:modified': e.properties['dc:modified'],
+        'dc:creator': e.properties['dc:creator'],
+        'organizer:name': e.properties['organizer:name'],
+        'organizer:website': e.properties['organizer:website'],
+        'organizer:emails': e.properties['organizer:emails'],
+        'organizer:addresses': e.properties['organizer:addresses'],
+        'organizer:organizationActivity':
+          e.properties['organizer:organizationActivity'],
+        'organizer:phones': e.properties['organizer:phones'],
       }));
     else
       entries = res.entries.map((e: any) => ({
         uid: e.uid,
-        creation_date: e.properties['dc:created'],
-        modified_date: e.properties['dc:modified'],
-        creator: e.properties['dc:creator'],
-        title: e.properties['dc:title'],
-        description: e.properties['dc:description'],
-        organizers: e.properties['activity:organizers'],
-        locations: e.properties['activity:locations'],
-        startDate: e.properties['activity:startDate'],
-        endDate: e.properties['activity:endDate'],
-        timeFrom: e.properties['activity:timeFrom'],
-        timeTo: e.properties['activity:timeTo'],
+        'dc:created': e.properties['dc:created'],
+        'dc:modified': e.properties['dc:modified'],
+        'dc:creator': e.properties['dc:creator'],
+        'dc:title': e.properties['dc:title'],
+        'dc:description': e.properties['dc:description'],
+        'activity:organizers': e.properties['activity:organizers'],
+        'activity:locations': e.properties['activity:locations'],
+        'activity:startDate': e.properties['activity:startDate'],
+        'activity:endDate': e.properties['activity:endDate'],
+        'activity:timeFrom': e.properties['activity:timeFrom'],
+        'activity:timeTo': e.properties['activity:timeTo'],
       }));
     return entries;
   }
