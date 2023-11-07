@@ -21,29 +21,31 @@
                 <thead class="table-dark">
                     <tr *ngIf="entries$|async as entries_arr">
                         <!-- <th scope="col">#</th> -->
-                        <th scope="col" *ngFor="let entry_pair of entries_arr[0]|keyvalue">
-                            <ng-container *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                        <ng-container *ngFor="let entry_pair of entries_arr[0]|keyvalue">
+                            <th scope="col" *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
                                 {{entry_pair.key}}
-                            </ng-container>
-                        </th>
+                            </th>
+                        </ng-container>
                         <th scope="col" *ngIf="entries_arr.length">operations</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let entry of entries$ | async">
                         <!-- <th scope="row">{{ entry.uid }}</th> -->
-                        <td *ngFor="let entry_pair of entry|keyvalue" >
-                            <ng-container *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                        <ng-container *ngFor="let entry_pair of entry|keyvalue">
+                            <td *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
                                 <ng-container *ngIf="intoString(entry_pair.key).toLowerCase()!=='dc:created' && intoString(entry_pair.key).toLowerCase()!=='dc:modified';else date">
                                     {{entry_pair.value}}
                                 </ng-container>
                                 <ng-template #date>
                                     {{intoString(entry_pair.value)|date:'d/M/yyyy'}}
                                 </ng-template>
-                            </ng-container>
+                            </td>
+                        </ng-container>
+                        <td>
+                            <a class="btn btn-secondary" (click)="navigateToEditPage(entry)">edit</a>
+                            <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a>
                         </td>
-                        <td><a class="btn btn-secondary" (click)="navigateToEditPage(entry)">edit</a></td>
-                        <td><a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a></td>
                     </tr>
                     <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
                 </tbody>
