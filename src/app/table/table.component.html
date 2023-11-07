@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xm-6 col-sm-7 col-md-8 col-lg-10">
                 <h2>
-                    {{is_organizers?'Organizers':'Activities'}}
+                    {{type}}'s
                     <span class="col col-form-label" *ngIf="loading$ | async">
                         <div class="spinner-border text-warning spinner-border-md spinner-style" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -12,7 +12,7 @@
                 </h2>
             </div>
             <div class="col-xm-6 col-sm-5 col-md-4 col-lg-2 me-auto">
-                <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="is_organizers?'/organizers/new':'/activities/new'" >create {{is_organizers?'Organizer':'Activity'}}</button>
+                <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" >create {{type}}</button>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
                     <tr *ngIf="entries$|async as entries_arr">
                         <!-- <th scope="col">#</th> -->
                         <ng-container *ngFor="let entry_pair of entries_arr[0]|keyvalue">
-                            <th scope="col" *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                            <th scope="col" *ngIf="columns.includes(intoString(entry_pair.key))">
                                 {{entry_pair.key}}
                             </th>
                         </ng-container>
@@ -33,7 +33,7 @@
                     <tr *ngFor="let entry of entries$ | async">
                         <!-- <th scope="row">{{ entry.uid }}</th> -->
                         <ng-container *ngFor="let entry_pair of entry|keyvalue">
-                            <td *ngIf="columnsAllowedToAppear().includes(intoString(entry_pair.key))">
+                            <td *ngIf="columns.includes(intoString(entry_pair.key))">
                                 <ng-container *ngIf="intoString(entry_pair.key).toLowerCase()!=='dc:created' && intoString(entry_pair.key).toLowerCase()!=='dc:modified';else date">
                                     {{entry_pair.value}}
                                 </ng-container>

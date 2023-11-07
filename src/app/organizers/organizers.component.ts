@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { OrganizerService } from '../services/organizer.service';
+import { ProviderTypeEnum } from '../models/data-request-api';
 
 @Component({
   selector: 'app-organizers',
@@ -7,8 +8,6 @@ import { OrganizerService } from '../services/organizer.service';
   styleUrls: ['./organizers.component.css'],
 })
 export class OrganizersComponent {
-  pageSize: number = 0; //15
-  currentPageIndex: number = 0; //0
-
+  type: ProviderTypeEnum = ProviderTypeEnum.Organizer;
   constructor(public organizerService: OrganizerService) {}
 }

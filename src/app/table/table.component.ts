@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import {
   PageRequestParams,
@@ -15,6 +15,7 @@ import { DataHttpService } from '../services/dataHttp.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isActivityEntry } from '../models/data-request-api';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
+import { EntryService } from '../services/entry.service';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -34,14 +35,13 @@ export class TableComponent {
     pageSize: 5,
     totalSize: 10,
   };
-  public is_organizers = true;
+  @Input('type') type!: ProviderTypeEnum;
+  columns!: string[];
   constructor(
-    private dataHttpService: DataHttpService,
-    private route: ActivatedRoute,
+    private EntryService: EntryService,
     private router: Router,
     @Inject(TOASTR_TOKEN) private toastr: Toastr
   ) {
-    this.is_organizers = this.route.snapshot.url[0].path.includes('organizers');
     this.trigger_change$
       .pipe(
         tap(() => this._loading$.next(true)),
@@ -63,7 +63,12 @@ export class TableComponent {
       });
     this.trigger_change$.next();
   }
-
+  ngOnInit(): void {
+    this.columns = this.EntryService.entryPropertiesAllowedToAppearInTable(
+      this.type
+    );
+    console.log('type--------------', this.type, this.columns);
+  }
   get pageSize(): number {
     return this._state.pageSize;
   }
@@ -92,120 +97,40 @@ export class TableComponent {
   }
 
   public navigateToEditPage(entry: EntryType) {
-    const path = this.is_organizers ? '/organizers/edit' : '/activities/edit';
-    this.router.navigate(
-      [path]
-      //   , {
-      //   state: {
-      //     pageType: 'edit',
-      //     providerType: ProviderTypeEnum,
-      //   },
-      // }
-
-      //in formComponent constructor
-      // this.pageType =
-      //   this.router.getCurrentNavigation()?.extras.state?.['pageType'] ??
-      //   this.pageType;
-    );
-    this.storgeEntryInfo(entry);
+    const path =
+      this.type === ProviderTypeEnum.Organizer
+        ? '/organizers/edit'
+        : '/activities/edit';
+    this.router.navigate([path]);
+    this.EntryService.storgeEntryInfo(this.type, entry);
   }
   public deleteEntry(entry: EntryType) {
-    let deletion_identifier = this.is_organizers
-      ? DeletionIdentifiersEnum.Organizer
-      : DeletionIdentifiersEnum.Activity;
-    console.log(entry);
-    this.dataHttpService
-      .deleteEntry(entry.uid, deletion_identifier)
-      .subscribe((res) => {
-        this.trigger_change$.next();
-        this.is_organizers
-          ? this.toastr.success('Organizer Deleted Successfully', 'Organizer')
-          : this.toastr.success('Activity Deleted Successfully', 'Activity');
-        console.log('Deleted the Entry Successfully');
-      });
-  }
-  private storgeEntryInfo(entry: EntryType) {
-    localStorage.setItem('entry', JSON.stringify(entry));
-    localStorage.setItem('pageType', JSON.stringify(PageTypeEnum.Edit));
-    localStorage.setItem(
-      'providerType',
-      JSON.stringify(
-        this.is_organizers
-          ? ProviderTypeEnum.Organizer
-          : ProviderTypeEnum.Activity
-      )
-    );
-  }
-  counter(i: number) {
-    return new Array(i);
+    this.EntryService.deleteEntry(this.type, entry).subscribe((res) => {
+      this.trigger_change$.next();
+      this.type === ProviderTypeEnum.Organizer
+        ? this.toastr.success('Organizer Deleted Successfully', 'Organizer')
+        : this.toastr.success('Activity Deleted Successfully', 'Activity');
+      console.log('Deleted the Entry Successfully');
+    });
   }
   private getData() {
-    let pageProvider = this.is_organizers
-      ? ProviderPageEnum.PP_Organizar
-      : ProviderPageEnum.PP_Activity;
-
     let params: PageRequestParams = {
       pageSize: this.pageSize,
       currentPageIndex: this.pageIndex - 1,
       properties: '*',
     };
 
-    return this.dataHttpService.getData(pageProvider, params);
+    return this.EntryService.getEntries(this.type, params);
   }
+  private exctractEntriesFromResponse(pure_response: any) {
+    return this.EntryService.mapPureDataToEntries(this.type, pure_response);
+  }
+
   intoString(value: unknown) {
     return String(value);
   }
-  columnsAllowedToAppear() {
-    let coulumns = [
-      'dc:title',
-      'dc:creator',
-      'dc:description',
-      'dc:created',
-      'dc:modified',
-    ];
-    if (this.is_organizers) {
-      coulumns = [
-        'organizer:name',
-        'dc:creator',
-        'organizer:website',
-        'dc:created',
-        'dc:modified',
-      ];
-    }
-    return coulumns;
-  }
-  private exctractEntriesFromResponse(res: any) {
-    let entries: ActivityEntry[] | OrganizeEntry[] = [];
-    if (this.is_organizers)
-      entries = res.entries.map((e: any) => ({
-        uid: e.uid,
-        'dc:created': e.properties['dc:created'],
-        'dc:modified': e.properties['dc:modified'],
-        'dc:creator': e.properties['dc:creator'],
-        'organizer:name': e.properties['organizer:name'],
-        'organizer:website': e.properties['organizer:website'],
-        'organizer:emails': e.properties['organizer:emails'],
-        'organizer:addresses': e.properties['organizer:addresses'],
-        'organizer:organizationActivity':
-          e.properties['organizer:organizationActivity'],
-        'organizer:phones': e.properties['organizer:phones'],
-      }));
-    else
-      entries = res.entries.map((e: any) => ({
-        uid: e.uid,
-        'dc:created': e.properties['dc:created'],
-        'dc:modified': e.properties['dc:modified'],
-        'dc:creator': e.properties['dc:creator'],
-        'dc:title': e.properties['dc:title'],
-        'dc:description': e.properties['dc:description'],
-        'activity:organizers': e.properties['activity:organizers'],
-        'activity:locations': e.properties['activity:locations'],
-        'activity:startDate': e.properties['activity:startDate'],
-        'activity:endDate': e.properties['activity:endDate'],
-        'activity:timeFrom': e.properties['activity:timeFrom'],
-        'activity:timeTo': e.properties['activity:timeTo'],
-      }));
-    return entries;
+  counter(i: number) {
+    return new Array(i);
   }
 }
 // if (isActivityEntry(entries)) return entries else ;

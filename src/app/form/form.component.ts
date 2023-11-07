@@ -6,7 +6,6 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { DataHttpService } from '../services/dataHttp.service';
 import {
   ActivityEntry,
   EntryType,
@@ -17,7 +16,7 @@ import {
 } from '../models/data-request-api';
 import { Location } from '@angular/common';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
-import { FormService } from '../services/form.service';
+import { EntryService } from '../services/entry.service';
 type FormArrayKeysType = 'emails' | 'addresses' | 'phones';
 type FormArrayType = {
   [key in FormArrayKeysType]: {
@@ -34,8 +33,8 @@ type FormArrayType = {
 export class FormComponent implements OnDestroy {
   submitted = false;
   entry: OrganizeEntry | ActivityEntry | null = null;
-  pageType: PageTypeEnum = PageTypeEnum.New;
-  providerType: ProviderTypeEnum = ProviderTypeEnum.Organizer;
+  pageType: PageTypeEnum;
+  providerType: ProviderTypeEnum;
   public form!: FormGroup;
   private formArraysMetaData: FormArrayType = {
     emails: {
@@ -59,11 +58,11 @@ export class FormComponent implements OnDestroy {
   };
   constructor(
     private location: Location,
-    private formService: FormService,
+    private EntryService: EntryService,
     @Inject(TOASTR_TOKEN) private toastr: Toastr
   ) {
     [this.entry, this.pageType, this.providerType] =
-      this.formService.getEntryInfo();
+      this.EntryService.getEntryInfo();
     this.form = new FormGroup({
       'organizer:name': new FormControl('', [
         Validators.required,
@@ -86,7 +85,6 @@ export class FormComponent implements OnDestroy {
       this.mapEntryToForm();
     }
   }
-  ////////////////////////////////////////////////
 
   private mapEntryToForm() {
     if (this.entry && !isActivityEntry(this.entry)) {
@@ -148,7 +146,6 @@ export class FormComponent implements OnDestroy {
     //let index = this.accessEmails.controls.indexOf(emails);
     formArray.removeAt(index);
   }
-  ////////////////////////////////////////////////
 
   get accessName() {
     return this.form.get('organizer:name') as FormControl;
@@ -180,8 +177,11 @@ export class FormComponent implements OnDestroy {
     console.log(this.form);
     if (this.form.valid) {
       if (this.pageType === PageTypeEnum.New) {
-        this.formService.save(entry_content, this.pageType).subscribe(
-          (x) => {
+        this.EntryService.saveUpdateEntry(
+          entry_content,
+          this.pageType
+        ).subscribe(
+          (s) => {
             this.location.back();
             this.toastr.success(
               'New Organizer Added Successfully',
@@ -193,23 +193,22 @@ export class FormComponent implements OnDestroy {
           }
         );
       } else if (this.entry) {
-        this.formService
-          .save(entry_content, this.pageType, this.entry.uid)
-          .subscribe(
-            (x) => {
-              this.location.back();
-              this.toastr.info(
-                'New Organizer Updated Successfully',
-                'Organizer'
-              );
-            },
-            (e) => {
-              this.toastr.error(
-                'Updateding Organizer Process Failed',
-                'Organizer'
-              );
-            }
-          );
+        this.EntryService.saveUpdateEntry(
+          entry_content,
+          this.pageType,
+          this.entry.uid
+        ).subscribe(
+          (s) => {
+            this.location.back();
+            this.toastr.info('New Organizer Updated Successfully', 'Organizer');
+          },
+          (e) => {
+            this.toastr.error(
+              'Updateding Organizer Process Failed',
+              'Organizer'
+            );
+          }
+        );
       }
     }
     console.log(this.pageType);
