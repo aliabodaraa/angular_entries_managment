@@ -2,6 +2,7 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~bootstrap-icons";
 @import "~ngx-toastr/toastr.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 body{
     padding-top:70px;
 }

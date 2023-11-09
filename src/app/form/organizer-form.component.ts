@@ -1,68 +1,38 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import {
-  ActivityEntry,
-  EntryType,
-  OrganizeEntry,
-  PageTypeEnum,
-  ProviderTypeEnum,
-  isActivityEntry,
-} from '../models/data-request-api';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { PageTypeEnum, ProviderTypeEnum } from '../models/data-request-api';
 import { Location } from '@angular/common';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { EntryService } from '../services/entry.service';
-type FormArrayKeysType = 'emails' | 'addresses' | 'phones';
-type FormArrayType = {
-  [key in FormArrayKeysType]: {
-    validators: ValidatorFn[] | ValidatorFn;
-    childrenKeys: string[];
-    childrenValidators: ValidatorFn[];
-  };
-};
+import * as form from '../models/form';
+import { ActivatedRoute } from '@angular/router';
+import { take } from 'rxjs/operators';
+import { EntryType, isOrganizerEntry } from '../models/app_data_state';
+
 @Component({
   selector: 'app-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  templateUrl: './organizer-form.component.html',
+  styleUrls: ['./organizer-form.component.scss'],
 })
-export class FormComponent implements OnDestroy {
+export class OrganizerFormComponent implements OnDestroy {
   submitted = false;
-  entry: OrganizeEntry | ActivityEntry | null = null;
-  pageType: PageTypeEnum;
-  providerType: ProviderTypeEnum;
+  entry: EntryType | null;
+  pageType!: PageTypeEnum;
+  providerType!: ProviderTypeEnum;
   public form!: FormGroup;
-  private formArraysMetaData: FormArrayType = {
-    emails: {
-      validators: [Validators.required],
-      childrenKeys: ['emailAddress', 'label'],
-      childrenValidators: [Validators.email, Validators.minLength(8)],
-    },
-    addresses: {
-      validators: [Validators.required],
-      childrenKeys: ['address', 'label'],
-      childrenValidators: [Validators.minLength(8)],
-    },
-    phones: {
-      validators: [Validators.required],
-      childrenKeys: ['phoneNumber', 'label'],
-      childrenValidators: [
-        Validators.minLength(8),
-        Validators.pattern('^[0-9|+][0-9 -]*$'),
-      ],
-    },
-  };
+
   constructor(
     private location: Location,
     private EntryService: EntryService,
+    private route: ActivatedRoute,
     @Inject(TOASTR_TOKEN) private toastr: Toastr
   ) {
-    [this.entry, this.pageType, this.providerType] =
-      this.EntryService.getEntryInfo();
+    this.entry = this.EntryService.getEntryInfo() ?? null;
+    this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {
+      this.pageType = queryParams.get('page_type')! as PageTypeEnum;
+      this.providerType = queryParams.get('provider_type')! as ProviderTypeEnum;
+    });
+
     this.form = new FormGroup({
       'organizer:name': new FormControl('', [
         Validators.required,
@@ -80,14 +50,22 @@ export class FormComponent implements OnDestroy {
         Validators.pattern('https?://.+|http?://.+'),
       ]),
     });
-    console.log('pageType', this.pageType, 'entry', this.entry);
+    console.log(
+      'providerType',
+      this.providerType,
+      'pageType',
+      this.pageType,
+      'entry',
+      this.entry
+    );
     if (this.entry) {
       this.mapEntryToForm();
     }
   }
 
   private mapEntryToForm() {
-    if (this.entry && !isActivityEntry(this.entry)) {
+    console.log(typeof this.entry);
+    if (this.entry && isOrganizerEntry(this.entry)) {
       this.entry['organizer:emails'].map((e_obj) => {
         return this.addToFormArray(
           e_obj.emailAddress,
@@ -123,23 +101,25 @@ export class FormComponent implements OnDestroy {
   public addToFormArray(
     newValue: HTMLInputElement | string,
     formArray: FormArray,
-    formArraykey: FormArrayKeysType
+    formArraykey: form.FormArrayOrganizerKeysType
   ) {
+    let arraysOrganizer =
+      form.default.getArraysOrganizerMetaData()[formArraykey];
     let enteredValue = typeof newValue !== 'string' ? newValue.value : newValue;
-    let chKeys = this.formArraysMetaData[formArraykey].childrenKeys;
-    let Validators = this.formArraysMetaData[formArraykey].validators;
-    let childrenValidators =
-      this.formArraysMetaData[formArraykey].childrenValidators;
+    let chKeys = arraysOrganizer.childrenKeys;
+    let Validators = arraysOrganizer.validators;
+    let childrenValidators = arraysOrganizer.childrenValidators;
 
-    formArray.push(
-      new FormGroup(
-        {
-          [chKeys[0]]: new FormControl(enteredValue, childrenValidators),
-          [chKeys[1]]: new FormControl('label ' + Math.random() * 10),
-        },
-        Validators
-      )
-    );
+    if (chKeys?.length)
+      formArray.push(
+        new FormGroup(
+          {
+            [chKeys[0]]: new FormControl(enteredValue, childrenValidators),
+            [chKeys[1]]: new FormControl('label ' + Math.random() * 10),
+          },
+          Validators
+        )
+      );
     if (typeof newValue !== 'string') newValue.value = '';
   }
   public removeFromFormArray(formArray: FormArray, index: number) {
@@ -172,13 +152,20 @@ export class FormComponent implements OnDestroy {
 
   public save() {
     this.submitted = true;
-    let entry_content: Partial<EntryType> = this.form.value;
+    let formValue: Partial<EntryType> = this.form.value;
 
-    console.log(this.form);
+    console.log(
+      this.pageType,
+      '--------------------------------',
+      this.providerType,
+      '--------------------------------',
+      this.entry
+    );
     if (this.form.valid) {
       if (this.pageType === PageTypeEnum.New) {
         this.EntryService.saveUpdateEntry(
-          entry_content,
+          this.providerType,
+          formValue,
           this.pageType
         ).subscribe(
           (s) => {
@@ -192,9 +179,10 @@ export class FormComponent implements OnDestroy {
             this.toastr.error('Adding Organizer Process Failed', 'Organizer');
           }
         );
-      } else if (this.entry) {
+      } else if (this.pageType === PageTypeEnum.Edit && this.entry) {
         this.EntryService.saveUpdateEntry(
-          entry_content,
+          this.providerType,
+          formValue,
           this.pageType,
           this.entry.uid
         ).subscribe(

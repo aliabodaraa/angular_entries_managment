@@ -1,22 +1,32 @@
 import { Inject, Injectable } from '@angular/core';
 import {
-  ActivityEntry,
+  CreationIdentifiersEnum,
   DeletionIdentifiersEnum,
-  EntryType,
-  OrganizeEntry,
+  EditionIdentifiersEnum,
   PageRequestParams,
   PageTypeEnum,
   ProviderPageEnum,
   ProviderTypeEnum,
 } from '../models/data-request-api';
 import { DataHttpService } from './dataHttp.service';
+import { of } from 'rxjs';
+import {
+  ActivityEntry,
+  EntryType,
+  OrganizeEntry,
+  isActivityEntry,
+  isOrganizerEntry,
+} from '../models/app_data_state';
 @Injectable({
   providedIn: 'root',
 })
 export class EntryService {
   constructor(private dataHttpService: DataHttpService) {}
 
-  public getEntries(providerType: ProviderTypeEnum, params: PageRequestParams) {
+  public getEntries(
+    providerType: ProviderTypeEnum,
+    params: PageRequestParams = { properties: '*' }
+  ) {
     let pageProvider =
       providerType === ProviderTypeEnum.Organizer
         ? ProviderPageEnum.PP_Organizar
@@ -24,16 +34,34 @@ export class EntryService {
 
     return this.dataHttpService.getData(pageProvider, params);
   }
+
   public saveUpdateEntry(
+    providerType: ProviderTypeEnum,
     formValue: Partial<EntryType>,
     pageType: PageTypeEnum,
     u_id?: string
   ) {
     if (pageType === PageTypeEnum.New) {
-      return this.dataHttpService.createEntry(formValue);
+      let creationIdentifier =
+        providerType === ProviderTypeEnum.Organizer
+          ? CreationIdentifiersEnum.Organizer
+          : CreationIdentifiersEnum.Activity;
+      return this.dataHttpService.createEntry(creationIdentifier, formValue);
+    } else if (pageType === PageTypeEnum.Edit) {
+      let editionIdentifiersEnum =
+        providerType === ProviderTypeEnum.Organizer
+          ? EditionIdentifiersEnum.Organizer
+          : EditionIdentifiersEnum.Activity;
+      return this.dataHttpService.updateEntry(
+        editionIdentifiersEnum,
+        formValue,
+        u_id!
+      );
+    } else {
+      return of('Something Wrong !!!');
     }
-    return this.dataHttpService.updateEntry(formValue, u_id!);
   }
+
   public deleteEntry(providerType: ProviderTypeEnum, entry: EntryType) {
     let deletion_identifier =
       providerType === ProviderTypeEnum.Organizer
@@ -45,33 +73,22 @@ export class EntryService {
 
   //storage
   public getEntryInfo() {
-    let entry = JSON.parse(localStorage.getItem('entry')!);
-    let pageType = localStorage.getItem('pageType') || PageTypeEnum.New;
-    let providerType =
-      localStorage.getItem('providerType') || ProviderTypeEnum.Organizer;
-    return [entry, pageType, providerType] as [
-      OrganizeEntry | ActivityEntry,
-      PageTypeEnum,
-      ProviderTypeEnum
-    ];
+    let pure_entry = localStorage.getItem('entry');
+    if (pure_entry) {
+      let entry = JSON.parse(pure_entry) as EntryType;
+      if (isActivityEntry(entry)) return entry;
+      else if (isOrganizerEntry(entry)) return entry;
+    }
+    return null;
   }
-  public storgeEntryInfo(providerType: ProviderTypeEnum, entry: EntryType) {
+  public storgeEntryInfo(entry: EntryType) {
     localStorage.setItem('entry', JSON.stringify(entry));
-    localStorage.setItem('pageType', JSON.stringify(PageTypeEnum.Edit));
-    localStorage.setItem(
-      'providerType',
-      JSON.stringify(
-        providerType === ProviderTypeEnum.Organizer
-          ? ProviderTypeEnum.Organizer
-          : ProviderTypeEnum.Activity
-      )
-    );
   }
   public mapPureDataToEntries(
     providerType: ProviderTypeEnum,
     pure_response: any
   ) {
-    let entries: ActivityEntry[] | OrganizeEntry[] = [];
+    let entries: EntryType[] = [];
     if (providerType === ProviderTypeEnum.Organizer)
       entries = pure_response.entries.map((e: any) => ({
         uid: e.uid,
@@ -86,7 +103,7 @@ export class EntryService {
           e.properties['organizer:organizationActivity'],
         'organizer:phones': e.properties['organizer:phones'],
       }));
-    else
+    else if (providerType === ProviderTypeEnum.Activity)
       entries = pure_response.entries.map((e: any) => ({
         uid: e.uid,
         'dc:created': e.properties['dc:created'],
@@ -103,7 +120,7 @@ export class EntryService {
       }));
     return entries;
   }
-  entryPropertiesAllowedToAppearInTable(providerType: ProviderTypeEnum) {
+  public entryPropertiesAllowedToAppearInTable(providerType: ProviderTypeEnum) {
     console.log(providerType);
     let coulumns = [
       'dc:title',

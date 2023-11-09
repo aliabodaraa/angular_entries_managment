@@ -1,21 +1,14 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import {
   PageRequestParams,
-  ProviderPageEnum,
   ProviderTypeEnum,
-  EntryType,
-  OrganizeEntry,
-  ActivityEntry,
-  PageTypeEnum,
-  DeletionIdentifiersEnum,
 } from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
-import { DataHttpService } from '../services/dataHttp.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { isActivityEntry } from '../models/data-request-api';
+import { Router } from '@angular/router';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { EntryService } from '../services/entry.service';
+import { EntryType, isOrganizerEntry } from '../models/app_data_state';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -101,8 +94,10 @@ export class TableComponent {
       this.type === ProviderTypeEnum.Organizer
         ? '/organizers/edit'
         : '/activities/edit';
-    this.router.navigate([path]);
-    this.EntryService.storgeEntryInfo(this.type, entry);
+    this.router.navigate([path], {
+      queryParams: { provider_type: this.type, page_type: 'Edit' },
+    });
+    this.EntryService.storgeEntryInfo(entry);
   }
   public deleteEntry(entry: EntryType) {
     this.EntryService.deleteEntry(this.type, entry).subscribe((res) => {

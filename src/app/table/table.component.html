@@ -12,7 +12,7 @@
                 </h2>
             </div>
             <div class="col-xm-6 col-sm-5 col-md-4 col-lg-2 me-auto">
-                <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" >create {{type}}</button>
+                <button type="button" class="btn btn-md btn-outline-dark float-end" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:type,page_type:'New'}" >create {{type}}</button>
             </div>
         </div>
     </div>

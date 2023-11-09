@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { OrganizersComponent } from './organizers/organizers.component';
-import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivityFormComponent } from './activity-form/activity-form.component';
@@ -11,9 +10,11 @@ import { ActivitiesComponent } from './activities/activities.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
 import {
+  NgbDateAdapter,
   NgbModule,
   NgbNavModule,
   NgbPaginationModule,
+  NgbTimeAdapter,
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -26,10 +27,14 @@ import { ConfigInitService } from './init/config-init.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
-import { FormComponent } from './form/form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
+import { NgbDateStringAdapter } from './NgbDateStringAdapter';
+import { OrganizerFormComponent } from './form/organizer-form.component';
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -39,11 +44,11 @@ const routes: Routes = [
   //Guests Routes
   { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
 
-  { path: 'organizers/new', component: FormComponent },
+  { path: 'organizers/new', component: OrganizerFormComponent },
   // { path: 'organizers/:id', component: FormComponent },
   {
     path: 'organizers/edit',
-    component: FormComponent,
+    component: OrganizerFormComponent,
     data: {},
   },
   {
@@ -51,11 +56,11 @@ const routes: Routes = [
     component: OrganizersComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'activities/new', component: FormComponent },
+  { path: 'activities/new', component: ActivityFormComponent },
   // { path: 'activities/:id', component: ActivityFormComponent },
   {
     path: 'activities/edit',
-    component: FormComponent,
+    component: ActivityFormComponent,
     data: {},
   },
   {
@@ -63,7 +68,6 @@ const routes: Routes = [
     component: ActivitiesComponent,
     canActivate: [AuthGuard],
   },
-
   { path: '**', component: NotFoundComponent },
   // { path: '**', redirectTo: '' }
 ];
@@ -78,7 +82,6 @@ const routes: Routes = [
     ActivitiesComponent,
     SideBarComponent,
     TableComponent,
-    FormComponent,
   ],
   imports: [
     NgbModule,
@@ -101,6 +104,7 @@ const routes: Routes = [
     }),
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    NgSelectModule,
   ],
   providers: [
     DecimalPipe,
@@ -114,6 +118,8 @@ const routes: Routes = [
       provide: TOASTR_TOKEN,
       useValue: toastr,
     },
+    { provide: NgbTimeAdapter, useClass: NgbTimeStringAdapter },
+    { provide: NgbDateAdapter, useClass: NgbDateStringAdapter },
   ],
   bootstrap: [AppComponent],
 })

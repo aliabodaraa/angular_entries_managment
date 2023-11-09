@@ -4,10 +4,10 @@ import {
   CreationIdentifiersEnum,
   DeletionIdentifiersEnum,
   EditionIdentifiersEnum,
-  EntryType,
   PageRequestParams,
   ProviderPageEnum,
 } from '../models/data-request-api';
+import { EntryType } from '../models/app_data_state';
 type Data = {
   context?: Partial<EntryType>;
   input: string;
@@ -38,8 +38,8 @@ export class DataHttpService {
     );
   }
   createEntry(
-    entry_content: Partial<EntryType>,
-    creation_identifier: CreationIdentifiersEnum = CreationIdentifiersEnum.Organizer
+    creation_identifier: CreationIdentifiersEnum,
+    entry_content: Partial<EntryType>
   ) {
     this.setData(entry_content);
     return this.http.post<any>(
@@ -49,9 +49,9 @@ export class DataHttpService {
     );
   }
   updateEntry(
+    edition_identifier: EditionIdentifiersEnum,
     entry_content: Partial<EntryType>,
-    entry_id: string,
-    edition_identifier: EditionIdentifiersEnum = EditionIdentifiersEnum.Organizer
+    entry_id: string
   ) {
     this.setData(entry_content, entry_id);
 

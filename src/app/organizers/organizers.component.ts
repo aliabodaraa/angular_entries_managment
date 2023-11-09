@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { OrganizerService } from '../services/organizer.service';
 import { ProviderTypeEnum } from '../models/data-request-api';
 
 @Component({
@@ -9,5 +8,5 @@ import { ProviderTypeEnum } from '../models/data-request-api';
 })
 export class OrganizersComponent {
   type: ProviderTypeEnum = ProviderTypeEnum.Organizer;
-  constructor(public organizerService: OrganizerService) {}
+  constructor() {}
 }
