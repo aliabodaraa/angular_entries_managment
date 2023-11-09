@@ -8,7 +8,11 @@ import {
   ProviderPageEnum,
   ProviderTypeEnum,
 } from '../models/data-request-api';
-import { DataHttpService } from './dataHttp.service';
+import {
+  DataHttpService,
+  OrganizerDataMode,
+  ActivityDataMode,
+} from './dataHttp.service';
 import { of } from 'rxjs';
 import {
   ActivityEntry,
@@ -41,25 +45,32 @@ export class EntryService {
     pageType: PageTypeEnum,
     u_id?: string
   ) {
-    if (pageType === PageTypeEnum.New) {
-      let creationIdentifier =
-        providerType === ProviderTypeEnum.Organizer
+    let is_organizer = providerType === ProviderTypeEnum.Organizer;
+    let creationIdentifier =
+      pageType === PageTypeEnum.New
+        ? is_organizer
           ? CreationIdentifiersEnum.Organizer
-          : CreationIdentifiersEnum.Activity;
-      return this.dataHttpService.createEntry(creationIdentifier, formValue);
-    } else if (pageType === PageTypeEnum.Edit) {
-      let editionIdentifiersEnum =
-        providerType === ProviderTypeEnum.Organizer
-          ? EditionIdentifiersEnum.Organizer
-          : EditionIdentifiersEnum.Activity;
+          : CreationIdentifiersEnum.Activity
+        : is_organizer
+        ? EditionIdentifiersEnum.Organizer
+        : EditionIdentifiersEnum.Activity;
+    let data_form: OrganizerDataMode | ActivityDataMode = is_organizer
+      ? formValue
+      : {
+          activity: formValue,
+        };
+    if (pageType === PageTypeEnum.New)
+      return this.dataHttpService.createEntry(
+        creationIdentifier as CreationIdentifiersEnum,
+        data_form
+      );
+    else if (pageType === PageTypeEnum.Edit)
       return this.dataHttpService.updateEntry(
-        editionIdentifiersEnum,
-        formValue,
+        creationIdentifier as EditionIdentifiersEnum,
+        data_form,
         u_id!
       );
-    } else {
-      return of('Something Wrong !!!');
-    }
+    else return of('Something Wrong !!!');
   }
 
   public deleteEntry(providerType: ProviderTypeEnum, entry: EntryType) {

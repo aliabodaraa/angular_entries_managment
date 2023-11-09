@@ -8,10 +8,15 @@ import {
   ProviderPageEnum,
 } from '../models/data-request-api';
 import { EntryType } from '../models/app_data_state';
+export type OrganizerDataMode = Partial<EntryType>;
+export type ActivityDataMode = { activity: Partial<EntryType> };
+export type GContent = OrganizerDataMode | ActivityDataMode;
+
 type Data = {
-  context?: Partial<EntryType>;
+  context?: GContent;
   input: string;
 };
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,7 +26,6 @@ export class DataHttpService {
     'Content-Type',
     'application/json; charset=utf-8'
   );
-
   private setData(
     context: Data['context'],
     input: Data['input'] = this.data.input
@@ -39,7 +43,7 @@ export class DataHttpService {
   }
   createEntry(
     creation_identifier: CreationIdentifiersEnum,
-    entry_content: Partial<EntryType>
+    entry_content: GContent
   ) {
     this.setData(entry_content);
     return this.http.post<any>(
@@ -50,7 +54,7 @@ export class DataHttpService {
   }
   updateEntry(
     edition_identifier: EditionIdentifiersEnum,
-    entry_content: Partial<EntryType>,
+    entry_content: GContent,
     entry_id: string
   ) {
     this.setData(entry_content, entry_id);

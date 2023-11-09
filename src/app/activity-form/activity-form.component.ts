@@ -15,6 +15,8 @@ import { EntryService } from '../services/entry.service';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { NgbCalendar, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { EntryType, isActivityEntry } from '../models/app_data_state';
+import { ActivatedRoute } from '@angular/router';
+import { take } from 'rxjs/operators';
 type OrganizerObjectType = { id: string; name: string };
 
 @Component({
@@ -35,10 +37,17 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   constructor(
     private location: Location,
     private EntryService: EntryService,
+    private route: ActivatedRoute,
     @Inject(TOASTR_TOKEN) private toastr: Toastr,
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar
   ) {
+    this.entry = this.EntryService.getEntryInfo() ?? null;
+    this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {
+      this.pageType = queryParams.get('page_type')! as PageTypeEnum;
+      this.providerType = queryParams.get('provider_type')! as ProviderTypeEnum;
+    });
+
     if (this.entry)
       // [this.entry, this.pageType, this.providerType] =
       //   this.EntryService.getEntryInfo() as [
@@ -52,15 +61,18 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
       // this.mapEntryToForm();
     }
   }
-  meridian = true;
+  meridian1 = true;
+  meridian2 = true;
 
-  toggleMeridian() {
-    this.meridian = !this.meridian;
+  toggleMeridian(merdian: string) {
+    if (merdian == 'meridian1') {
+      this.meridian1 = !this.meridian1;
+    } else if (merdian == 'meridian2') {
+      this.meridian2 = !this.meridian2;
+    }
   }
   ngOnInit() {
     this.form = this.formBuilder.group({
-      numberOfTickets: ['', Validators.required],
-      tickets: new FormArray([]),
       'dc:title': ['', Validators.required],
       'dc:description': ['', Validators.required],
       'activity:categorization': ['', Validators.required],
@@ -152,17 +164,12 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     this.submitted = false;
     this.t.reset();
   }
+
   addLocation() {
-    this.accessLocationControls.push(
+    this.accessLocationArray.push(
       this.formBuilder.group({
-        city: [
-          '111122222222211',
-          [Validators.required, Validators.minLength(8)],
-        ],
-        geographicLocation: [
-          '222222',
-          [Validators.required, Validators.minLength(8)],
-        ],
+        city: ['', Validators.required],
+        geographicLocation: ['', [Validators.required]],
       })
     );
   }
@@ -235,7 +242,13 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   public save() {
     this.submitted = true;
     let formValue: Partial<EntryType> = this.form.value;
-
+    console.log(
+      this.pageType,
+      '--------------------------------',
+      this.providerType,
+      '--------------------------------',
+      this.entry
+    );
     console.log(this.form);
     if (this.form.valid) {
       if (this.pageType === PageTypeEnum.New) {
