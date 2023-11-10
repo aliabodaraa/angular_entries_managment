@@ -13,7 +13,11 @@ import { Location } from '@angular/common';
 
 import { EntryService } from '../services/entry.service';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
-import { NgbCalendar, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbCalendar,
+  NgbDate,
+  NgbDateStruct,
+} from '@ng-bootstrap/ng-bootstrap';
 import { EntryType, isActivityEntry } from '../models/app_data_state';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -75,19 +79,20 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     this.form = this.formBuilder.group({
       'dc:title': ['', Validators.required],
       'dc:description': ['', Validators.required],
-      'activity:categorization': ['', Validators.required],
-      'activity:locations': this.formBuilder.array([
-        this.formBuilder.group({
-          city: ['111111'],
-          geographicLocation: ['222222'],
-        }),
-      ]),
+      'activity:categorization': ['categ1', Validators.required],
+      'activity:locations': this.formBuilder.group({
+        city: ['city1'],
+        geographicLocation: ['', Validators.required],
+      }),
       'activity:organizers': ['', Validators.required],
       'activity:startDate': ['', [Validators.required]],
       'activity:endDate': ['', Validators.required],
       'activity:timeFrom': ['', Validators.required],
       'activity:timeTo': ['', Validators.required],
-      'activity:coverPicture': ['', Validators.required],
+      'activity:coverPicture': this.formBuilder.group({
+        'upload-batch': '',
+        'upload-fileId': '0',
+      }),
     });
     //here request
     this.EntryService.getEntries(ProviderTypeEnum.Organizer).subscribe((x) => {
@@ -106,11 +111,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   get t() {
     return this.f.tickets as FormArray;
   }
-  get accessLocationArray() {
-    return this.f['activity:locations'] as FormArray;
-  }
-  get accessLocationControls() {
-    return this.accessLocationArray.controls as FormGroup[];
+  get accessLocation() {
+    return this.f['activity:locations'] as FormGroup;
   }
   // get accessOrganizersArray() {
   //   return this.form.get('activity:organizers') as FormArray;
@@ -121,7 +123,12 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   get ticketFormGroups() {
     return this.t.controls as FormGroup[];
   }
-
+  public updateSelectedDate(date: NgbDate) {
+    // Use this method to set any other date format you want
+    this.f['activity:endDate'].setValue(
+      new Date(date.year, date.month, date.day)
+    );
+  }
   onChangeTickets(e: any) {
     const numberOfTickets = e.target.value || 0;
     if (this.t.length < numberOfTickets) {
@@ -166,12 +173,10 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   }
 
   addLocation() {
-    this.accessLocationArray.push(
-      this.formBuilder.group({
-        city: ['', Validators.required],
-        geographicLocation: ['', [Validators.required]],
-      })
-    );
+    this.formBuilder.group({
+      city: ['', Validators.required],
+      geographicLocation: ['', [Validators.required]],
+    });
   }
   // addOrganizer() {
   //   this.accessOrganizersControls.push(this.formBuilder.control('aa'));

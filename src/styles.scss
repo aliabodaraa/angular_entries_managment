@@ -1,9 +1,14 @@
-$color:red;
-h1{
-    color: $color;
-}
-h2{
-    color: $color;
-}
-body{color: $color;}
+
+@import '~@angular/material/theming';
+@include mat-core();
+@import '../src/assets/sass/variables.scss';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+$theme-primary: mat-palette($mat-primary, 500, 500, 500);
+$theme-accent: mat-palette($mat-accent, 500, 500, 500);
+$theme-tritary: mat-palette($mat-tritary, 500, 500, 500);
+$theme: mat-light-theme($theme-primary, $theme-accent, $theme-tritary);
+@include angular-material-theme($theme);
+
+
 

@@ -11,6 +11,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
 import {
   NgbDateAdapter,
+  NgbDateNativeUTCAdapter,
   NgbModule,
   NgbNavModule,
   NgbPaginationModule,
@@ -19,7 +20,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SideBarComponent } from './side-bar/side-bar.component';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { initializeKeycloak } from './init/keycloak-init.factory';
 import { AuthGuard } from './guard/auth.guard';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -31,9 +32,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
-import { NgbDateStringAdapter } from './NgbDateStringAdapter';
 import { OrganizerFormComponent } from './form/organizer-form.component';
+import { MatComponentsModule } from './mat-components.module';
+import { DialogComponent } from './dialog/dialog.component';
+import { SlideNavComponent } from './slide-nav/slide-nav.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -44,24 +46,34 @@ const routes: Routes = [
   //Guests Routes
   { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
 
-  { path: 'organizers/new', component: OrganizerFormComponent },
+  {
+    path: 'organizers/new',
+    component: OrganizerFormComponent,
+    canActivate: [AuthGuard],
+  },
   // { path: 'organizers/:id', component: FormComponent },
   {
     path: 'organizers/edit',
     component: OrganizerFormComponent,
     data: {},
+    canActivate: [AuthGuard],
   },
   {
     path: 'organizers',
     component: OrganizersComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'activities/new', component: ActivityFormComponent },
+  {
+    path: 'activities/new',
+    component: ActivityFormComponent,
+    canActivate: [AuthGuard],
+  },
   // { path: 'activities/:id', component: ActivityFormComponent },
   {
     path: 'activities/edit',
     component: ActivityFormComponent,
     data: {},
+    canActivate: [AuthGuard],
   },
   {
     path: 'activities',
@@ -82,8 +94,11 @@ const routes: Routes = [
     ActivitiesComponent,
     SideBarComponent,
     TableComponent,
+    DialogComponent,
+    SlideNavComponent,
   ],
   imports: [
+    MatComponentsModule,
     NgbModule,
     BrowserModule,
     RouterModule.forRoot(routes),
@@ -118,8 +133,6 @@ const routes: Routes = [
       provide: TOASTR_TOKEN,
       useValue: toastr,
     },
-    { provide: NgbTimeAdapter, useClass: NgbTimeStringAdapter },
-    { provide: NgbDateAdapter, useClass: NgbDateStringAdapter },
   ],
   bootstrap: [AppComponent],
 })

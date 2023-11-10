@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { EntryService } from '../services/entry.service';
 import { EntryType, isOrganizerEntry } from '../models/app_data_state';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -33,7 +35,8 @@ export class TableComponent {
   constructor(
     private EntryService: EntryService,
     private router: Router,
-    @Inject(TOASTR_TOKEN) private toastr: Toastr
+    @Inject(TOASTR_TOKEN) private toastr: Toastr,
+    private dialog: MatDialog
   ) {
     this.trigger_change$
       .pipe(
@@ -61,6 +64,15 @@ export class TableComponent {
       this.type
     );
     console.log('type--------------', this.type, this.columns);
+  }
+  openDialog(entry: EntryType) {
+    //the open method on the service MatDialog i designed to receive Component as a parameter
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: { entry, type: this.type },
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res == 'yes') this.deleteEntry(entry);
+    });
   }
   get pageSize(): number {
     return this._state.pageSize;
@@ -99,7 +111,7 @@ export class TableComponent {
     });
     this.EntryService.storgeEntryInfo(entry);
   }
-  public deleteEntry(entry: EntryType) {
+  private deleteEntry(entry: EntryType) {
     this.EntryService.deleteEntry(this.type, entry).subscribe((res) => {
       this.trigger_change$.next();
       this.type === ProviderTypeEnum.Organizer

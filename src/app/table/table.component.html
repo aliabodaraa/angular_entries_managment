@@ -1,5 +1,6 @@
 
-    <div class="page-header">
+
+<div class="page-header">
         <div class="row">
             <div class="col-xm-6 col-sm-7 col-md-8 col-lg-10">
                 <h2>
@@ -43,8 +44,17 @@
                             </td>
                         </ng-container>
                         <td>
-                            <a class="btn btn-secondary" (click)="navigateToEditPage(entry)">edit</a>
-                            <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a>
+                            <!-- <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a> -->
+                            <button
+                            (click)="navigateToEditPage(entry)"
+                            mat-flat-button
+                            color="primary"
+                            >Edit</button>
+                            <button 
+                                mat-raised-button
+                                color="warn"
+                                (click)="openDialog(entry)"
+                                >Open Dialog</button>
                         </td>
                     </tr>
                     <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>

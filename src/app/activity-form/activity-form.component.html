@@ -1,4 +1,4 @@
-<h2>ssssssssssssss</h2><form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
+<form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
     <div class="card m-1">
         <h5 class="card-header">Angular 10 Dynamic Reactive Forms Example</h5>
         <div class="card-body border-bottom">
@@ -43,7 +43,17 @@
                 </div>
                 <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                     <label for="startDate">startDate</label>
-                    <div class="input-group">
+                      <mat-form-field>
+                        <input
+                        formControlName="activity:startDate"
+                        matInput 
+                        [matDatepicker]="picker1"
+                        [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
+                        placeholder="Choose a date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                      </mat-form-field>
+                    <!-- <div class="input-group">
                         <input
                             formControlName="activity:startDate"
                             [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
@@ -51,6 +61,7 @@
                             placeholder="yyyy-mm-dd"
                             name="dp"
                             ngbDatepicker
+                            [value]="f['activity:startDate'].value | date:'yyyy-MM-dd'"
                             [footerTemplate]="footerTemplate"
                             #d1="ngbDatepicker"
                         />
@@ -61,7 +72,7 @@
                         </ng-template>
                         <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d1.toggle()" type="button"></button>
                         {{f['activity:startDate'].value|json}}
-                    </div>
+                    </div> -->
                     <div *ngIf="submitted && f['activity:startDate'].errors" class="invalid-feedback">
                         <div *ngIf="f['activity:startDate'].errors.required">startDate is required</div>
                     </div>
@@ -71,7 +82,17 @@
                 <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                     <div class="">
                         <label for="endDate">endDate</label>
-                        <div class="input-group">
+                          <mat-form-field>
+                            <input
+                            formControlName="activity:endDate"
+                            matInput 
+                            [matDatepicker]="picker2"
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
+                            placeholder="Choose a date">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2></mat-datepicker>
+                          </mat-form-field>
+                        <!-- <div class="input-group">
                             <input
                                 formControlName="activity:endDate"
                                 [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
@@ -79,6 +100,7 @@
                                 placeholder="yyyy-mm-dd"
                                 name="dp"
                                 ngbDatepicker
+                                formaction="dd-mm-yyyy"
                                 [footerTemplate]="footerTemplate"
                                 #d2="ngbDatepicker"
                             />
@@ -89,7 +111,9 @@
                             </ng-template>
                             <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d2.toggle()" type="button"></button>
                             {{f['activity:endDate'].value|json}}
-                        </div>
+                        </div> -->
+                        {{f['activity:endDate'].value|json}}
+
                         <div *ngIf="submitted && f['activity:endDate'].errors" class="invalid-feedback">
                             <div *ngIf="f['activity:endDate'].errors.required">endDate is required</div>
                         </div>
@@ -143,42 +167,31 @@
                 </div>
             </div>
             <div class="row py-4 Locations">
-                <div class="row d-flex">
-                    <div class="col-lg-offset-0 col-lg-11 col-xs-11 col-sm-11">
-                        <h3 class="locations">locations</h3>
-                    </div>
-                    <div class="col-lg-offset-0 col-lg-1 col-xs-1 col-sm-1">
-                        <i class="bi bi-plus-circle" (click)="addLocation()"></i>
-                    </div>
-                </div>
-                <ng-container *ngFor="let location of accessLocationControls; let i = index" class="list-group list-group-flush">
+                    <h3 class="locations">locations</h3>
                     <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                         <div class="list-group-item p-2">
-                            <h6 class="card-title">Location {{i + 1}}</h6>
-                            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessLocationArray, i)"></i>
-                            <div class="row" [formGroup]="location">
+                            <div class="row" [formGroup]="accessLocation">
                               <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                                 <div class="">
                                   <label for="City">City</label>
-                                  <input formControlName="city" type="email" class="form-control form-control-lg" id="city" placeholder="City" [ngClass]="{ 'is-invalid': submitted && location.controls.city.errors }">
-                                  <div *ngIf="submitted && location.controls.city.errors" class="invalid-feedback">
-                                    <div *ngIf="location.controls.city.errors.required">city is required</div>
+                                  <input formControlName="city" type="email" class="form-control form-control-lg" id="city" placeholder="City" [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
+                                  <div *ngIf="submitted && accessLocation.controls.city.errors" class="invalid-feedback">
+                                    <div *ngIf="accessLocation.controls.city.errors.required">city is required</div>
                                   </div>
                                 </div>
                               </div>
                               <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                                 <div class="">
                                   <label for="geographicLocation">geographicLocation</label>
-                                  <input formControlName="geographicLocation" type="email" class="form-control form-control-lg" id="geographicLocation" placeholder="GeographicLocation" [ngClass]="{ 'is-invalid': submitted && location.controls.geographicLocation.errors }">
-                                  <div *ngIf="submitted && location.controls.geographicLocation.errors" class="invalid-feedback">
-                                    <div *ngIf="location.controls.geographicLocation.errors.required">geographicLocation is required</div>
+                                  <input formControlName="geographicLocation" type="email" class="form-control form-control-lg" id="geographicLocation" placeholder="GeographicLocation" [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
+                                  <div *ngIf="submitted && accessLocation.controls.geographicLocation.errors" class="invalid-feedback">
+                                    <div *ngIf="accessLocation.controls.geographicLocation.errors.required">geographicLocation is required</div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                         </div>
                     </div>
-                </ng-container>
             </div>
             <!-- <div class="row py-4 Organizers" formArrayName="activity:organizers">
                 <button class="btn btn-secondary mr-1" type="reset" (click)="addOrganizer()">addOrganizer</button>
@@ -210,7 +223,7 @@
             </div> -->
 
         </div>
-        <!-- <div *ngFor="let location of accessLocationControls; let i = index" class="list-group list-group-flush">
+        <!-- <div *ngFor="let location of accessLocation; let i = index" class="list-group list-group-flush">
             <div class="list-group-item">
                 <h5 class="card-title">Location {{i + 1}}</h5>
                 <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessLocationArray, i)"></i>
