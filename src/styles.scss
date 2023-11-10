@@ -7,8 +7,5 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 $theme-primary: mat-palette($mat-primary, 500, 500, 500);
 $theme-accent: mat-palette($mat-accent, 500, 500, 500);
 $theme-tritary: mat-palette($mat-tritary, 500, 500, 500);
-$theme: mat-light-theme($theme-primary, $theme-accent, $theme-tritary);
+$theme: mat-light-theme($theme-accent,$theme-accent);
 @include angular-material-theme($theme);
-
-
-

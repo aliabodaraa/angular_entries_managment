@@ -1,17 +1,193 @@
-<form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
-    <div class="card m-1">
-        <h5 class="card-header">Angular 10 Dynamic Reactive Forms Example</h5>
-        <div class="card-body border-bottom">
-            <!-- <div class="form-row">
-                <div class="">
-                    <label for="title">title</label>
-                    <input formControlName="dc:title" type="text" class="form-control form-control-lg" id="title" placeholder="title" [ngClass]="{ 'is-invalid': submitted && f['dc:title'].errors }">
-                    <div *ngIf="submitted && f['dc:title'].errors" class="invalid-feedback">
-                        <div *ngIf="f['dc:title'].errors.required">title is required</div>
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>Actions Buttons</mat-card-title>
+      </mat-card-header>
+        <form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
+                <div class="row py-4">
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-form-field class="form-field">
+                            <mat-label> title
+                            </mat-label>
+                            <input matInput formControlName="dc:title" required>
+                            <mat-error *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
+                                <span *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-form-field class="form-field">
+                            <mat-label> description
+                            </mat-label>
+                            <input matInput formControlName="dc:description" required>
+                            <mat-error *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
+                            <span *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
                 </div>
-            </div> -->
-            <div class="row py-4">
+                <div class="row py-4">
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-form-field class="form-field">
+                            <mat-label> categorization
+                            </mat-label>
+                            <input matInput formControlName="activity:categorization" required>
+                            <mat-error *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
+                            <span *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-form-field class="form-field">
+                            <mat-label> startDate
+                            </mat-label>
+                            <input
+                            formControlName="activity:startDate"
+                            matInput 
+                            [matDatepicker]="picker_start_date"
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
+                            placeholder="Choose a date">
+                            <mat-datepicker-toggle matSuffix [for]="picker_start_date"></mat-datepicker-toggle>
+                            <mat-datepicker #picker_start_date></mat-datepicker>
+                            <mat-error *ngIf="f['dc:startDate']?.invalid &&(!f['dc:startDate'].value || f['dc:startDate'].touched || submitted)">
+                                <span *ngIf="f['dc:startDate'].errors?.required">This field is mandatory.</span>
+                            </mat-error>
+                        </mat-form-field>
+                        {{f['activity:startDate'].value}}
+                    </div>
+                </div>
+                <div class="row py-4">
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-form-field class="form-field">
+                            <mat-label> endDate
+                            </mat-label>
+                            <input
+                            formControlName="activity:endDate"
+                            matInput 
+                            [matDatepicker]="picker_end_date"
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
+                            placeholder="Choose a date">
+                            <mat-datepicker-toggle matSuffix [for]="picker_end_date"></mat-datepicker-toggle>
+                            <mat-datepicker #picker_end_date></mat-datepicker>
+                            <mat-error *ngIf="f['dc:endDate']?.invalid &&(f['dc:endDate'].touched || submitted)">
+                                <span *ngIf="f['dc:endDate'].errors?.required">This field is mandatory.</span>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: -19px;">
+                        <div class="row">
+                            <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                <label for="timeFrom">timeFrom</label>
+                                <ngb-timepicker formControlName="activity:timeFrom" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeFrom'].errors, 'meridian-blue':meridian1}" [ngStyle]="{backgroundColor:'red'}" (click)="toggleMeridian('meridian1')"></ngb-timepicker>
+                                {{f['activity:timeFrom'].value|json}}
+                                {{meridian1}}
+                                <div *ngIf="submitted && f['activity:timeFrom'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['activity:timeFrom'].errors.required">timeFrom is required</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                <label for="timeTo">timeTo</label>
+                                <ngb-timepicker formControlName="activity:timeTo" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeTo'].errors, 'meridian-blue':meridian2}" (click)="toggleMeridian('meridian2')"></ngb-timepicker>
+                                {{f['activity:timeTo'].value|json}}
+                                {{meridian2}}
+                                <div *ngIf="submitted && f['activity:timeTo'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['activity:timeTo'].errors.required">timeTo is required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-4">
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" [formGroup]="accessCoverPicture">
+                            <mat-label> coverPicture
+                            </mat-label>
+                            <input
+                            #ing_input
+                            hidden="true"
+                            id="coverPicture"
+                            placeholder="coverPicture"
+                            type="file"
+                            (change)="onAttachFileChange($event)"
+                            (load)="fun(ing_input)"
+                            accept=".png, .jpg, .jpeg"
+                            >
+                            <button 
+                            type="button" 
+                            mat-raised-button color="accent"
+                            (click)="fun(ing_input)">Upload</button>
+                            <!-- <input matInput 
+                            formControlName="upload-batch" 
+                            type="text" 
+                            id="coverPicture" 
+                            placeholder="coverPicture" 
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
+                            <mat-error *ngIf="submitted && f['activity:coverPicture'].errors">
+                                <span *ngIf="f['activity:coverPicture'].errors.required">This field is mandatory.</span>
+                            </mat-error> -->
+                    </div>
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: -19px;">
+                            <ng-select  
+                            id="floatingSelect"
+                            placeholder="select organizer" 
+                            [items]="organizers_objects"
+                            bindLabel="name"
+                            bindValue="id"
+                            [searchable]="true"
+                            formControlName="activity:organizers"
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:organizers'].errors }"></ng-select>
+                        <div *ngIf="submitted && f['activity:organizers'].errors" class="invalid-feedback">
+                            <div *ngIf="f['activity:organizers'].errors.required">organizers is required</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row py-4 Locations">
+                        <h3 class="locations">locations</h3>
+                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                            <div class="list-group-item p-2">
+                                <div class="row" [formGroup]="accessLocation">
+                                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                            <mat-form-field class="form-field">
+                                                <mat-label> city
+                                                </mat-label>
+                                                <input matInput 
+                                                formControlName="city" 
+                                                type="text" 
+                                                id="city" 
+                                                placeholder="City" 
+                                                [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
+                                                <mat-error *ngIf="submitted && accessLocation.controls.city.errors">
+                                                    <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
+                                                </mat-error>
+                                            </mat-form-field>
+                                    </div>
+                                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                        <mat-form-field class="form-field">
+                                            <mat-label> geographicLocation
+                                            </mat-label>
+                                            <input matInput 
+                                            formControlName="geographicLocation" 
+                                            type="text" 
+                                            id="geographicLocation" 
+                                            placeholder="geographicLocation" 
+                                            [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
+                                            <mat-error *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
+                                                <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            <mat-card-actions>
+                <button mat-raised-button color="accent" type="submit">SAVE</button>
+                <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button>
+            </mat-card-actions>
+    </form>
+</mat-card>
+
+
+             
+            <!-- <div class="row py-4">
                 <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                     <div class="">
                         <label for="title">title</label>
@@ -53,26 +229,6 @@
                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                         <mat-datepicker #picker1></mat-datepicker>
                       </mat-form-field>
-                    <!-- <div class="input-group">
-                        <input
-                            formControlName="activity:startDate"
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
-                            class="form-control form-control-lg"
-                            placeholder="yyyy-mm-dd"
-                            name="dp"
-                            ngbDatepicker
-                            [value]="f['activity:startDate'].value | date:'yyyy-MM-dd'"
-                            [footerTemplate]="footerTemplate"
-                            #d1="ngbDatepicker"
-                        />
-                        <ng-template #footerTemplate>
-                            <hr class="my-0" />
-                            <button class="btn btn-primary btn-sm m-2 float-start" (click)="model = today; d2.close()">Today</button>
-                            <button class="btn btn-secondary btn-sm m-2 float-end" (click)="d1.close()">Close</button>
-                        </ng-template>
-                        <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d1.toggle()" type="button"></button>
-                        {{f['activity:startDate'].value|json}}
-                    </div> -->
                     <div *ngIf="submitted && f['activity:startDate'].errors" class="invalid-feedback">
                         <div *ngIf="f['activity:startDate'].errors.required">startDate is required</div>
                     </div>
@@ -92,26 +248,6 @@
                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                             <mat-datepicker #picker2></mat-datepicker>
                           </mat-form-field>
-                        <!-- <div class="input-group">
-                            <input
-                                formControlName="activity:endDate"
-                                [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
-                                class="form-control form-control-lg"
-                                placeholder="yyyy-mm-dd"
-                                name="dp"
-                                ngbDatepicker
-                                formaction="dd-mm-yyyy"
-                                [footerTemplate]="footerTemplate"
-                                #d2="ngbDatepicker"
-                            />
-                            <ng-template #footerTemplate>
-                                <hr class="my-0" />
-                                <button class="btn btn-primary btn-sm m-2 float-start" (click)="model = today; d2.close()" type="button">Today</button>
-                                <button class="btn btn-secondary btn-sm m-2 float-end" (click)="d2.close()" type="button">Close</button>
-                            </ng-template>
-                            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d2.toggle()" type="button"></button>
-                            {{f['activity:endDate'].value|json}}
-                        </div> -->
                         {{f['activity:endDate'].value|json}}
 
                         <div *ngIf="submitted && f['activity:endDate'].errors" class="invalid-feedback">
@@ -143,16 +279,19 @@
                 </div>
             </div>
             <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" [formGroup]="accessCoverPicture">
                     <label for="coverPicture">coverPicture</label>
-                    <input formControlName="activity:coverPicture" type="text" class="form-control form-control-lg" id="coverPicture" placeholder="coverPicture" [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
+                    <input formControlName="upload-batch" type="text" class="form-control form-control-lg" id="coverPicture" placeholder="coverPicture" [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
                     <div *ngIf="submitted && f['activity:coverPicture'].errors" class="invalid-feedback">
                         <div *ngIf="f['activity:coverPicture'].errors.required">coverPicture is required</div>
                     </div>
                 </div>
                 <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6 organizers">
                     <div class="form-floating">
-                        <ng-select  class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                        <ng-select  
+                        class="form-select" 
+                        id="floatingSelect" 
+                        aria-label="Floating label select example"
                         [items]="organizers_objects"
                         bindLabel="name"
                         bindValue="id"
@@ -192,70 +331,55 @@
                             </div>
                         </div>
                     </div>
-            </div>
-            <!-- <div class="row py-4 Organizers" formArrayName="activity:organizers">
-                <button class="btn btn-secondary mr-1" type="reset" (click)="addOrganizer()">addOrganizer</button>
-                <ng-container *ngFor="let organizer of accessOrganizersControls; let i = index" class="list-group list-group-flush">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <div class="list-group-item p-2">
-                            {{organizer?.value|json}}
-                            <h6 class="card-title">Organizer {{i + 1}}</h6>
-                            <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessOrganizersArray, i)"></i>
-                            <div class="row">
-                                <div class="col-lg-offset-0 col-lg-12 col-xs-12 col-sm-12">
-                                    <div class="">
-                                      <label for="organizer">organizer</label>
-                                      <input
-                                      [formControlName]="i"
-                                      type="text" class="form-control form-control-lg"
-                                      id="organizer"
-                                      placeholder="organizer"
-                                      [ngClass]="{ 'is-invalid': submitted && organizer.errors }">
-                                      <div *ngIf="submitted && organizer.errors" class="invalid-feedback">
-                                        <div *ngIf="organizer.errors.required">organizer is required</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
             </div> -->
 
-        </div>
-        <!-- <div *ngFor="let location of accessLocation; let i = index" class="list-group list-group-flush">
-            <div class="list-group-item">
-                <h5 class="card-title">Location {{i + 1}}</h5>
-                <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessLocationArray, i)"></i>
-                <div class="row">
-                  <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="" [formGroup]="location">
-                      <label for="City">City</label>
-                      <input formControlName="city" type="email" class="form-control form-control-lg" id="city" placeholder="City" [ngClass]="{ 'is-invalid': submitted && location.controls.city.errors }">
-                      <div *ngIf="submitted && location.controls.city.errors" class="invalid-feedback">
-                        <div *ngIf="location.controls.city.errors.required">city is required</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="" [formGroup]="location">
-                      <label for="geographicLocation">geographicLocation</label>
-                      <input formControlName="geographicLocation" type="email" class="form-control form-control-lg" id="geographicLocation" placeholder="GeographicLocation" [ngClass]="{ 'is-invalid': submitted && location.controls.geographicLocation.errors }">
-                      <div *ngIf="submitted && location.controls.geographicLocation.errors" class="invalid-feedback">
-                        <div *ngIf="location.controls.geographicLocation.errors.required">geographicLocation is required</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
+    <!--  -->
+<!-- 
+    <div>
+        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
+            <div fxLayout="column" fxFlex  >
+                <mat-toolbar color="primary" fxLayoutAlign="center center">
+                        <span>Clocked In</span>
+                </mat-toolbar>
             </div>
-        </div> -->
-        <div class="card-footer text-center border-top-0">
-            <button class="btn btn-primary mr-1" [disabled]="!form.valid">save</button>
-            <button class="btn btn-secondary mr-1" type="reset" (click)="onReset()">Reset</button>
-            <button class="btn btn-secondary" type="button" (click)="onClear()">Clear</button>
+        </div>
+    
+        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
+            <div fxLayout="column" fxFlex >
+                <mat-toolbar color="primary"fxLayoutAlign="center center" >
+                        <span>Clocked Out</span>
+                </mat-toolbar>
+            </div>
         </div>
     </div>
-</form>
-
-
+    
+    
+    <div>
+        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
+            <div fxLayout="column" fxFlex  >
+                <mat-list>
+                    <mat-list-item *ngFor="let user of [{firstName:'firstName',lastName:'lastName'}]"
+                    fxLayoutAlign="center center" > 
+                            <button mat-raised-button color="warn">
+                                    {{user.firstName}} {{user.lastName}}
+                            </button>
+                    </mat-list-item>
+                </mat-list> 
+            </div>
+        </div>
+    
+        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
+            <div fxLayout="column" fxFlex>
+                <mat-list>
+                    <mat-list-item *ngFor="let user of [{firstName:'firstName',lastName:'lastName'}]"
+                    fxLayoutAlign="center center" > 
+                            <button mat-raised-button color="accent">
+                                {{user.firstName}} {{user.lastName}}
+                            </button>
+                    </mat-list-item>
+                </mat-list> 
+            </div>
+        </div>
+    </div> -->

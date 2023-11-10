@@ -19,8 +19,7 @@ import {
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { SideBarComponent } from './side-bar/side-bar.component';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { initializeKeycloak } from './init/keycloak-init.factory';
 import { AuthGuard } from './guard/auth.guard';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -36,6 +35,7 @@ import { OrganizerFormComponent } from './form/organizer-form.component';
 import { MatComponentsModule } from './mat-components.module';
 import { DialogComponent } from './dialog/dialog.component';
 import { SlideNavComponent } from './slide-nav/slide-nav.component';
+import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -92,7 +92,6 @@ const routes: Routes = [
     OrganizerFormComponent,
     ActivityFormComponent,
     ActivitiesComponent,
-    SideBarComponent,
     TableComponent,
     DialogComponent,
     SlideNavComponent,
@@ -133,6 +132,7 @@ const routes: Routes = [
       provide: TOASTR_TOKEN,
       useValue: toastr,
     },
+    { provide: NgbTimeAdapter, useClass: NgbTimeStringAdapter },
   ],
   bootstrap: [AppComponent],
 })

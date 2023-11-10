@@ -2,10 +2,11 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~bootstrap-icons";
 @import "~ngx-toastr/toastr.css";
-@import "~@ng-select/ng-select/themes/default.theme.css";
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@ng-select/ng-select/themes/material.theme.css';
 @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
+
 .dropdown-toggle{
     cursor: pointer;
 }
@@ -13,11 +14,11 @@
     display: flex;
 }
 .pagination .page-link{
-    color: black !important;
+    color: #3a4151 !important;
 }
 .pagination .active,.page-link.active, .active > .page-link{
-    background-color: black !important;
-    border-color: black !important;
+    background-color: #3a4151 !important;
+    border-color: #3a4151 !important;
     color: white !important;
 }
 .pagination .page-item >a ,.form-select{
@@ -30,7 +31,7 @@
 }
 
 .pagination .nav-link{
-    color:black
+    color:#3a4151
 }
 .nav-link:hover{
     background-color: cornflowerblue;

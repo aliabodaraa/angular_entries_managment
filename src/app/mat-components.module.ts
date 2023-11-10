@@ -21,8 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { MatCardModule } from '@angular/material/card';
 import {
   MatSnackBarModule,
   MAT_SNACK_BAR_DATA,
@@ -59,7 +58,7 @@ import {
     MatExpansionModule,
     MatTooltipModule,
     MatSnackBarModule,
-    FlexLayoutModule,
+    MatCardModule,
   ],
 })
 export class MatComponentsModule {}

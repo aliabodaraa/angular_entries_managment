@@ -10,4 +10,6 @@
 .app-sidenav {
     width: 230px;
 }
-
+.mat-drawer-inner-container{
+    overflow: hidden !important;
+}

@@ -21,6 +21,7 @@ import {
 import { EntryType, isActivityEntry } from '../models/app_data_state';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
+import { UploadCoverService } from '../services/upload-cover.service';
 type OrganizerObjectType = { id: string; name: string };
 
 @Component({
@@ -37,14 +38,14 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   today = this.calendar.getToday();
   form!: FormGroup;
   organizers_objects!: OrganizerObjectType[];
-
   constructor(
     private location: Location,
     private EntryService: EntryService,
     private route: ActivatedRoute,
     @Inject(TOASTR_TOKEN) private toastr: Toastr,
     private formBuilder: FormBuilder,
-    private calendar: NgbCalendar
+    private calendar: NgbCalendar,
+    private uploadCoverService: UploadCoverService
   ) {
     this.entry = this.EntryService.getEntryInfo() ?? null;
     this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {
@@ -113,6 +114,9 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   }
   get accessLocation() {
     return this.f['activity:locations'] as FormGroup;
+  }
+  get accessCoverPicture() {
+    return this.f['activity:coverPicture'] as FormGroup;
   }
   // get accessOrganizersArray() {
   //   return this.form.get('activity:organizers') as FormArray;
@@ -295,7 +299,20 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     }
     console.log(this.pageType);
   }
-
+  fun(ing_input: any) {
+    console.log(ing_input);
+    document.getElementById('coverPicture')?.click();
+  }
+  // on select image
+  onAttachFileChange(event: any): void {
+    let fileName = event.target.files[0];
+    this.uploadCoverService.uploadCover(fileName).subscribe((res: any) => {
+      this.f['activity:coverPicture'].patchValue({
+        'upload-batch': res.blob['upload-batch'],
+        'upload-fileId': res.blob['upload-fileId'],
+      });
+    });
+  }
   ngOnDestroy(): void {
     localStorage.removeItem('entry');
     localStorage.removeItem('pageType');
