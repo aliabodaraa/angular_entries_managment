@@ -62,9 +62,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
       //   ];
 
       console.log('pageType', this.pageType, 'entry', this.entry);
-    if (this.entry) {
-      // this.mapEntryToForm();
-    }
   }
   meridian1 = true;
   meridian2 = true;
@@ -95,6 +92,10 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         'upload-fileId': '0',
       }),
     });
+    if (this.entry) {
+      console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+      this.mapEntryToForm();
+    }
     //here request
     this.EntryService.getEntries(ProviderTypeEnum.Organizer).subscribe((x) => {
       let organizers_obj = x.entries.map((entry: any) => {
@@ -189,25 +190,17 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
 
   private mapEntryToForm() {
     if (this.entry && isActivityEntry(this.entry)) {
-      //  this.entry['activity:organizers'].map((org_name) => {
-      //    return this.addToFormArray(org_name, this.accessOrganizers, 'emails');
-      //  });
-      //  this.entry['activity:locations'].map((a_obj) => {
-      //    return this.addToFormArray(
-      //      a_obj.address,
-      //      this.accessLocations,
-      //      'locations'
-      //    );
-      //  });
       this.form.patchValue({
         'dc:title': this.entry['dc:title'],
         'dc:description': this.entry['dc:description'],
         'activity:categorization': this.entry['activity:categorization'],
         'activity:startDate': this.entry['activity:startDate'],
         'activity:endDate': this.entry['activity:endDate'],
+        'activity:organizers': this.entry['activity:organizers'][0],
         'activity:timeFrom': this.entry['activity:timeFrom'],
         'activity:timeTo': this.entry['activity:timeTo'],
         'activity:coverPicture': this.entry['activity:coverPicture'],
+        'activity:locations': this.entry['activity:locations'],
       });
       for (const key in this.entry) {
         this.form.controls[key]?.markAllAsTouched();

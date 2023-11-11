@@ -3,7 +3,10 @@ type LocationType = { city: string; geographicLocation: string };
 type EmailType = { emailAddress: string; label: string };
 type AddressType = { address: string; label: string };
 type PhoneType = { phoneNumber: string; label: string };
-
+type CoverPictureType = {
+  'upload-batch': string;
+  'upload-fileId': string;
+};
 export interface EntryType {
   uid: string; //uid
   'dc:created': string; //dc:created
@@ -31,7 +34,7 @@ export interface ActivityEntry extends EntryType {
   'activity:endDate': string;
   'activity:timeFrom': string;
   'activity:timeTo': string;
-  'activity:coverPicture': string;
+  'activity:coverPicture': CoverPictureType;
 }
 export function isActivityEntry(entry: EntryType): entry is ActivityEntry {
   return (entry as ActivityEntry)['dc:description'] !== undefined;

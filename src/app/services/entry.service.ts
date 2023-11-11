@@ -122,6 +122,7 @@ export class EntryService {
         'dc:creator': e.properties['dc:creator'],
         'dc:title': e.properties['dc:title'],
         'dc:description': e.properties['dc:description'],
+        'activity:categorization': e.properties['activity:categorization'],
         'activity:organizers': e.properties['activity:organizers'],
         'activity:locations': e.properties['activity:locations'],
         'activity:startDate': e.properties['activity:startDate'],
