@@ -6,13 +6,22 @@ import {
   EditionIdentifiersEnum,
   PageRequestParams,
   ProviderPageEnum,
+  isActivityDataModeEdition,
 } from '../models/data-request-api';
 import { EntryType } from '../models/app_data_state';
 export type OrganizerDataMode = Partial<EntryType>;
-export type ActivityDataMode = { activity: Partial<EntryType> };
-export type GContent = OrganizerDataMode | ActivityDataMode;
+export type ActivityDataModeCreation = { activity: Partial<EntryType> };
+export type ActivityDataModeEdition = {
+  properties: Partial<EntryType>;
+};
+
+export type GContent =
+  | OrganizerDataMode
+  | ActivityDataModeCreation
+  | ActivityDataModeEdition;
 
 type Data = {
+  params?: ActivityDataModeEdition;
   context?: GContent;
   input: string;
 };
@@ -27,11 +36,13 @@ export class DataHttpService {
     'application/json; charset=utf-8'
   );
   private setData(
-    context: Data['context'],
+    context: Data['context'] | Data['params'],
     input: Data['input'] = this.data.input
   ) {
     this.data.input = input;
-    this.data.context = context;
+    if (isActivityDataModeEdition(context as ActivityDataModeEdition))
+      this.data.params = context as ActivityDataModeEdition;
+    else this.data.context = context;
   }
   constructor(private http: HttpClient) {}
 

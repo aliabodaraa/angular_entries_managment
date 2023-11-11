@@ -114,6 +114,11 @@
                             type="button" 
                             mat-raised-button color="accent"
                             (click)="fun(ing_input)">Upload</button>
+                            <div *ngIf="coverPicture">
+                                <img [src]="coverPicture" alt="">
+                                {{coverPicture}}
+
+                            </div>
                             <!-- <input matInput 
                             formControlName="upload-batch" 
                             type="text" 

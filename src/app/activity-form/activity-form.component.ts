@@ -18,7 +18,11 @@ import {
   NgbDate,
   NgbDateStruct,
 } from '@ng-bootstrap/ng-bootstrap';
-import { EntryType, isActivityEntry } from '../models/app_data_state';
+import {
+  ActivityEntry,
+  EntryType,
+  isActivityEntry,
+} from '../models/app_data_state';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { UploadCoverService } from '../services/upload-cover.service';
@@ -38,6 +42,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   today = this.calendar.getToday();
   form!: FormGroup;
   organizers_objects!: OrganizerObjectType[];
+  coverPicture: { data: string } | null = null;
+
   constructor(
     private location: Location,
     private EntryService: EntryService,
@@ -53,15 +59,17 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
       this.providerType = queryParams.get('provider_type')! as ProviderTypeEnum;
     });
 
-    if (this.entry)
-      // [this.entry, this.pageType, this.providerType] =
-      //   this.EntryService.getEntryInfo() as [
-      //     ActivityEntry,
-      //     PageTypeEnum,
-      //     ProviderTypeEnum
-      //   ];
+    if (this.entry && isActivityEntry(this.entry))
+      this.coverPicture = this.entry['activity:coverPicture'];
+    console.log('CCCCCCCCCCCCCCCCC');
+    // [this.entry, this.pageType, this.providerType] =
+    //   this.EntryService.getEntryInfo() as [
+    //     ActivityEntry,
+    //     PageTypeEnum,
+    //     ProviderTypeEnum
+    //   ];
 
-      console.log('pageType', this.pageType, 'entry', this.entry);
+    console.log('pageType', this.pageType, 'entry', this.entry);
   }
   meridian1 = true;
   meridian2 = true;
@@ -199,7 +207,7 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         'activity:organizers': this.entry['activity:organizers'][0],
         'activity:timeFrom': this.entry['activity:timeFrom'],
         'activity:timeTo': this.entry['activity:timeTo'],
-        'activity:coverPicture': this.entry['activity:coverPicture'],
+        'activity:coverPicture': this.entry['activity:coverPicture']?.data,
         'activity:locations': this.entry['activity:locations'],
       });
       for (const key in this.entry) {
@@ -304,6 +312,7 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         'upload-batch': res.blob['upload-batch'],
         'upload-fileId': res.blob['upload-fileId'],
       });
+      console.log(res.blob);
     });
   }
   ngOnDestroy(): void {

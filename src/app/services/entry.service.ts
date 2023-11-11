@@ -7,11 +7,13 @@ import {
   PageTypeEnum,
   ProviderPageEnum,
   ProviderTypeEnum,
+  isActivityDataModeEdition,
 } from '../models/data-request-api';
 import {
   DataHttpService,
   OrganizerDataMode,
-  ActivityDataMode,
+  ActivityDataModeCreation,
+  ActivityDataModeEdition,
 } from './dataHttp.service';
 import { of } from 'rxjs';
 import {
@@ -21,6 +23,21 @@ import {
   isActivityEntry,
   isOrganizerEntry,
 } from '../models/app_data_state';
+
+type GKeys = OrgKeysType | ActKeysType;
+type OrgKeysType = Partial<{
+  [x in keyof OrganizeEntry]: string;
+}>;
+type ActKeysType = Partial<{
+  [x in keyof ActivityEntry]: string;
+}>;
+type KeysType<Type extends OrgKeysType | ActivityEntry> =
+  Type extends ActivityEntry
+    ? ActivityEntry
+    : Type extends OrgKeysType
+    ? OrgKeysType
+    : never;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,20 +71,37 @@ export class EntryService {
         : is_organizer
         ? EditionIdentifiersEnum.Organizer
         : EditionIdentifiersEnum.Activity;
-    let data_form: OrganizerDataMode | ActivityDataMode = is_organizer
-      ? formValue
-      : {
-          activity: formValue,
-        };
+    let data_form:
+      | OrganizerDataMode
+      | ActivityDataModeCreation
+      | ActivityDataModeEdition;
+    if (
+      pageType === PageTypeEnum.Edit &&
+      providerType === ProviderTypeEnum.Activity
+    ) {
+      console.log('---------->', pageType, providerType);
+      data_form = { properties: formValue };
+    } else {
+      data_form = is_organizer
+        ? formValue
+        : {
+            activity: formValue,
+          };
+    }
+
     if (pageType === PageTypeEnum.New)
       return this.dataHttpService.createEntry(
         creationIdentifier as CreationIdentifiersEnum,
-        data_form
+        providerType === ProviderTypeEnum.Activity
+          ? (data_form as ActivityDataModeCreation)
+          : data_form
       );
     else if (pageType === PageTypeEnum.Edit)
       return this.dataHttpService.updateEntry(
         creationIdentifier as EditionIdentifiersEnum,
-        data_form,
+        providerType === ProviderTypeEnum.Activity
+          ? (data_form as ActivityDataModeEdition)
+          : data_form,
         u_id!
       );
     else return of('Something Wrong !!!');
@@ -129,27 +163,30 @@ export class EntryService {
         'activity:endDate': e.properties['activity:endDate'],
         'activity:timeFrom': e.properties['activity:timeFrom'],
         'activity:timeTo': e.properties['activity:timeTo'],
+        'activity:coverPicture': e.properties['activity:coverPicture']?.data,
       }));
     return entries;
   }
+
   public entryPropertiesAllowedToAppearInTable(providerType: ProviderTypeEnum) {
     console.log(providerType);
-    let coulumns = [
-      'dc:title',
-      'dc:creator',
-      'dc:description',
-      'dc:created',
-      'dc:modified',
-    ];
-    if (providerType === ProviderTypeEnum.Organizer) {
-      coulumns = [
-        'organizer:name',
-        'dc:creator',
-        'organizer:website',
-        'dc:created',
-        'dc:modified',
-      ];
-    }
-    return coulumns;
+    let columns: KeysType<GKeys>;
+    columns = {
+      'dc:title': 'title',
+      'dc:creator': 'creator',
+      'dc:description': 'description',
+      'dc:created': 'created',
+      'dc:modified': 'modified',
+    } as KeysType<OrgKeysType>;
+
+    if (providerType === ProviderTypeEnum.Organizer)
+      columns = {
+        'organizer:name': 'name',
+        'dc:creator': 'creator',
+        'organizer:website': 'website',
+        'dc:created': 'created',
+        'dc:modified': 'modified',
+      };
+    return columns;
   }
 }

@@ -4,8 +4,7 @@ type EmailType = { emailAddress: string; label: string };
 type AddressType = { address: string; label: string };
 type PhoneType = { phoneNumber: string; label: string };
 type CoverPictureType = {
-  'upload-batch': string;
-  'upload-fileId': string;
+  data: string;
 };
 export interface EntryType {
   uid: string; //uid

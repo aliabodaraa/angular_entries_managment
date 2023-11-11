@@ -16,6 +16,7 @@ interface State {
   pageSize: number;
   totalSize: number;
 }
+type KeysType = string[];
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -31,7 +32,11 @@ export class TableComponent {
     totalSize: 10,
   };
   @Input('type') type!: ProviderTypeEnum;
-  columns!: string[];
+
+  public columns: { keys: Array<string>; values: Array<string> } = {
+    keys: [''],
+    values: [''],
+  };
   constructor(
     private EntryService: EntryService,
     private router: Router,
@@ -60,11 +65,17 @@ export class TableComponent {
     this.trigger_change$.next();
   }
   ngOnInit(): void {
-    this.columns = this.EntryService.entryPropertiesAllowedToAppearInTable(
-      this.type
-    );
+    [this.columns.keys, this.columns.values] = [
+      Object.keys(
+        this.EntryService.entryPropertiesAllowedToAppearInTable(this.type)
+      ),
+      (this.columns.values = Object.values(
+        this.EntryService.entryPropertiesAllowedToAppearInTable(this.type)
+      )),
+    ];
     console.log('type--------------', this.type, this.columns);
   }
+
   openDialog(entry: EntryType) {
     //the open method on the service MatDialog i designed to receive Component as a parameter
     const dialogRef = this.dialog.open(DialogComponent, {
@@ -133,7 +144,7 @@ export class TableComponent {
     return this.EntryService.mapPureDataToEntries(this.type, pure_response);
   }
 
-  intoString(value: unknown) {
+  intoString(value: unknown | string) {
     return String(value);
   }
   counter(i: number) {
