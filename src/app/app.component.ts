@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
-import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,7 +12,6 @@ export class AppComponent {
   active = 'top';
 
   constructor(
-    @Inject(TOASTR_TOKEN) private toastr: Toastr,
     // private toastr1: ToastrService,
 
     // private userService: UserService,
@@ -41,19 +40,4 @@ export class AppComponent {
   //   localStorage.removeItem('returnUrl');
   //   this.router.navigate([`${getReturnUrlParam}`]);
   // });
-  success(message: string): void {
-    this.toastr.success(message, 'Success');
-  }
-
-  info(message: string): void {
-    this.toastr.info(message, 'Info');
-  }
-
-  warning(message: string): void {
-    this.toastr.warning(message, 'Warning');
-  }
-
-  error(message: string): void {
-    this.toastr.error(message, 'Error');
-  }
 }

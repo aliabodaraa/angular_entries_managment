@@ -14,6 +14,8 @@ export class SlideNavComponent implements OnInit {
   isTokenValid: boolean = false;
   profileUser: KeycloakProfile | null = null;
   constructor(public auth: AuthService, public translate: TranslateService) {
+    translate.addLangs(['en', 'ar']);
+
     this.auth
       .isTokenValid()
       .then((isTokenValid) => {

@@ -23,7 +23,9 @@ export class BsNavbarComponent implements OnInit {
       .catch((x) => console.log('QQQQQQQQQQQQQQQQQQQQ'));
   }
 
-  public async ngOnInit() {}
+  public async ngOnInit() {
+    console.log(this.translate);
+  }
 
   logout() {
     this.auth.logout();

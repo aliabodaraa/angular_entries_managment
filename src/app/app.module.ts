@@ -1,6 +1,6 @@
-import { APP_INITIALIZER, NgModule, inject } from '@angular/core';
+import { APP_INITIALIZER, Inject, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { TOAST_CONFIG, ToastToken, ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { OrganizersComponent } from './organizers/organizers.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -19,7 +19,7 @@ import {
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { initializeKeycloak } from './init/keycloak-init.factory';
 import { AuthGuard } from './guard/auth.guard';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -28,8 +28,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
-import { TOASTR_TOKEN, Toastr } from './services/toastr.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { OrganizerFormComponent } from './form/organizer-form.component';
 import { MatComponentsModule } from './mat-components.module';
@@ -40,7 +38,6 @@ import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
-declare const toastr: Toastr;
 
 const routes: Routes = [
   //Guests Routes
@@ -97,6 +94,10 @@ const routes: Routes = [
     SlideNavComponent,
   ],
   imports: [
+    CommonModule,
+
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     MatComponentsModule,
     NgbModule,
     BrowserModule,
@@ -116,8 +117,6 @@ const routes: Routes = [
         deps: [HttpClient],
       },
     }),
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(),
     NgSelectModule,
   ],
   providers: [
@@ -128,12 +127,10 @@ const routes: Routes = [
       multi: true,
       deps: [KeycloakService, ConfigInitService],
     },
-    {
-      provide: TOASTR_TOKEN,
-      useValue: toastr,
-    },
     { provide: NgbTimeAdapter, useClass: NgbTimeStringAdapter },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(@Inject(TOAST_CONFIG) token: ToastToken) {}
+}

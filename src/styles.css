@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~bootstrap-icons";
-@import "~ngx-toastr/toastr.css";
+@import 'ngx-toastr/toastr';
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import '~@ng-select/ng-select/themes/material.theme.css';
 @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";

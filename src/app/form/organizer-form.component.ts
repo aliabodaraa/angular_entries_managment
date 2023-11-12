@@ -2,12 +2,12 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageTypeEnum, ProviderTypeEnum } from '../models/data-request-api';
 import { Location } from '@angular/common';
-import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { EntryService } from '../services/entry.service';
 import * as form from '../models/form';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { EntryType, isOrganizerEntry } from '../models/app_data_state';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-form',
@@ -25,7 +25,7 @@ export class OrganizerFormComponent implements OnDestroy {
     private location: Location,
     private EntryService: EntryService,
     private route: ActivatedRoute,
-    @Inject(TOASTR_TOKEN) private toastr: Toastr
+    private toastr: ToastrService
   ) {
     this.entry = this.EntryService.getEntryInfo() ?? null;
     this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {

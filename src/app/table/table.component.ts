@@ -6,11 +6,11 @@ import {
 } from '../models/data-request-api';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import { EntryService } from '../services/entry.service';
 import { EntryType, isOrganizerEntry } from '../models/app_data_state';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import { ToastrService } from 'ngx-toastr';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -40,8 +40,8 @@ export class TableComponent {
   constructor(
     private EntryService: EntryService,
     private router: Router,
-    @Inject(TOASTR_TOKEN) private toastr: Toastr,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {
     this.trigger_change$
       .pipe(

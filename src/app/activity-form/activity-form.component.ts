@@ -12,7 +12,6 @@ import * as form from '../models/form';
 import { Location } from '@angular/common';
 
 import { EntryService } from '../services/entry.service';
-import { TOASTR_TOKEN, Toastr } from '../services/toastr.service';
 import {
   NgbCalendar,
   NgbDate,
@@ -26,6 +25,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { UploadCoverService } from '../services/upload-cover.service';
+import { ToastrService } from 'ngx-toastr';
 type OrganizerObjectType = { id: string; name: string };
 
 @Component({
@@ -48,7 +48,7 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     private location: Location,
     private EntryService: EntryService,
     private route: ActivatedRoute,
-    @Inject(TOASTR_TOKEN) private toastr: Toastr,
+    private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar,
     private uploadCoverService: UploadCoverService

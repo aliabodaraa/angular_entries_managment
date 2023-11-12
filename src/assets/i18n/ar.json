@@ -1,0 +1,12 @@
+{
+    "slide-bar":{
+        "comptecho-logo":"كومبتيك",
+        "logout":"تسجيل الخروج",
+        "language":{
+            "arabic":"عربي",
+            "english":"انكليزي"
+        },
+        "activities":"النشاطات",
+        "organizers":"المنظمين"
+    }
+}

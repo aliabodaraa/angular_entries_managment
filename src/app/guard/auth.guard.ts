@@ -30,7 +30,7 @@ export class AuthGuard extends KeycloakAuthGuard {
         redirectUri: window.location.origin + redirectAfterAuthentication,
       });
     }
-    if (state.url === '/') this.router.navigate(['/organizers']); //avoid the error when when go to root route "/"
+    //if (state.url === '/') this.router.navigate(['/organizers']); //avoid the error when when go to root route "/"
     return this.authenticated;
   }
 }

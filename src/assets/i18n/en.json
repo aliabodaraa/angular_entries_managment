@@ -1,5 +1,14 @@
 {
-    "nav-bar":{
-        "comptecho-logo":"كومبتيك"
+    "slide-bar":{
+        "comptecho-logo":"Comptechco",
+        "logout":"logout",
+        "language":{
+            "arabic":"Arabic",
+            "english":"English"
+        },
+        "activities":"Activities",
+        "organizers":"Organizers"
+
     }
-}
+}  
+

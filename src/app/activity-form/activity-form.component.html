@@ -1,7 +1,7 @@
 <mat-card>
     <mat-card-header>
-      <mat-card-title>Actions Buttons</mat-card-title>
-      </mat-card-header>
+    <mat-card-title>{{pageType=="Edit"?"Edit Activity":"Create Activity"}}</mat-card-title>
+    </mat-card-header>
         <form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
                 <div class="row py-4">
                     <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
@@ -115,7 +115,7 @@
                             mat-raised-button color="accent"
                             (click)="fun(ing_input)">Upload</button>
                             <div *ngIf="coverPicture">
-                                <img [src]="coverPicture" alt="">
+                                <img [src]="coverPicture" alt="cover_picture">
                                 {{coverPicture}}
 
                             </div>
