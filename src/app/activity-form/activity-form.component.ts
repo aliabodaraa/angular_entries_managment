@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageTypeEnum, ProviderTypeEnum } from '../models/data-request-api';
 import {
   FormArray,
@@ -17,11 +17,7 @@ import {
   NgbDate,
   NgbDateStruct,
 } from '@ng-bootstrap/ng-bootstrap';
-import {
-  ActivityEntry,
-  EntryType,
-  isActivityEntry,
-} from '../models/app_data_state';
+import { EntryType, isActivityEntry } from '../models/app_data_state';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { UploadCoverService } from '../services/upload-cover.service';
@@ -62,13 +58,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     if (this.entry && isActivityEntry(this.entry))
       this.coverPicture = this.entry['activity:coverPicture'];
     console.log('CCCCCCCCCCCCCCCCC');
-    // [this.entry, this.pageType, this.providerType] =
-    //   this.EntryService.getEntryInfo() as [
-    //     ActivityEntry,
-    //     PageTypeEnum,
-    //     ProviderTypeEnum
-    //   ];
-
     console.log('pageType', this.pageType, 'entry', this.entry);
   }
   meridian1 = true;
@@ -127,12 +116,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   get accessCoverPicture() {
     return this.f['activity:coverPicture'] as FormGroup;
   }
-  // get accessOrganizersArray() {
-  //   return this.form.get('activity:organizers') as FormArray;
-  // }
-  // get accessOrganizersControls() {
-  //   return this.accessOrganizersArray.controls as FormControl[];
-  // }
   get ticketFormGroups() {
     return this.t.controls as FormGroup[];
   }
@@ -160,18 +143,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
-    this.submitted = true;
-
-    // stop here if form is invalid
-    if (this.form.invalid) {
-      return;
-    }
-
-    // display form values on success
-    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.form.value, null, 4));
-  }
-
   onReset() {
     // reset whole form back to initial state
     this.submitted = false;
@@ -191,10 +162,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
       geographicLocation: ['', [Validators.required]],
     });
   }
-  // addOrganizer() {
-  //   this.accessOrganizersControls.push(this.formBuilder.control('aa'));
-  //   console.log(this.accessOrganizersArray.value);
-  // }
 
   private mapEntryToForm() {
     if (this.entry && isActivityEntry(this.entry)) {

@@ -19,10 +19,20 @@ let nuxeo = new Nuxeo({
 export class UploadCoverService {
   constructor() {}
   // upload activity cover picture
+  // uploadCover(file: any): Observable<any> {
+  //   return from(
+  //     nuxeo.batchUpload('/upload', { mode: 'no-cors' }).upload({ file })
+  //   ).pipe(
+  //     catchError((err) => {
+  //       throw err;
+  //     })
+  //   );
+  // }
   uploadCover(file: any): Observable<any> {
-    return from(
-      nuxeo.batchUpload('/upload', { mode: 'no-cors' }).upload({ file })
-    ).pipe(
+    const nuxeoBlob = new Nuxeo.Blob({
+      content: file,
+    });
+    return from(nuxeo.batchUpload('/upload').upload(nuxeoBlob)).pipe(
       catchError((err) => {
         throw err;
       })

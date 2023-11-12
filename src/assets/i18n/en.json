@@ -9,6 +9,9 @@
         "activities":"Activities",
         "organizers":"Organizers"
 
+    },
+    "table":{
+        "loading":"...جار التحميل"
     }
 }  
 

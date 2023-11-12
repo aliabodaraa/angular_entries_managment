@@ -52,7 +52,7 @@
                                 <span *ngIf="f['dc:startDate'].errors?.required">This field is mandatory.</span>
                             </mat-error>
                         </mat-form-field>
-                        {{f['activity:startDate'].value}}
+                        <!-- {{f['activity:startDate'].value}} -->
                     </div>
                 </div>
                 <div class="row py-4">
@@ -78,7 +78,7 @@
                             <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                                 <label for="timeFrom">timeFrom</label>
                                 <ngb-timepicker formControlName="activity:timeFrom" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeFrom'].errors, 'meridian-blue':meridian1}" [ngStyle]="{backgroundColor:'red'}" (click)="toggleMeridian('meridian1')"></ngb-timepicker>
-                                {{f['activity:timeFrom'].value|json}}
+                                <!-- {{f['activity:timeFrom'].value|json}} -->
                                 {{meridian1}}
                                 <div *ngIf="submitted && f['activity:timeFrom'].errors" class="invalid-feedback">
                                     <div *ngIf="f['activity:timeFrom'].errors.required">timeFrom is required</div>
@@ -87,8 +87,8 @@
                             <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
                                 <label for="timeTo">timeTo</label>
                                 <ngb-timepicker formControlName="activity:timeTo" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeTo'].errors, 'meridian-blue':meridian2}" (click)="toggleMeridian('meridian2')"></ngb-timepicker>
-                                {{f['activity:timeTo'].value|json}}
-                                {{meridian2}}
+                                <!-- {{f['activity:timeTo'].value|json}}
+                                {{meridian2}} -->
                                 <div *ngIf="submitted && f['activity:timeTo'].errors" class="invalid-feedback">
                                     <div *ngIf="f['activity:timeTo'].errors.required">timeTo is required</div>
                                 </div>
@@ -97,39 +97,44 @@
                     </div>
                 </div>
                 <div class="row py-4">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" [formGroup]="accessCoverPicture">
-                            <mat-label> coverPicture
-                            </mat-label>
-                            <input
-                            #ing_input
-                            hidden="true"
-                            id="coverPicture"
-                            placeholder="coverPicture"
-                            type="file"
-                            (change)="onAttachFileChange($event)"
-                            (load)="fun(ing_input)"
-                            accept=".png, .jpg, .jpeg"
-                            >
-                            <button 
-                            type="button" 
-                            mat-raised-button color="accent"
-                            (click)="fun(ing_input)">Upload</button>
-                            <div *ngIf="coverPicture">
-                                <img [src]="coverPicture" alt="cover_picture">
-                                {{coverPicture}}
-
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <h3 class="locations">locations</h3>
+                        <div class="list-group-item p-2">
+                            <div class="row" [formGroup]="accessLocation">
+                                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                        <mat-form-field class="form-field">
+                                            <mat-label> city
+                                            </mat-label>
+                                            <input matInput 
+                                            formControlName="city" 
+                                            type="text" 
+                                            id="city" 
+                                            placeholder="City" 
+                                            [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
+                                            <mat-error *ngIf="submitted && accessLocation.controls.city.errors">
+                                                <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
+                                            </mat-error>
+                                        </mat-form-field>
+                                </div>
+                                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                                    <mat-form-field class="form-field">
+                                        <mat-label> geographicLocation
+                                        </mat-label>
+                                        <input matInput 
+                                        formControlName="geographicLocation" 
+                                        type="text" 
+                                        id="geographicLocation" 
+                                        placeholder="geographicLocation" 
+                                        [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
+                                        <mat-error *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
+                                            <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
                             </div>
-                            <!-- <input matInput 
-                            formControlName="upload-batch" 
-                            type="text" 
-                            id="coverPicture" 
-                            placeholder="coverPicture" 
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
-                            <mat-error *ngIf="submitted && f['activity:coverPicture'].errors">
-                                <span *ngIf="f['activity:coverPicture'].errors.required">This field is mandatory.</span>
-                            </mat-error> -->
+                        </div>
                     </div>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: -19px;">
+                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: 38px;">
                             <ng-select  
                             id="floatingSelect"
                             placeholder="select organizer" 
@@ -145,43 +150,37 @@
                     </div>
                 </div>
                 <div class="row py-4 Locations">
-                        <h3 class="locations">locations</h3>
-                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                            <div class="list-group-item p-2">
-                                <div class="row" [formGroup]="accessLocation">
-                                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                            <mat-form-field class="form-field">
-                                                <mat-label> city
-                                                </mat-label>
-                                                <input matInput 
-                                                formControlName="city" 
-                                                type="text" 
-                                                id="city" 
-                                                placeholder="City" 
-                                                [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
-                                                <mat-error *ngIf="submitted && accessLocation.controls.city.errors">
-                                                    <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
-                                                </mat-error>
-                                            </mat-form-field>
-                                    </div>
-                                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                        <mat-form-field class="form-field">
-                                            <mat-label> geographicLocation
-                                            </mat-label>
-                                            <input matInput 
-                                            formControlName="geographicLocation" 
-                                            type="text" 
-                                            id="geographicLocation" 
-                                            placeholder="geographicLocation" 
-                                            [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
-                                            <mat-error *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
-                                                <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
+                    <mat-label> coverPicture
+                    </mat-label>
+                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6 d-flex" [formGroup]="accessCoverPicture" >
+                            <input
+                            #ing_input
+                            hidden="true"
+                            id="coverPicture"
+                            placeholder="coverPicture"
+                            type="file"
+                            (change)="onAttachFileChange($event)"
+                            (load)="fun(ing_input)"
+                            accept=".png, .jpg, .jpeg"
+                            >
+                            <button 
+                            type="button" 
+                            mat-raised-button color="accent"
+                            (click)="fun(ing_input)">Upload</button>
+                            <div *ngIf="coverPicture">
+                                <img [src]="coverPicture" alt="cover_picture" style="width: 100px;" class="img-thumbnail float-end">
+                                <!-- {{coverPicture}} -->
                             </div>
-                        </div>
+                            <!-- <input matInput 
+                            formControlName="upload-batch" 
+                            type="text" 
+                            id="coverPicture" 
+                            placeholder="coverPicture" 
+                            [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
+                            <mat-error *ngIf="submitted && f['activity:coverPicture'].errors">
+                                <span *ngIf="f['activity:coverPicture'].errors.required">This field is mandatory.</span>
+                            </mat-error> -->
+                    </div>
                 </div>
             <mat-card-actions>
                 <button mat-raised-button color="accent" type="submit">SAVE</button>

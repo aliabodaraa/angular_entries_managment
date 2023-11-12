@@ -29,12 +29,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { OrganizerFormComponent } from './form/organizer-form.component';
 import { MatComponentsModule } from './mat-components.module';
 import { DialogComponent } from './dialog/dialog.component';
 import { SlideNavComponent } from './slide-nav/slide-nav.component';
 import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
 import { EntryComponent } from './entry/entry.component';
+import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);

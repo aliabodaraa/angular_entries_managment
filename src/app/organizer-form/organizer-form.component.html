@@ -6,14 +6,14 @@
     </mat-card-header>
         <form [formGroup]="form" (ngSubmit)="save()">
             <div class="title">
-                <label for="title" class="form-label">title :</label>
+                <label for="name" class="form-label">name :</label>
                 <mat-form-field class="form-field w-100">
-                    <mat-label> title
+                    <mat-label> name
                     </mat-label>
                     <input matInput formControlName="organizer:name" required>
                     <mat-error *ngIf="(submitted && !!accessName?.errors) || (accessName?.touched && accessName?.invalid)">
                         <span *ngIf="accessName?.errors?.['required']">This field is mandatory.</span>
-                        <span *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName?.errors?.['minlength']?.requiredLength}}, You entered only {{accessName?.errors?.['minlength']?.actualLength}} characters</span>
+                        <span *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName.errors?.['minlength']?.requiredLength}}, You entered only {{accessName.errors?.['minlength']?.actualLength}} characters</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -30,20 +30,18 @@
                     <li *ngFor="let emailObj of accessEmails.controls; let index=index"
                     [formGroupName]="index"
                     class="list-group-item"
-                    [style.borderTop]="accessEmails.valid && !index ?'':'0px'"
-                    [style.border]="accessEmails.valid && index ?'':'1px solid #ff9d9d'"
                     >
                         {{emailObj.get('emailAddress')?.value}}
                         <span class="material-symbols-outlined d-block float-end" color="accent"  (click)="removeFromFormArray(accessEmails, index)">
                             <mat-icon>delete</mat-icon>
                         </span>
-                        <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="alert alert-danger">
+                        <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="text-danger">
                             <div *ngIf="emailObj.get('emailAddress')?.errors?.['minlength']">should be minimum {{emailObj.get('emailAddress')?.errors?.['minlength']?.requiredLength}}, You entered only {{emailObj.get('emailAddress')?.errors?.['minlength']?.actualLength}} characters</div>
                             <div *ngIf="emailObj.get('emailAddress')?.errors?.['email']">Email must be a valid email address</div>
                         </div>
                     </li>
                 </ul>
-                <div *ngIf="(submitted && !!accessEmails?.errors)" class="alert alert-danger">
+                <div *ngIf="(submitted && !!accessEmails?.errors)" class="text-danger">
                     <div *ngIf="accessEmails?.errors?.['required']">Emails Field is Required</div>
                 </div>
             </div>
@@ -64,12 +62,12 @@
                     {{addressObj.get('address')?.value}} 
                     <!-- <span class="text-warning">Label generated dynamically :{{addressObj.get('label')?.value}} </span> -->
                     <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessAddresses, index)"></i>
-                        <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="alert alert-danger">
+                        <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="text-danger">
                             <div *ngIf="addressObj.get('address')?.errors?.['minlength']">should be minimum {{addressObj.get('address')?.errors?.['minlength']?.requiredLength}}, You entered only {{addressObj.get('address')?.errors?.['minlength']?.actualLength}} characters</div>
                         </div>
                     </li>
                 </ul>
-                <div *ngIf="(submitted && !!accessAddresses?.errors)" class="alert alert-danger">
+                <div *ngIf="(submitted && !!accessAddresses?.errors)" class="text-danger">
                     <div *ngIf="accessAddresses?.errors?.['required']">Addresses Field is Required</div>
                 </div>
             </div>
@@ -81,7 +79,7 @@
                     <input matInput formControlName="organizer:organizationActivity" required>
                     <mat-error *ngIf="(submitted && !!accessOrganizationActivity?.errors) || (accessOrganizationActivity?.touched && accessOrganizationActivity?.invalid)">
                         <span *ngIf="accessOrganizationActivity?.errors?.['required']">This field is mandatory.</span>
-                        <span *ngIf="accessOrganizationActivity?.errors?.['minlength']">should be minimum {{accessOrganizationActivity?.errors?.['minlength']?.requiredLength}}, You entered only {{accessOrganizationActivity?.errors?.['minlength']?.actualLength}} characters</span>
+                        <span *ngIf="accessOrganizationActivity?.errors?.['minlength']">should be minimum {{accessOrganizationActivity.errors?.['minlength']?.requiredLength}}, You entered only {{accessOrganizationActivity.errors?.['minlength']?.actualLength}} characters</span>
                     </mat-error>
                 </mat-form-field>
             </div>
@@ -103,13 +101,13 @@
                     {{phoneObj.get('phoneNumber')?.value}} 
                     <!-- <span class="text-warning">Label generated dynamically :{{phoneObj.get('label')?.value}} </span> -->
                     <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessPhones, index)"></i>
-                    <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="alert alert-danger">
+                    <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="text-danger">
                         <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['minlength']">should be minimum {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.requiredLength}}, You entered only {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.actualLength}} characters</div>
                         <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['pattern']">invalid phone</div>
                     </div>
                 </li>
             </ul>
-            <div *ngIf="(submitted && !!accessPhones?.errors)" class="alert alert-danger">
+            <div *ngIf="(submitted && !!accessPhones?.errors)" class="text-danger">
                 <div *ngIf="accessPhones?.errors?.['required']">Phones Field is Required</div>
             </div>
             </div>
