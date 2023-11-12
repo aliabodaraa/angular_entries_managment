@@ -11,6 +11,7 @@ import { EntryType, isOrganizerEntry } from '../models/app_data_state';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { TableColumns } from '../models/table-inputs';
 interface State {
   pageIndex: number;
   pageSize: number;
@@ -32,11 +33,8 @@ export class TableComponent {
     totalSize: 10,
   };
   @Input('type') type!: ProviderTypeEnum;
+  @Input('columns') columns!: TableColumns;
 
-  public columns: { keys: Array<string>; values: Array<string> } = {
-    keys: [''],
-    values: [''],
-  };
   constructor(
     private EntryService: EntryService,
     private router: Router,
@@ -63,17 +61,6 @@ export class TableComponent {
         this._entries$.next(entries);
       });
     this.trigger_change$.next();
-  }
-  ngOnInit(): void {
-    [this.columns.keys, this.columns.values] = [
-      Object.keys(
-        this.EntryService.entryPropertiesAllowedToAppearInTable(this.type)
-      ),
-      (this.columns.values = Object.values(
-        this.EntryService.entryPropertiesAllowedToAppearInTable(this.type)
-      )),
-    ];
-    console.log('type--------------', this.type, this.columns);
   }
 
   openDialog(entry: EntryType) {

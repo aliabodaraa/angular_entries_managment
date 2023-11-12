@@ -167,26 +167,4 @@ export class EntryService {
       }));
     return entries;
   }
-
-  public entryPropertiesAllowedToAppearInTable(providerType: ProviderTypeEnum) {
-    console.log(providerType);
-    let columns: KeysType<GKeys>;
-    columns = {
-      'dc:title': 'title',
-      'dc:creator': 'creator',
-      'dc:description': 'description',
-      'dc:created': 'created',
-      'dc:modified': 'modified',
-    } as KeysType<OrgKeysType>;
-
-    if (providerType === ProviderTypeEnum.Organizer)
-      columns = {
-        'organizer:name': 'name',
-        'dc:creator': 'creator',
-        'organizer:website': 'website',
-        'dc:created': 'created',
-        'dc:modified': 'modified',
-      };
-    return columns;
-  }
 }
