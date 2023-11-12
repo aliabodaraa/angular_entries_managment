@@ -16,7 +16,7 @@ interface State {
   pageSize: number;
   totalSize: number;
 }
-type KeysType = string[];
+type DestinationPageType = 'Entry_Page' | 'Edit_Page';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -112,11 +112,38 @@ export class TableComponent {
     return this._loading$.asObservable();
   }
 
-  public navigateToEditPage(entry: EntryType) {
+  public navigateToSpecificPage(entry: EntryType, des: DestinationPageType) {
+    const is_orgnizer = this.type === ProviderTypeEnum.Organizer;
+    const is_edit_page = des === 'Edit_Page';
+
+    const path = is_orgnizer
+      ? is_edit_page
+        ? `/organizers/${entry.uid}/edit`
+        : `/organizers/${entry.uid}`
+      : is_edit_page
+      ? `/activities/${entry.uid}/edit`
+      : `/activities/${entry.uid}`;
+
+    if (is_edit_page)
+      this.router.navigate([path], {
+        queryParams: {
+          provider_type: this.type,
+          page_type: 'Edit',
+        },
+      });
+    else
+      this.router.navigate([path], {
+        queryParams: {
+          provider_type: this.type,
+        },
+      });
+    this.EntryService.storgeEntryInfo(entry);
+  }
+  public navigateToEntryPage(entry: EntryType) {
     const path =
       this.type === ProviderTypeEnum.Organizer
-        ? '/organizers/edit'
-        : '/activities/edit';
+        ? '/organizers/:id'
+        : '/activities/:id';
     this.router.navigate([path], {
       queryParams: { provider_type: this.type, page_type: 'Edit' },
     });

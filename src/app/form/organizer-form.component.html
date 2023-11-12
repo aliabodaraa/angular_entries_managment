@@ -3,7 +3,7 @@
 <mat-card>
     <mat-card-header>
       <mat-card-title>{{pageType=="Edit"?"Edit Organizer":"Create Organizer"}}</mat-card-title>
-      </mat-card-header>
+    </mat-card-header>
         <form [formGroup]="form" (ngSubmit)="save()">
             <div class="title">
                 <label for="title" class="form-label">title :</label>
@@ -17,31 +17,10 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            {{accessEmails.valid}}
-            <!-- <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="title">title</label>
-                        <input formControlName="dc:title" type="text" class="form-control form-control-lg" id="title" placeholder="title" [ngClass]="{ 'is-invalid': submitted && f['dc:title'].errors }">
-                        <div *ngIf="submitted && f['dc:title'].errors" class="invalid-feedback">
-                            <div *ngIf="f['dc:title'].errors.required">title is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="description">description</label>
-                        <input formControlName="dc:description" type="text" class="form-control form-control-lg" id="description" placeholder="description" [ngClass]="{ 'is-invalid': submitted && f['dc:description'].errors }">
-                        <div *ngIf="submitted && f['dc:description'].errors" class="invalid-feedback">
-                            <div *ngIf="f['dc:description'].errors.required">description is required</div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
             <div class="emails">
                 <label for="emails" class="form-label">Emails :</label>
                 <div class="email-wrapper">
-                    <button class="w-25" mat-raised-button color="primary" (click)="addToFormArray(emailInput,accessEmails,'emails')" ><mat-icon>add</mat-icon></button>
+                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(emailInput,accessEmails,'emails')" ><mat-icon>add</mat-icon></button>
                     <mat-form-field class="w-75">
                         <mat-label> new email </mat-label>
                         <input matInput #emailInput>
@@ -70,7 +49,7 @@
             </div>
             <div class="addresses">
                 <div class="email-wrapper">
-                    <button class="w-25" mat-raised-button color="primary" (click)="addToFormArray(addressInput,accessAddresses,'addresses')" ><mat-icon>add</mat-icon></button>
+                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(addressInput,accessAddresses,'addresses')" ><mat-icon>add</mat-icon></button>
                     <mat-form-field class="w-75">
                         <mat-label> new address </mat-label>
                         <input matInput #addressInput>
@@ -109,7 +88,7 @@
             <div class="phones">
                 <label for="emails" class="form-label">Phones :</label>
                 <div class="email-wrapper">
-                    <button class="w-25" mat-raised-button color="primary" (click)="addToFormArray(phoneInput,accessPhones,'phones')" ><mat-icon>add</mat-icon></button>
+                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(phoneInput,accessPhones,'phones')" ><mat-icon>add</mat-icon></button>
                     <mat-form-field class="w-75">
                         <mat-label> new phone </mat-label>
                         <input matInput #phoneInput>

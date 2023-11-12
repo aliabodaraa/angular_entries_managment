@@ -1,8 +1,8 @@
 //State Section
 type LocationType = { city: string; geographicLocation: string };
-type EmailType = { emailAddress: string; label: string };
-type AddressType = { address: string; label: string };
-type PhoneType = { phoneNumber: string; label: string };
+export type EmailType = { emailAddress: string; label: string };
+export type AddressType = { address: string; label: string };
+export type PhoneType = { phoneNumber: string; label: string };
 type CoverPictureType = {
   data: string;
 };

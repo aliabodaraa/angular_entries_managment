@@ -1,0 +1,154 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>Entry Page</mat-card-title>
+      <mat-card-subtitle>{{providerType}}</mat-card-subtitle>
+      <mat-card-actions>
+        <button type="button" mat-raised-button color="basic" [routerLink]="providerType === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:providerType,page_type:'New'}" >create {{providerType}}</button>
+        <button type="button" mat-raised-button color="primary" [routerLink]="providerType === 'Organizer'?'/organizers':'/activities'" [queryParams]="{provider_type:providerType,page_type:'New'}" >{{providerType}}'s page</button>
+      </mat-card-actions>
+    </mat-card-header>
+    <div>
+        <mat-card *ngIf="is_organizer;else ali">
+                <mat-list>
+                    <h3 matSubheader>Email</h3>
+                    <div *ngFor="let email of data?.['organizer:emails']">
+                      <mat-list-item>
+                         <mat-icon matListIcon>email</mat-icon>
+                         <span> {{email.emailAddress}}
+                            <!-- <span matSubheader>{{email.label}}</span> -->
+                         </span>
+                      </mat-list-item>
+                    </div>
+                </mat-list>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <h3 matSubheader>Phones</h3>
+                    <div *ngFor="let phone of data?.['organizer:phones']">
+                        <mat-list-item>
+                           <mat-icon matListIcon>phone</mat-icon>
+                           <span> {{phone.phoneNumber}}
+                            <!-- <span matSubheader>{{phone.label}}</span> -->
+                           </span>
+                        </mat-list-item>
+                      </div>
+                </mat-list>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <h3 matSubheader>Addresses</h3>
+                    <div *ngFor="let address of data?.['organizer:addresses']">
+                        <mat-list-item>
+                            <mat-icon matListIcon>address</mat-icon>
+                            <span> {{address.address}}
+                             <!-- <span matSubheader>{{address.label}}</span> -->
+                            </span>
+                         </mat-list-item>
+                      </div>
+                </mat-list>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <h3 matSubheader>Website</h3>
+                    <div>
+                        <mat-list-item>
+                            <mat-icon matListIcon>website</mat-icon>
+                            <span>{{data?.["organizer:website"]}}</span>
+                        </mat-list-item>
+                      </div>
+                </mat-list>
+                <mat-divider></mat-divider>
+                <mat-list>
+                    <h3 matSubheader>Other Info</h3>
+                    <mat-list-item>
+                        <h3 matSubheader>creator</h3>
+                        <span class="pe-4">{{data?.["dc:creator"]}}</span>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <h3 matSubheader>created</h3>
+                        <span class="pe-4">{{data?.["dc:created"]|date}}</span>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <h3 matSubheader>modified</h3>
+                        <span class="pe-4">{{data?.["dc:modified"]|date}}</span>
+                    </mat-list-item>
+                </mat-list>
+        </mat-card>
+        <ng-template #ali>
+            <div class="row py-4">
+                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                <mat-list>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">title</h3>
+                            <span>{{data?.["dc:title"]}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">description</h3>
+                            <span>{{data?.["dc:description"]}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">categorization</h3>
+                            <span>{{data?.["activity:categorization"]}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">startDate</h3>
+                            <span>{{data?.["activity:startDate"]|date}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">endDate</h3>
+                            <span>{{data?.["activity:endDate"]|date}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">timeFrom</h3>
+                            <span>{{data?.["activity:timeFrom"]}}</span>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <h3 matSubheader class="w-75">timeTo</h3>
+                            <span>{{data?.["activity:timeTo"]}}</span>
+                        </mat-list-item>
+                        <mat-list>
+                            <h3 matSubheader>Location</h3>
+                            <mat-list-item>
+                                <h3 matSubheader class="w-75">city</h3>
+                                <span class="pe-4">{{data?.['activity:locations'].city}}</span>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <h3 matSubheader class="w-75">geographicLocation</h3>
+                                <span class="pe-4">{{data?.['activity:locations'].geographicLocation}}</span>
+                            </mat-list-item>
+                        </mat-list>
+                        <mat-list>
+                            <h3 matSubheader>Other Info</h3>
+                            <mat-list-item>
+                                <h3 matSubheader class="w-75">creator</h3>
+                                <span class="pe-4">{{data?.["dc:creator"]}}</span>
+                            </mat-list-item>
+                        </mat-list>
+                </mat-list>
+                </div>
+                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <mat-card class="example-card">
+                            <mat-card-header>
+                              <mat-card-subtitle>Activity</mat-card-subtitle>
+                              <mat-card-title>Picture</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                              <img class="w-100" src="https://images.unsplash.com/photo-1488372759477-a7f4aa078cb6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="immage">
+                              <!-- <img [src]="data?.['activity:coverPicture'].data" alt="immage"> -->
+                              <mat-divider></mat-divider>
+                            </mat-card-content>
+                            <!-- <mat-card-actions>
+                              <button mat-button>LIKE</button>
+                              <button mat-button>SHARE</button>
+                            </mat-card-actions> -->
+                            <!-- <mat-card-footer>
+                              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                            </mat-card-footer> -->
+                        </mat-card>
+                </div>
+            </div>
+        </ng-template>
+        
+    </div>
+    <!-- <mat-card-actions align="end">
+      <button mat-button>LIKE</button>
+      <button mat-button>SHARE</button>
+    </mat-card-actions> -->
+</mat-card>

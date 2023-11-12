@@ -34,6 +34,7 @@ import { MatComponentsModule } from './mat-components.module';
 import { DialogComponent } from './dialog/dialog.component';
 import { SlideNavComponent } from './slide-nav/slide-nav.component';
 import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
+import { EntryComponent } from './entry/entry.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -50,7 +51,7 @@ const routes: Routes = [
   },
   // { path: 'organizers/:id', component: FormComponent },
   {
-    path: 'organizers/edit',
+    path: 'organizers/:id/edit',
     component: OrganizerFormComponent,
     data: {},
     canActivate: [AuthGuard],
@@ -61,13 +62,18 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'organizers/:id',
+    component: EntryComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'activities/new',
     component: ActivityFormComponent,
     canActivate: [AuthGuard],
   },
   // { path: 'activities/:id', component: ActivityFormComponent },
   {
-    path: 'activities/edit',
+    path: 'activities/:id/edit',
     component: ActivityFormComponent,
     data: {},
     canActivate: [AuthGuard],
@@ -75,6 +81,11 @@ const routes: Routes = [
   {
     path: 'activities',
     component: ActivitiesComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'activities/:id',
+    component: EntryComponent,
     canActivate: [AuthGuard],
   },
   { path: '**', component: NotFoundComponent },
@@ -92,6 +103,7 @@ const routes: Routes = [
     TableComponent,
     DialogComponent,
     SlideNavComponent,
+    EntryComponent,
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,13 @@
+.mat-list-base .mat-list-item .mat-list-item-content{
+    align-items: flex-start !important;
+}
+.mat-icon-size {
+    position: relative !important;
+    top: -27px;
+    right: 27px;
+    font-size: 52px !important;
+  }
+  .mat-card-header {
+    display: flex;
+    justify-content: space-between;
+}

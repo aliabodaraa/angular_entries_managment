@@ -45,16 +45,10 @@
                         </ng-container>
                         <td class="d-inline-flex gap-1">
                             <!-- <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a> -->
-                            <button
-                            (click)="navigateToEditPage(entry)"
-                            mat-flat-button
-                            color="accent"
-                            >Edit</button>
-                            <button 
-                                mat-raised-button
-                                color="warn"
-                                (click)="openDialog(entry)"
-                                >Open Dialog</button>
+                            <button (click)="navigateToSpecificPage(entry,'Entry_Page')" mat-flat-button color="primary">Show</button>
+                            <button (click)="navigateToSpecificPage(entry,'Edit_Page')" mat-stroked-button color="primary">Edit</button>
+                            <button mat-raised-button color="warn" (click)="openDialog(entry)">delete
+                            </button>
                         </td>
                     </tr>
                     <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>

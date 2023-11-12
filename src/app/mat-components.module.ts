@@ -22,6 +22,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
   MatSnackBarModule,
   MAT_SNACK_BAR_DATA,
@@ -59,6 +60,7 @@ import {
     MatTooltipModule,
     MatSnackBarModule,
     MatCardModule,
+    MatProgressBarModule,
   ],
 })
 export class MatComponentsModule {}
