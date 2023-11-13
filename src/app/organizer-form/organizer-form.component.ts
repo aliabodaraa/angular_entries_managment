@@ -2,12 +2,16 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageTypeEnum, ProviderTypeEnum } from '../models/data-request-api';
 import { Location } from '@angular/common';
-import { EntryService } from '../services/entry.service';
 import * as form from '../models/form';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { EntryType, isOrganizerEntry } from '../models/app_data_state';
+import {
+  EntryType,
+  OrganizeEntry,
+  isOrganizerEntry,
+} from '../models/app_data_state';
 import { ToastrService } from 'ngx-toastr';
+import { OrganizerService } from '../services/organizer.service';
 
 @Component({
   selector: 'app-form',
@@ -16,18 +20,18 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class OrganizerFormComponent implements OnDestroy {
   submitted = false;
-  entry: EntryType | null;
+  entry: OrganizeEntry | null;
   pageType!: PageTypeEnum;
   providerType!: ProviderTypeEnum;
   public form!: FormGroup;
 
   constructor(
     private location: Location,
-    private EntryService: EntryService,
+    private org_service: OrganizerService,
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {
-    this.entry = this.EntryService.getEntryInfo() ?? null;
+    this.entry = this.org_service.getEntryInfo() ?? null;
     this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {
       this.pageType = queryParams.get('page_type')! as PageTypeEnum;
       this.providerType = queryParams.get('provider_type')! as ProviderTypeEnum;
@@ -152,7 +156,7 @@ export class OrganizerFormComponent implements OnDestroy {
 
   public save() {
     this.submitted = true;
-    let formValue: Partial<EntryType> = this.form.value;
+    let formValue: Partial<OrganizeEntry> = this.form.value;
 
     console.log(
       this.pageType,
@@ -162,12 +166,8 @@ export class OrganizerFormComponent implements OnDestroy {
       this.entry
     );
     if (this.form.valid) {
-      if (this.pageType === PageTypeEnum.New) {
-        this.EntryService.saveUpdateEntry(
-          this.providerType,
-          formValue,
-          this.pageType
-        ).subscribe(
+      if (!this.entry) {
+        this.org_service.saveEntry(formValue).subscribe(
           (s) => {
             this.location.back();
             this.toastr.success(
@@ -179,13 +179,8 @@ export class OrganizerFormComponent implements OnDestroy {
             this.toastr.error('Adding Organizer Process Failed', 'Organizer');
           }
         );
-      } else if (this.pageType === PageTypeEnum.Edit && this.entry) {
-        this.EntryService.saveUpdateEntry(
-          this.providerType,
-          formValue,
-          this.pageType,
-          this.entry.uid
-        ).subscribe(
+      } else if (this.entry) {
+        this.org_service.editEntry(formValue, this.entry.uid).subscribe(
           (s) => {
             this.location.back();
             this.toastr.info('New Organizer Updated Successfully', 'Organizer');

@@ -4,11 +4,11 @@ import {
   CreationIdentifiersEnum,
   DeletionIdentifiersEnum,
   EditionIdentifiersEnum,
-  PageRequestParams,
   ProviderPageEnum,
   isActivityDataModeEdition,
 } from '../models/data-request-api';
 import { EntryType } from '../models/app_data_state';
+import { PageRequestParams } from '../models/table';
 export type OrganizerDataMode = Partial<EntryType>;
 export type ActivityDataModeCreation = { activity: Partial<EntryType> };
 export type ActivityDataModeEdition = {

@@ -12,14 +12,6 @@ export enum PageTypeEnum {
   New = 'New',
   Edit = 'Edit',
 }
-export type PageRequestParams = {
-  pageIndex?: number;
-  pageSize?: number;
-  currentPageIndex?: number;
-  numberOfPages?: number;
-  properties: '*';
-};
-
 //Operations Section
 export enum CreationIdentifiersEnum {
   Organizer = 'AC_UA_Organizer_Create',

@@ -1,17 +1,13 @@
-import { APP_INITIALIZER, Inject, NgModule, inject } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { TOAST_CONFIG, ToastToken, ToastrModule } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { OrganizersComponent } from './organizers/organizers.component';
-import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivityFormComponent } from './activity-form/activity-form.component';
 import { ActivitiesComponent } from './activities/activities.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
 import {
-  NgbDateAdapter,
-  NgbDateNativeUTCAdapter,
   NgbModule,
   NgbNavModule,
   NgbPaginationModule,
@@ -21,7 +17,6 @@ import {
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { initializeKeycloak } from './init/keycloak-init.factory';
-import { AuthGuard } from './guard/auth.guard';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { ConfigInitService } from './init/config-init.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -29,68 +24,18 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TableComponent } from './table/table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { MatComponentsModule } from './mat-components.module';
 import { DialogComponent } from './dialog/dialog.component';
 import { SlideNavComponent } from './slide-nav/slide-nav.component';
 import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
 import { EntryComponent } from './entry/entry.component';
 import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
+import { BaseComponent } from './base/base.component';
+import { RoutingModule } from './routing/routing.module';
+import { MatComponentsModule } from './material/mat-components.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
-
-const routes: Routes = [
-  //Guests Routes
-  { path: '', component: OrganizersComponent, canActivate: [AuthGuard] },
-
-  {
-    path: 'organizers/new',
-    component: OrganizerFormComponent,
-    canActivate: [AuthGuard],
-  },
-  // { path: 'organizers/:id', component: FormComponent },
-  {
-    path: 'organizers/:id/edit',
-    component: OrganizerFormComponent,
-    data: {},
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'organizers',
-    component: OrganizersComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'organizers/:id',
-    component: EntryComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'activities/new',
-    component: ActivityFormComponent,
-    canActivate: [AuthGuard],
-  },
-  // { path: 'activities/:id', component: ActivityFormComponent },
-  {
-    path: 'activities/:id/edit',
-    component: ActivityFormComponent,
-    data: {},
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'activities',
-    component: ActivitiesComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'activities/:id',
-    component: EntryComponent,
-    canActivate: [AuthGuard],
-  },
-  { path: '**', component: NotFoundComponent },
-  // { path: '**', redirectTo: '' }
-];
 
 @NgModule({
   declarations: [
@@ -104,16 +49,16 @@ const routes: Routes = [
     DialogComponent,
     SlideNavComponent,
     EntryComponent,
+    BaseComponent,
   ],
   imports: [
     CommonModule,
-
+    RoutingModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     MatComponentsModule,
     NgbModule,
     BrowserModule,
-    RouterModule.forRoot(routes),
     FormsModule,
     ReactiveFormsModule,
     NgbNavModule,
@@ -143,6 +88,4 @@ const routes: Routes = [
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-  constructor(@Inject(TOAST_CONFIG) token: ToastToken) {}
-}
+export class AppModule {}

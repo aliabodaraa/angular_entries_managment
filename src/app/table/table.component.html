@@ -1,38 +1,22 @@
 
 
-<div class="page-header">
-        <div class="row">
-            <div class="col-xm-6 col-sm-7 col-md-8 col-lg-10">
-                <h2>
-                    {{type}}'s
-                    <span class="col col-form-label" *ngIf="loading$ | async">
-                        <div class="spinner-border text-primary spinner-border-md spinner-style" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <!-- <mat-spinner></mat-spinner> -->
-                    </span>
-                </h2>
-            </div>
-            <div class="col-xm-6 col-sm-5 col-md-4 col-lg-2 text-end">
-                <button type="button" mat-raised-button color="basic" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:type,page_type:'New'}" >create {{type}}</button>
-            </div>
-        </div>
-    </div>
-    <div class="table-responsive mt-2">
+    <h1>{{entries?"++++":"-----"}}</h1>
+    <h1>{{paginater_state?"++++":"-----"}}</h1>
+    <div class="table-responsive mt-2" *ngIf="entries;else spinner_paginator">
             <table class="table table-light table-hover">
                 <thead class="table-primary">
-                    <tr *ngIf="entries$|async as entries_arr">
+                    <tr>
                         <!-- <th scope="col">#</th> -->
-                        <ng-container *ngFor="let entry_pair of entries_arr[0]|keyvalue">
+                        <ng-container *ngFor="let entry_pair of entries[0]|keyvalue">
                             <th scope="col" *ngIf="columns.keys.includes(intoString(entry_pair.key))">
                                 {{columns.values[columns.keys.indexOf(intoString(entry_pair.key))]}}
                             </th>
                         </ng-container>
-                        <th scope="col" *ngIf="entries_arr.length">operations</th>
+                        <th scope="col" *ngIf="!!entries">operations</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let entry of entries$ | async">
+                    <tr *ngFor="let entry of entries">
                         <!-- <th scope="row">{{ entry.uid }}</th> -->
                         <ng-container *ngFor="let entry_pair of entry|keyvalue">
                             <td *ngIf="columns.keys.includes(intoString(entry_pair.key))">
@@ -44,19 +28,18 @@
                                 </ng-template>
                             </td>
                         </ng-container>
-                        <td class="d-inline-flex gap-1">
+                        <td class="d-flex gap-1 justify-content-center">
                             <!-- <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a> -->
-                            <button (click)="navigateToSpecificPage(entry,'Entry_Page')" mat-flat-button color="primary">Show</button>
-                            <button (click)="navigateToSpecificPage(entry,'Edit_Page')" mat-stroked-button color="primary">Edit</button>
-                            <button mat-raised-button color="warn" (click)="openDialog(entry)">delete
-                            </button>
+                            <button (click)="callOperation(entry,'show')" mat-flat-button color="primary">Show</button>
+                            <button (click)="callOperation(entry,'edit')" mat-stroked-button color="primary">Edit</button>
+                            <button (click)="callOperation(entry,'delete')" mat-raised-button color="warn">Delete</button>
                         </td>
                     </tr>
-                    <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
+                    <tr *ngIf="_state && !totalSize" class="text-center"><td colspan="5">NoData</td></tr>
                 </tbody>
             </table>
     </div>
-    <div class="d-flex justify-content-between p-2" *ngIf="totalSize>0 && entries$">
+    <div class="d-flex justify-content-between p-2" *ngIf="paginater_state;else spinner_paginator">
         <ngb-pagination [collectionSize]="totalSize" [(page)]="pageIndex" [pageSize]="pageSize">
         </ngb-pagination>
 
@@ -64,3 +47,6 @@
             <option *ngFor='let in of counter(totalSize) ;let i = index' [ngValue]="i+1">{{i+1}} items per page</option>
         </select>
     </div>
+    <ng-template #spinner_paginator>
+        <mat-spinner></mat-spinner>
+    </ng-template>

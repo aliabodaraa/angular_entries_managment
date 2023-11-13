@@ -1,163 +1,128 @@
-import { Component, Inject, Input } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
 import {
-  PageRequestParams,
-  ProviderTypeEnum,
-} from '../models/data-request-api';
-import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { EntryService } from '../services/entry.service';
-import { EntryType, isOrganizerEntry } from '../models/app_data_state';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../dialog/dialog.component';
-import { ToastrService } from 'ngx-toastr';
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { ProviderTypeEnum } from '../models/data-request-api';
+import { EntryType } from '../models/app_data_state';
 import { TableColumns } from '../models/table-inputs';
-interface State {
-  pageIndex: number;
-  pageSize: number;
-  totalSize: number;
-}
-type DestinationPageType = 'Entry_Page' | 'Edit_Page';
+import { take, tap } from 'rxjs/operators';
+import {
+  ModeOperationType,
+  OpertionEmitterType,
+  PageRequestParams,
+  State,
+} from '../models/table';
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
-export class TableComponent {
+export class TableComponent implements OnDestroy, OnInit {
+  private should_trigger = false;
   private _loading$ = new BehaviorSubject<boolean>(true);
   private trigger_change$ = new Subject<void>();
-  private _entries$ = new BehaviorSubject<any[]>([]);
-  private _state: State = {
-    pageIndex: 0,
-    pageSize: 5,
-    totalSize: 10,
-  };
-  @Input('type') type!: ProviderTypeEnum;
+  public _state!: State;
+  @Input('paginater_state') paginater_state!: State;
   @Input('columns') columns!: TableColumns;
+  @Output('operationEmitter') operationEmitter =
+    new EventEmitter<OpertionEmitterType>();
+  @Output('requestDataEmitter') requestDataEmitter =
+    new EventEmitter<PageRequestParams>();
+  private _data = new BehaviorSubject<EntryType[]>([]);
+  @Input('data') set entries(value: EntryType[]) {
+    this._data.next(value);
+  }
+  get entries() {
+    return this._data.getValue();
+  }
+  constructor() {
+    this.trigger_change$.subscribe(() => {
+      this.getData();
+      this._loading$.next(true);
+    });
+  }
+  ngOnChanges(changes: any) {
+    console.log('ngOnChanges', changes);
 
-  constructor(
-    private EntryService: EntryService,
-    private router: Router,
-    private dialog: MatDialog,
-    private toastr: ToastrService
-  ) {
-    this.trigger_change$
-      .pipe(
-        tap(() => this._loading$.next(true)),
-        debounceTime(200),
-        switchMap(() => this.getData()),
-        tap(() => this._loading$.next(false)),
-        map((res) => {
-          console.log(res);
-          this.totalSize = res.totalSize;
-          return this.exctractEntriesFromResponse(res);
-        }),
-        delay(200),
-        tap(() => {
-          this._loading$.next(false);
-        })
-      )
-      .subscribe((entries) => {
-        this._entries$.next(entries);
-      });
-    this.trigger_change$.next();
+    let pre_paginator = changes?.paginater_state.previousValue;
+    let post_paginator = changes?.paginater_state.currentValue;
+
+    if (!pre_paginator && post_paginator) {
+      this._state = post_paginator;
+      console.log('this._state--------------------------------');
+      if (this._state.pageSize >= this._state.totalSize)
+        this._state.pageSize = Math.ceil(this._state.totalSize / 2);
+    }
+  }
+  ngOnInit() {
+    console.log(this.paginater_state, 'ngOnInit');
+
+    // now we can subscribe to it, whenever input changes,
+    // we will run our grouping logic
+    // this._data.subscribe((x) => {
+    //   //the benifit of using subjectBehaviouy, you wait the value until comes from parent
+    //   console.log(x);
+    // });
   }
 
-  openDialog(entry: EntryType) {
-    //the open method on the service MatDialog i designed to receive Component as a parameter
-    const dialogRef = this.dialog.open(DialogComponent, {
-      data: { entry, type: this.type },
-    });
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res == 'yes') this.deleteEntry(entry);
-    });
+  ngOnDestroy(): void {
+    this.trigger_change$.unsubscribe();
   }
   get pageSize(): number {
     return this._state.pageSize;
   }
   set pageSize(pageSize: number) {
     this._state.pageSize = pageSize;
-    this.trigger_change$.next();
+    console.log('setPageSize', this._state.pageSize);
+    if (this.should_trigger) {
+      this.trigger_change$.next();
+    }
+    this.should_trigger = true;
   }
   get pageIndex(): number {
     return this._state.pageIndex;
   }
   set pageIndex(pageIndex: number) {
     this._state.pageIndex = pageIndex;
-    this.trigger_change$.next();
+    console.log('setPageIndex', this._state.pageIndex);
+    if (this.should_trigger) {
+      this.trigger_change$.next();
+    }
+    this.should_trigger = true;
   }
   get totalSize(): number {
     return this._state.totalSize;
   }
   set totalSize(totalSize: number) {
+    console.log('settotalSize', this._state.totalSize);
     this._state.totalSize = totalSize;
-  }
-  get entries$() {
-    return this._entries$.asObservable();
   }
   get loading$() {
     return this._loading$.asObservable();
   }
 
-  public navigateToSpecificPage(entry: EntryType, des: DestinationPageType) {
-    const is_orgnizer = this.type === ProviderTypeEnum.Organizer;
-    const is_edit_page = des === 'Edit_Page';
+  public callOperation(entry: EntryType, mode: ModeOperationType) {
+    let operation_data_param_obj: OpertionEmitterType = {
+      entry,
+      mode,
+    };
+    this.operationEmitter.emit(operation_data_param_obj);
+  }
 
-    const path = is_orgnizer
-      ? is_edit_page
-        ? `/organizers/${entry.uid}/edit`
-        : `/organizers/${entry.uid}`
-      : is_edit_page
-      ? `/activities/${entry.uid}/edit`
-      : `/activities/${entry.uid}`;
-
-    if (is_edit_page)
-      this.router.navigate([path], {
-        queryParams: {
-          provider_type: this.type,
-          page_type: 'Edit',
-        },
-      });
-    else
-      this.router.navigate([path], {
-        queryParams: {
-          provider_type: this.type,
-        },
-      });
-    this.EntryService.storgeEntryInfo(entry);
-  }
-  public navigateToEntryPage(entry: EntryType) {
-    const path =
-      this.type === ProviderTypeEnum.Organizer
-        ? '/organizers/:id'
-        : '/activities/:id';
-    this.router.navigate([path], {
-      queryParams: { provider_type: this.type, page_type: 'Edit' },
-    });
-    this.EntryService.storgeEntryInfo(entry);
-  }
-  private deleteEntry(entry: EntryType) {
-    this.EntryService.deleteEntry(this.type, entry).subscribe((res) => {
-      this.trigger_change$.next();
-      this.type === ProviderTypeEnum.Organizer
-        ? this.toastr.success('Organizer Deleted Successfully', 'Organizer')
-        : this.toastr.success('Activity Deleted Successfully', 'Activity');
-      console.log('Deleted the Entry Successfully');
-    });
-  }
   private getData() {
     let params: PageRequestParams = {
       pageSize: this.pageSize,
       currentPageIndex: this.pageIndex - 1,
       properties: '*',
     };
-
-    return this.EntryService.getEntries(this.type, params);
+    this.requestDataEmitter.emit(params);
   }
-  private exctractEntriesFromResponse(pure_response: any) {
-    return this.EntryService.mapPureDataToEntries(this.type, pure_response);
-  }
-
   intoString(value: unknown | string) {
     return String(value);
   }
@@ -165,4 +130,3 @@ export class TableComponent {
     return new Array(i);
   }
 }
-// if (isActivityEntry(entries)) return entries else ;

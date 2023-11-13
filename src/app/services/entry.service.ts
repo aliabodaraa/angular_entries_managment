@@ -3,11 +3,9 @@ import {
   CreationIdentifiersEnum,
   DeletionIdentifiersEnum,
   EditionIdentifiersEnum,
-  PageRequestParams,
   PageTypeEnum,
   ProviderPageEnum,
   ProviderTypeEnum,
-  isActivityDataModeEdition,
 } from '../models/data-request-api';
 import {
   DataHttpService,
@@ -23,6 +21,7 @@ import {
   isActivityEntry,
   isOrganizerEntry,
 } from '../models/app_data_state';
+import { PageRequestParams } from '../models/table';
 
 type GKeys = OrgKeysType | ActKeysType;
 type OrgKeysType = Partial<{
@@ -128,43 +127,5 @@ export class EntryService {
   }
   public storgeEntryInfo(entry: EntryType) {
     localStorage.setItem('entry', JSON.stringify(entry));
-  }
-  public mapPureDataToEntries(
-    providerType: ProviderTypeEnum,
-    pure_response: any
-  ) {
-    let entries: EntryType[] = [];
-    if (providerType === ProviderTypeEnum.Organizer)
-      entries = pure_response.entries.map((e: any) => ({
-        uid: e.uid,
-        'dc:created': e.properties['dc:created'],
-        'dc:modified': e.properties['dc:modified'],
-        'dc:creator': e.properties['dc:creator'],
-        'organizer:name': e.properties['organizer:name'],
-        'organizer:website': e.properties['organizer:website'],
-        'organizer:emails': e.properties['organizer:emails'],
-        'organizer:addresses': e.properties['organizer:addresses'],
-        'organizer:organizationActivity':
-          e.properties['organizer:organizationActivity'],
-        'organizer:phones': e.properties['organizer:phones'],
-      }));
-    else if (providerType === ProviderTypeEnum.Activity)
-      entries = pure_response.entries.map((e: any) => ({
-        uid: e.uid,
-        'dc:created': e.properties['dc:created'],
-        'dc:modified': e.properties['dc:modified'],
-        'dc:creator': e.properties['dc:creator'],
-        'dc:title': e.properties['dc:title'],
-        'dc:description': e.properties['dc:description'],
-        'activity:categorization': e.properties['activity:categorization'],
-        'activity:organizers': e.properties['activity:organizers'],
-        'activity:locations': e.properties['activity:locations'],
-        'activity:startDate': e.properties['activity:startDate'],
-        'activity:endDate': e.properties['activity:endDate'],
-        'activity:timeFrom': e.properties['activity:timeFrom'],
-        'activity:timeTo': e.properties['activity:timeTo'],
-        'activity:coverPicture': e.properties['activity:coverPicture']?.data,
-      }));
-    return entries;
   }
 }

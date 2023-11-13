@@ -1,1 +1,13 @@
-<app-table [type]="type" [columns]="columns"></app-table>
+<div class="page-header">
+    <div class="row">
+        <button type="button" mat-raised-button color="basic" [routerLink]="'/organizers/new'">create {{type}}</button>
+    </div>
+</div>
+    <app-table 
+    [columns]="columns" 
+    (operationEmitter)="executeOperation($event)"
+    (requestDataEmitter)="getData($event)"
+    mapPureDataToEntries
+    [data]="data"
+    [paginater_state]="paginater_state"
+    ></app-table>

@@ -10,9 +10,7 @@ import { ProviderTypeEnum } from '../models/data-request-api';
 })
 export class DialogComponent implements OnInit {
   data;
-  constructor(
-    @Inject(MAT_DIALOG_DATA) data: { entry: EntryType; type: ProviderTypeEnum }
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) data: { entry: EntryType }) {
     this.data = data;
     console.log('Data is : ', data);
   }
