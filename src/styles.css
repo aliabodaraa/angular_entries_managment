@@ -7,6 +7,15 @@
 @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500";
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active{
+    color: white;
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
 .dropdown-toggle{
     cursor: pointer;
 }

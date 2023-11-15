@@ -9,6 +9,7 @@ import { ActivityFormComponent } from './activity-form/activity-form.component';
 import { ActivitiesComponent } from './activities/activities.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
+
 import {
   NgbDateAdapter,
   NgbDateNativeUTCAdapter,
@@ -35,6 +36,8 @@ import { SlideNavComponent } from './slide-nav/slide-nav.component';
 import { NgbTimeStringAdapter } from './NgbTimeStringAdapter';
 import { EntryComponent } from './entry/entry.component';
 import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -104,6 +107,8 @@ const routes: Routes = [
     DialogComponent,
     SlideNavComponent,
     EntryComponent,
+    NavbarComponent,
+    SidebarComponent,
   ],
   imports: [
     CommonModule,
