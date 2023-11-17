@@ -7,6 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
+  host: {
+    '(document:click)': 'onClick($event)',
+  },
 })
 export class NavbarComponent implements OnInit {
   appUserBs: string | undefined;
@@ -27,18 +30,33 @@ export class NavbarComponent implements OnInit {
       })
       .catch((x) => console.log('QQQQQQQQQQQQQQQQQQQQ'));
   }
-
+  onClick(event: MouseEvent) {
+    // console.log(
+    //   'onClick',
+    //   event.target == this._eref.nativeElement,
+    //   'contains',
+    //   this._eref.nativeElement.contains(event.target),
+    //   'event.target',
+    //   event.target,
+    //   'this._eref.nativeElement',
+    //   this._eref.nativeElement
+    // );
+    // if (
+    //   event.target == this._eref.nativeElement ||
+    //   this._eref.nativeElement.contains(event.target)
+    // )
+    //   return;
+    // this.isUserMenuOpen = false;
+    // this.isTranslationMenuOpen = false;
+  }
   logout() {
     this.auth.logout();
   }
   isUserMenuOpen = false;
   isTranslationMenuOpen = false;
-  public closeOpeningMenues(event: MouseEvent) {
-    // this.isUserMenuOpen = false;
-    // this.isTranslationMenuOpen = false;
-    console.log('Click Parent', event);
-    // if (!this._eref.nativeElement.contains(event.target))
-    //   console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCC');
+  public closeOpeningMenues() {
+    this.isUserMenuOpen = false;
+    this.isTranslationMenuOpen = false;
   }
   toggleUserMenu(event: MouseEvent) {
     console.log('Click UserMenu');
@@ -47,6 +65,10 @@ export class NavbarComponent implements OnInit {
   toggleTranslationMenu(event: MouseEvent) {
     console.log('Click TranslationMenu');
     this.isTranslationMenuOpen = !this.isTranslationMenuOpen;
+  }
+  clickOutside(event: string) {
+    if (event == 'languages_dropdown') this.isTranslationMenuOpen = false;
+    else this.isUserMenuOpen = false;
   }
   ngOnInit(): void {}
 }

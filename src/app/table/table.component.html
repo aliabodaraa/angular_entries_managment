@@ -1,66 +1,82 @@
+<div class="flex flex-row justify-between items-start mb-3">
+    <h2 class="m-0 text-start">{{type}}'s</h2>
+    <span *ngIf="loading$ | async">
+        <button type="button" class="bg-indigo-500 ..." disabled>
+            <svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+              <!-- ... -->
+            </svg>
+            Processing...
+        </button>
+    </span>
+    <button class="bg-gray-800 text-indigo-50 hover:bg-gray-100 hover:text-slate-500 font-semibold py-2 px-4 border border-gray-200 rounded" type="button" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:type,page_type:'New'}" >create {{type}}</button>
+</div>
 
-
-<div class="page-header">
-        <div class="row">
-            <div class="col-xm-6 col-sm-7 col-md-8 col-lg-10">
-                <h2>
-                    {{type}}'s
-                    <span class="col col-form-label" *ngIf="loading$ | async">
-                        <div class="spinner-border text-primary spinner-border-md spinner-style" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <!-- <mat-spinner></mat-spinner> -->
-                    </span>
-                </h2>
-            </div>
-            <div class="col-xm-6 col-sm-5 col-md-4 col-lg-2 text-end">
-                <button type="button" mat-raised-button color="basic" [routerLink]="type === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:type,page_type:'New'}" >create {{type}}</button>
-            </div>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr *ngIf="entries$|async as entries_arr">
+                <ng-container *ngFor="let entry_pair of entries_arr[0]|keyvalue">
+                    <th scope="col" *ngIf="columns.keys.includes(intoString(entry_pair.key))">
+                        {{columns.values[columns.keys.indexOf(intoString(entry_pair.key))]}}
+                    </th>
+                </ng-container>
+                <th scope="col" *ngIf="entries_arr.length">operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let entry of entries$ | async">
+                <!-- <th scope="row">{{ entry.uid }}</th> -->
+                <ng-container *ngFor="let entry_pair of entry|keyvalue">
+                    <td *ngIf="columns.keys.includes(intoString(entry_pair.key))">
+                        <ng-container *ngIf="intoString(entry_pair.key).toLowerCase()!=='dc:created' && intoString(entry_pair.key).toLowerCase()!=='dc:modified';else date">
+                            {{entry_pair.value}}
+                        </ng-container>
+                        <ng-template #date>
+                            {{intoString(entry_pair.value)|date:'d/M/yyyy'}}
+                        </ng-template>
+                    </td>
+                </ng-container>
+                <td class="flex">
+                    <button (click)="navigateToSpecificPage(entry,'Entry_Page')" class="bg-slate-100 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 border border-blue-400 rounded">Show</button>
+                    <button (click)="navigateToSpecificPage(entry,'Edit_Page')" class="bg-blue-400 hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-blue-400 rounded">Edit</button>
+                    <button (click)="openDialog(entry)" class="bg-slate-600 hover:bg-red-700 text-gray-800 font-semibold py-2 px-4 border border-red-400 rounded">delete</button>
+                </td>
+            </tr>
+            <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
+        </tbody>
+    </table>
+    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span class="font-semibold text-gray-900 dark:text-white">1-10</span> of <span class="font-semibold text-gray-900 dark:text-white">1000</span></span>
+        <!-- <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+            <li>
+                <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+            </li>
+            <li>
+                <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+            </li>
+            <li>
+        <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+            </li>
+        </ul> -->
+        <div class="d-flex justify-content-between p-2" *ngIf="totalSize>0 && entries$">
+            <ngb-pagination [collectionSize]="totalSize" [(page)]="pageIndex" [pageSize]="pageSize">
+            </ngb-pagination>
+    
+            <select class="form-select" style="width: auto;height: 25%" name="pageSize" [(ngModel)]="pageSize">
+                <option *ngFor='let in of counter(totalSize) ;let i = index' [ngValue]="i+1">{{i+1}} items per page</option>
+            </select>
         </div>
-    </div>
-    <div class="table-responsive mt-2">
-            <table class="table table-light table-hover">
-                <thead class="table-primary">
-                    <tr *ngIf="entries$|async as entries_arr">
-                        <!-- <th scope="col">#</th> -->
-                        <ng-container *ngFor="let entry_pair of entries_arr[0]|keyvalue">
-                            <th scope="col" *ngIf="columns.keys.includes(intoString(entry_pair.key))">
-                                {{columns.values[columns.keys.indexOf(intoString(entry_pair.key))]}}
-                            </th>
-                        </ng-container>
-                        <th scope="col" *ngIf="entries_arr.length">operations</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let entry of entries$ | async">
-                        <!-- <th scope="row">{{ entry.uid }}</th> -->
-                        <ng-container *ngFor="let entry_pair of entry|keyvalue">
-                            <td *ngIf="columns.keys.includes(intoString(entry_pair.key))">
-                                <ng-container *ngIf="intoString(entry_pair.key).toLowerCase()!=='dc:created' && intoString(entry_pair.key).toLowerCase()!=='dc:modified';else date">
-                                    {{entry_pair.value}}
-                                </ng-container>
-                                <ng-template #date>
-                                    {{intoString(entry_pair.value)|date:'d/M/yyyy'}}
-                                </ng-template>
-                            </td>
-                        </ng-container>
-                        <td class="d-inline-flex gap-1">
-                            <!-- <a class="btn btn-danger" (click)="deleteEntry(entry)">delete</a> -->
-                            <button (click)="navigateToSpecificPage(entry,'Entry_Page')" mat-flat-button color="primary">Show</button>
-                            <button (click)="navigateToSpecificPage(entry,'Edit_Page')" mat-stroked-button color="primary">Edit</button>
-                            <button mat-raised-button color="warn" (click)="openDialog(entry)">delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr *ngIf="!totalSize" class="text-center"><td colspan="5">NoData</td></tr>
-                </tbody>
-            </table>
-    </div>
-    <div class="d-flex justify-content-between p-2" *ngIf="totalSize>0 && entries$">
-        <ngb-pagination [collectionSize]="totalSize" [(page)]="pageIndex" [pageSize]="pageSize">
-        </ngb-pagination>
-
-        <select class="form-select" style="width: auto;height: 25%" name="pageSize" [(ngModel)]="pageSize">
-            <option *ngFor='let in of counter(totalSize) ;let i = index' [ngValue]="i+1">{{i+1}} items per page</option>
-        </select>
-    </div>
+    </nav>
+</div>

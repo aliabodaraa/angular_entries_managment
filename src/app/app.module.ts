@@ -11,8 +11,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
 
 import {
-  NgbDateAdapter,
-  NgbDateNativeUTCAdapter,
   NgbModule,
   NgbNavModule,
   NgbPaginationModule,
@@ -38,6 +36,7 @@ import { EntryComponent } from './entry/entry.component';
 import { OrganizerFormComponent } from './organizer-form/organizer-form.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ClickOutsideDirective } from './click-out-side.directive';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -109,6 +108,7 @@ const routes: Routes = [
     EntryComponent,
     NavbarComponent,
     SidebarComponent,
+    ClickOutsideDirective,
   ],
   imports: [
     CommonModule,
