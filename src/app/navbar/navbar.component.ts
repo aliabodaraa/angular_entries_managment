@@ -66,9 +66,10 @@ export class NavbarComponent implements OnInit {
     console.log('Click TranslationMenu');
     this.isTranslationMenuOpen = !this.isTranslationMenuOpen;
   }
-  clickOutside(event: string) {
-    if (event == 'languages_dropdown') this.isTranslationMenuOpen = false;
-    else this.isUserMenuOpen = false;
+  clickOutside(type_param: string) {
+    console.log('CBBBBBBBBBBB', type_param);
+    if (type_param == 'languages_dropdown') this.isTranslationMenuOpen = false;
+    else if (type_param == 'profile_dropdown') this.isUserMenuOpen = false;
   }
   ngOnInit(): void {}
 }

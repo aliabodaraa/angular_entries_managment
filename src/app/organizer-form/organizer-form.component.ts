@@ -20,6 +20,9 @@ export class OrganizerFormComponent implements OnDestroy {
   pageType!: PageTypeEnum;
   providerType!: ProviderTypeEnum;
   public form!: FormGroup;
+  public is_emails_list_shown = false;
+  public is_addresses_list_shown = false;
+  public is_phones_list_shown = false;
 
   constructor(
     private location: Location,

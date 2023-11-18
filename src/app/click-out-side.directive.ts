@@ -17,6 +17,7 @@ export class ClickOutsideDirective {
     event: MouseEvent
   ): void {
     if (!event.target) return;
+    console.log('AAAAAAAAAAAAAAA', event.target);
     const clickedInside = this._elementRef.nativeElement.contains(event.target);
     if (!clickedInside) this.clickOutsideEmitter.emit();
   }

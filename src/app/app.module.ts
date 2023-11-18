@@ -9,7 +9,6 @@ import { ActivityFormComponent } from './activity-form/activity-form.component';
 import { ActivitiesComponent } from './activities/activities.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { BsNavbarComponent } from './bs-navbar/bs-navbar.component';
-
 import {
   NgbModule,
   NgbNavModule,

@@ -1,131 +1,186 @@
 
-
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{pageType=="Edit"?"Edit Organizer":"Create Organizer"}}</mat-card-title>
-    </mat-card-header>
-        <form [formGroup]="form" (ngSubmit)="save()">
-            <div class="title">
-                <label for="name" class="form-label">name :</label>
-                <mat-form-field class="form-field w-100">
-                    <mat-label> name
-                    </mat-label>
-                    <input matInput formControlName="organizer:name" required>
-                    <mat-error *ngIf="(submitted && !!accessName?.errors) || (accessName?.touched && accessName?.invalid)">
-                        <span *ngIf="accessName?.errors?.['required']">This field is mandatory.</span>
-                        <span *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName.errors?.['minlength']?.requiredLength}}, You entered only {{accessName.errors?.['minlength']?.actualLength}} characters</span>
-                    </mat-error>
-                </mat-form-field>
+<!-- box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+} -->
+<div class="shadow-md p-3 rounded-md">
+        <h1>{{pageType=="Edit"?"Edit Organizer":"Create Organizer"}}</h1>
+        <form [formGroup]="form" (ngSubmit)="save()" class="sm:text-3xl flex flex-col gap-4">
+            <div id="organizer_name">
+                <label class="block text-sm font-medium text-slate-700" for="org_name">Organizer Name :</label>
+                <!-- Using form state modifiers, the classes can be identical for every input -->
+                <input type="text" id="org_name" formControlName="organizer:name"
+                class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                placeholder="Enter Organizer Name"/>
+                <div *ngIf="(submitted && !!accessName?.errors) || (accessName?.touched && accessName?.invalid)">
+                    <span class="text-xs text-red-500" *ngIf="accessName?.errors?.['required']">This field is mandatory.</span>
+                    <span class="text-xs text-red-500" *ngIf="accessName?.errors?.['minlength']">should be minimum {{accessName.errors?.['minlength']?.requiredLength}}, You entered only {{accessName.errors?.['minlength']?.actualLength}} characters</span>
+                </div>                          
             </div>
-            <div class="emails">
-                <label for="emails" class="form-label">Emails :</label>
-                <div class="email-wrapper">
-                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(emailInput,accessEmails,'emails')" ><mat-icon>add</mat-icon></button>
-                    <mat-form-field class="w-75">
-                        <mat-label> new email </mat-label>
-                        <input matInput #emailInput>
-                    </mat-form-field>
+            
+            <div id="emails">
+                <label class="block text-sm font-medium text-slate-700" for="new_email">Emails :</label>
+                <div class="flex gap-1">
+                    <button type="button" class="w-32 bg-gray-600 active:bg-gray-700 bg-teal-700 hover:bg-teal-600 text-white p-1 rounded-md border-solid border-slate-900 dark:border-none" (click)="addToFormArray(emailInput,accessEmails,'emails')" ><mat-icon>add</mat-icon></button>
+                    <div class="w-full relative">
+                        <input (keyup.enter)="addToFormArray(emailInput,accessEmails,'emails')" id="new_email" class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                        placeholder="Enter your Email Adrress"
+                        #emailInput>
+                        <a *ngIf="accessEmails.controls.length>0" type="button" (click)="is_emails_list_shown=!is_emails_list_shown" 
+                            class="text-xs underline text-blue-500 absolute right-0">
+                            {{is_emails_list_shown?'hide':'show'}} emails list
+                        </a>
+                    </div>
                 </div>
-                <ul class="list-group elements-list" formArrayName="organizer:emails">
+                
+                <ul *ngIf="is_emails_list_shown" formArrayName="organizer:emails" class="mt-4">
                     <li *ngFor="let emailObj of accessEmails.controls; let index=index"
                     [formGroupName]="index"
-                    class="list-group-item"
-                    >
-                        {{emailObj.get('emailAddress')?.value}}
-                        <span class="material-symbols-outlined d-block float-end" color="accent"  (click)="removeFromFormArray(accessEmails, index)">
-                            <mat-icon>delete</mat-icon>
-                        </span>
-                        <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="text-danger">
+                    class="list-item px-1">
+                        <div class="flex justify-between">
+                            <div class="email">
+                                <span class="text-base font-normal text-slate-700">{{emailObj.get('emailAddress')?.value}}</span>
+                            </div>
+                            <div class="icon" (click)="removeFromFormArray(accessEmails, index)">
+                                <i class="bi bi-trash3-fill text-danger text-sm"></i>
+                            </div>
+                        </div>
+                        <div *ngIf="(submitted && !!emailObj?.errors) || emailObj?.invalid" class="text-xs text-red-500">
                             <div *ngIf="emailObj.get('emailAddress')?.errors?.['minlength']">should be minimum {{emailObj.get('emailAddress')?.errors?.['minlength']?.requiredLength}}, You entered only {{emailObj.get('emailAddress')?.errors?.['minlength']?.actualLength}} characters</div>
                             <div *ngIf="emailObj.get('emailAddress')?.errors?.['email']">Email must be a valid email address</div>
                         </div>
+                        <hr class="mx-auto bg-black dark:bg-white w-full my-1" />
                     </li>
                 </ul>
-                <div *ngIf="(submitted && !!accessEmails?.errors)" class="text-danger">
-                    <div *ngIf="accessEmails?.errors?.['required']">Emails Field is Required</div>
-                </div>
+                <div *ngIf="(submitted && !!accessEmails?.errors)" class="text-xs text-red-500">
+                    <div *ngIf="accessEmails?.errors?.['required']">Email Field is Required</div>
+                </div>                    
             </div>
-            <div class="addresses">
-                <div class="email-wrapper">
-                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(addressInput,accessAddresses,'addresses')" ><mat-icon>add</mat-icon></button>
-                    <mat-form-field class="w-75">
-                        <mat-label> new address </mat-label>
-                        <input matInput #addressInput>
-                    </mat-form-field>
+
+            <div id="addresses">
+                <label class="block text-sm font-medium text-slate-700" for="new_address">Addresses :</label>
+                <div class="flex gap-1">
+                    <button type="button" class="w-32 bg-gray-600 active:bg-gray-700 bg-teal-700 hover:bg-teal-600 text-white p-1 rounded-md border-solid border-slate-900 dark:border-none" (click)="addToFormArray(addressInput,accessAddresses,'addresses')"><mat-icon>add</mat-icon></button>
+                    <div class="w-full relative">
+                        <input (keyup.enter)="addToFormArray(addressInput,accessAddresses,'addresses')" id="new_address" class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                        placeholder="Enter your Address"
+                        #addressInput>
+                        <a *ngIf="accessAddresses.controls.length>0" type="button" (click)="is_addresses_list_shown=!is_addresses_list_shown" 
+                            class="text-xs underline text-blue-500 absolute right-0">
+                            {{is_addresses_list_shown?'hide':'show'}} emails list
+                        </a>
+                    </div>
                 </div>
-                <ul class="list-group elements-list" formArrayName="organizer:addresses">
-                    <li
-                    *ngFor="let addressObj of accessAddresses.controls; let index=index"
+                
+                <ul *ngIf="is_addresses_list_shown" formArrayName="organizer:addresses" class="mt-4">
+                    <li *ngFor="let addressObj of accessAddresses.controls; let index=index"
                     [formGroupName]="index"
-                    class="list-group-item"
-                    >
-                    {{addressObj.get('address')?.value}} 
-                    <!-- <span class="text-warning">Label generated dynamically :{{addressObj.get('label')?.value}} </span> -->
-                    <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessAddresses, index)"></i>
-                        <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="text-danger">
+                    class="list-item px-1">
+                        <div class="flex justify-between">
+                            <div class="address">
+                                <span class="text-base font-normal text-slate-700">{{addressObj.get('address')?.value}}</span>
+                            </div>
+                            <div class="icon" (click)="removeFromFormArray(accessAddresses, index)">
+                                <i class="bi bi-trash3-fill text-danger text-sm"></i>
+                            </div>
+                        </div>
+                        <div *ngIf="(submitted && !!addressObj.get('address')?.errors) || addressObj.get('address')?.invalid" class="text-xs text-red-500">
                             <div *ngIf="addressObj.get('address')?.errors?.['minlength']">should be minimum {{addressObj.get('address')?.errors?.['minlength']?.requiredLength}}, You entered only {{addressObj.get('address')?.errors?.['minlength']?.actualLength}} characters</div>
                         </div>
+                        <hr class="mx-auto bg-black dark:bg-white w-full my-1" />
                     </li>
                 </ul>
-                <div *ngIf="(submitted && !!accessAddresses?.errors)" class="text-danger">
-                    <div *ngIf="accessAddresses?.errors?.['required']">Addresses Field is Required</div>
-                </div>
+                <div *ngIf="(submitted && !!accessAddresses?.errors)" class="text-xs text-red-500">
+                    <div *ngIf="accessAddresses?.errors?.['required']">Address Field is Required</div>
+                </div>                 
             </div>
-            <div class="organizationActivity">
-                <label for="tiorganizationActivitytle" class="form-label">Organization Activity :</label>
-                <mat-form-field class="form-field w-100">
-                    <mat-label> title
-                    </mat-label>
-                    <input matInput formControlName="organizer:organizationActivity" required>
-                    <mat-error *ngIf="(submitted && !!accessOrganizationActivity?.errors) || (accessOrganizationActivity?.touched && accessOrganizationActivity?.invalid)">
-                        <span *ngIf="accessOrganizationActivity?.errors?.['required']">This field is mandatory.</span>
-                        <span *ngIf="accessOrganizationActivity?.errors?.['minlength']">should be minimum {{accessOrganizationActivity.errors?.['minlength']?.requiredLength}}, You entered only {{accessOrganizationActivity.errors?.['minlength']?.actualLength}} characters</span>
-                    </mat-error>
-                </mat-form-field>
+
+            <div id="organizationActivity">
+                <label class="block text-sm font-medium text-slate-700" for="new_organization_activity">Organization Activity :</label>
+                <!-- Using form state modifiers, the classes can be identical for every input -->
+                <input type="text" id="new_organization_activity" formControlName="organizer:organizationActivity"
+                class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                placeholder="Enter Organization Activity"/>
+                <div *ngIf="(submitted && !!accessOrganizationActivity?.errors) || (accessOrganizationActivity?.touched && accessOrganizationActivity?.invalid)" class="text-xs text-red-500">
+                    <span *ngIf="accessOrganizationActivity?.errors?.['required']">This field is mandatory.</span>
+                    <span *ngIf="accessOrganizationActivity?.errors?.['minlength']">should be minimum {{accessOrganizationActivity.errors?.['minlength']?.requiredLength}}, You entered only {{accessOrganizationActivity.errors?.['minlength']?.actualLength}} characters</span>
+                </div>                          
             </div>
-            <div class="phones">
-                <label for="emails" class="form-label">Phones :</label>
-                <div class="email-wrapper">
-                    <button type="button" class="w-25" mat-raised-button color="primary" (click)="addToFormArray(phoneInput,accessPhones,'phones')" ><mat-icon>add</mat-icon></button>
-                    <mat-form-field class="w-75">
-                        <mat-label> new phone </mat-label>
-                        <input matInput #phoneInput>
-                    </mat-form-field>
-                </div>
-                <ul class="list-group elements-list" formArrayName="organizer:phones">
-                    <li
-                    *ngFor="let phoneObj of accessPhones.controls; let index=index"
-                    [formGroupName]="index"
-                    class="list-group-item"
-                    >
-                    {{phoneObj.get('phoneNumber')?.value}} 
-                    <!-- <span class="text-warning">Label generated dynamically :{{phoneObj.get('label')?.value}} </span> -->
-                    <i class="bi bi-trash3-fill text-danger float-end" (click)="removeFromFormArray(accessPhones, index)"></i>
-                    <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="text-danger">
-                        <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['minlength']">should be minimum {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.requiredLength}}, You entered only {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.actualLength}} characters</div>
-                        <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['pattern']">invalid phone</div>
+
+            <div id="phones">
+                <label class="block text-sm font-medium text-slate-700" for="new_phone">Phones :</label>
+                <div class="flex gap-1">
+                    <button type="button" class="w-32 bg-gray-600 active:bg-gray-700 bg-teal-700 hover:bg-teal-600 text-white p-1 rounded-md border-solid border-slate-900 dark:border-none" (click)="addToFormArray(phoneInput,accessPhones,'phones')"><mat-icon>add</mat-icon></button>
+                    <div class="w-full relative">
+                        <input (keyup.enter)="addToFormArray(phoneInput,accessPhones,'phones')" id="new_phone" class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                        placeholder="Enter your Phone Number"
+                        #phoneInput>
+                        <a *ngIf="accessPhones.controls.length>0" type="button" (click)="is_phones_list_shown=!is_phones_list_shown" 
+                            class="text-xs underline text-blue-500 absolute right-0">
+                            {{is_phones_list_shown?'hide':'show'}} emails list
+                        </a>
                     </div>
-                </li>
-            </ul>
-            <div *ngIf="(submitted && !!accessPhones?.errors)" class="text-danger">
-                <div *ngIf="accessPhones?.errors?.['required']">Phones Field is Required</div>
+                </div>
+                
+                <ul *ngIf="is_phones_list_shown" formArrayName="organizer:phones" class="mt-4">
+                    <li *ngFor="let phoneObj of accessPhones.controls; let index=index"
+                    [formGroupName]="index"
+                    class="list-item px-1">
+                        <div class="flex justify-between">
+                            <div class="phone">
+                                <span class="text-base font-normal text-slate-700">{{phoneObj.get('phoneNumber')?.value}}</span>
+                            </div>
+                            <div class="icon" (click)="removeFromFormArray(accessPhones, index)">
+                                <i class="bi bi-trash3-fill text-danger text-sm"></i>
+                            </div>
+                        </div>
+                        <div *ngIf="(submitted && !!phoneObj.get('phoneNumber')?.errors) || phoneObj.get('phoneNumber')?.invalid" class="text-xs text-red-500">
+                            <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['minlength']">should be minimum {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.requiredLength}}, You entered only {{phoneObj.get('phoneNumber')?.errors?.['minlength']?.actualLength}} characters</div>
+                            <div *ngIf="phoneObj.get('phoneNumber')?.errors?.['pattern']">invalid phone</div>
+                        </div>
+                        <hr class="mx-auto bg-black dark:bg-white w-full my-1" />
+                    </li>
+                </ul>
+                <div *ngIf="(submitted && !!accessPhones?.errors)" class="text-xs text-red-500">
+                    <div *ngIf="accessPhones?.errors?.['required']">Phone Number Field is Required</div>
+                </div>                 
             </div>
+
+            <div id="website">
+                <label class="block text-sm font-medium text-slate-700" for="new_website">Website :</label>
+                <!-- Using form state modifiers, the classes can be identical for every input -->
+                <input type="text" id="new_website" formControlName="organizer:website"
+                class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                        border border-transparent focus:outline-none"
+                placeholder="Enter Your Website"/>
+                <div *ngIf="(submitted && !!accessWebsite?.errors) || (accessWebsite?.touched && accessWebsite?.invalid)" class="text-xs text-red-500">
+                    <span *ngIf="accessWebsite?.errors?.['required']">Website Field is Required.</span>
+                    <span *ngIf="accessWebsite?.errors?.['pattern']">invalid website</span>
+                </div>                          
             </div>
-            <div class="website">
-                <label for="Website" class="form-label">Website :</label>
-                <mat-form-field class="form-field w-100">
-                    <mat-label> Website
-                    </mat-label>
-                    <input matInput formControlName="organizer:website" type="url" required>
-                    <mat-error *ngIf="(submitted && !!accessWebsite?.errors) || (accessWebsite?.touched && accessWebsite?.invalid)">
-                        <span *ngIf="accessWebsite?.errors?.['required']">Website Field is Required.</span>
-                        <span *ngIf="accessWebsite?.errors?.['pattern']">invalid website</span>
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <mat-card-actions>
-                <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">SAVE</button>
-                <!-- <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button> -->
-            </mat-card-actions>
+            
+            <button disabled type="submit" class="w-1/6 h-11 text-white text-sm text-center font-medium rounded-md bg-gray-600 
+            {{form.valid?'hover:bg-gray-700 cursor-pointer':'cursor-not-allowed'}}
+            opacity-{{!form.valid || submitted?'70':'100'}} 
+            focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 
+            dark:focus:ring-blue-800 {{submitted??'inline-flex items-center'}}"
+            [disabled]="!form.valid || submitted">
+                <svg *ngIf="submitted" aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                </svg>
+                {{submitted?'saving ...':'save'}}
+            </button>
+
+            <!-- <button disabled type="button" class="py-2.5 px-5 me-2 text-sm font-medium text-gray-900 bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center">
+                <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
+                </svg>
+                Loading...
+            </button> -->
     </form>
-</mat-card>
+</div>

@@ -1,42 +1,98 @@
-<mat-card>
-    <mat-card-header>
-    <mat-card-title>{{pageType=="Edit"?"Edit Activity":"Create Activity"}}</mat-card-title>
-    </mat-card-header>
-        <form [formGroup]="form" (ngSubmit)="save()" class="form-floating">
-                <div class="row py-4">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <mat-form-field class="form-field">
-                            <mat-label> title
-                            </mat-label>
-                            <input matInput formControlName="dc:title" required>
-                            <mat-error *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
-                                <span *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <mat-form-field class="form-field">
-                            <mat-label> description
-                            </mat-label>
-                            <input matInput formControlName="dc:description" required>
-                            <mat-error *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
-                            <span *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
-                            </mat-error>
-                        </mat-form-field>
+<div class="shadow-md p-3 rounded-md">
+        <h1>{{pageType=="Edit"?"Edit Activity":"Create Activity"}}</h1>
+        <form [formGroup]="form" (ngSubmit)="save()" class="sm:text-3xl flex flex-col gap-4">
+                <div class="flex flex-col gap-4 sm:flex-row">
+                    <div class="w-100 sm:w-1/2">
+                        <div id="title_field">
+                            <label class="block text-sm font-medium text-slate-700" for="title">title :</label>
+                            <input type="text" id="title" formControlName="dc:title"
+                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                    border border-transparent focus:outline-none"
+                            placeholder="Enter title"/>
+                            <div *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
+                                <span class="text-xs text-red-500" *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
+                            </div>                          
+                        </div>
                     </div>
                 </div>
-                <div class="row py-4">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <mat-form-field class="form-field">
-                            <mat-label> categorization
-                            </mat-label>
-                            <input matInput formControlName="activity:categorization" required>
-                            <mat-error *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
-                            <span *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
-                            </mat-error>
-                        </mat-form-field>
+                <div class="flex flex-col gap-4 sm:flex-row">
+                    <div class="w-100 sm:w-1/2">
+                        <div id="description_field">
+                            <label class="block text-sm font-medium text-slate-700" for="description">description :</label>
+                            <textarea formControlName="dc:description" id="description" cols="30" rows="20"
+                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                    border border-transparent focus:outline-none"
+                            placeholder="Enter description"></textarea>
+                            <div *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
+                                <span class="text-xs text-red-500" *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
+                            </div>                          
+                        </div>
                     </div>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                    <div class="w-100 sm:w-1/2">
+                        <div id="categorization_field">
+                            <label class="block text-sm font-medium text-slate-700" for="categorization">categorization :</label>
+                            <input type="text" id="categorization" formControlName="activity:categorization"
+                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                    border border-transparent focus:outline-none"
+                            placeholder="Enter categorization"/>
+                            <div *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
+                                <span class="text-xs text-red-500" *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
+                            </div>                          
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-4 sm:flex-row">
+                    
+                        <div date-rangepicker class="flex  flex-col gap-4 sm:flex-row">
+                                <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                    </svg>
+                                </div>
+                                <input name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
+                                </div>
+                                <span class="mx-4 text-gray-500">to</span>
+                                <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                    </svg>
+                                </div>
+                                <input name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
+                            </div>
+                        </div>
+  
+                    
+
+                        <div class="flex flex-wrap -mx-1">
+                            <ng-container >
+                              <div style="width: 14.28%" class="text-center border-none p-1 border-transparent text-sm"></div>
+                            </ng-container>
+                            <ng-container>
+                              <div style="width: 14.28%" class="px-1 mb-1">
+                                <div
+                                  class="
+                                    cursor-pointer
+                                    text-center text-sm
+                                    rounded-full
+                                    leading-loose
+                                    transition
+                                    ease-in-out
+                                    duration-100
+                                  "
+                                  [ngClass]="{
+                                  }"
+                                >
+                                 
+                                </div>
+                              </div>
+                            </ng-container>
+                          </div>
+
+
+<!-- 
+                    <div class="w-100 sm:w-1/2">
                         <mat-form-field class="form-field">
                             <mat-label> startDate
                             </mat-label>
@@ -52,8 +108,7 @@
                                 <span *ngIf="f['dc:startDate'].errors?.required">This field is mandatory.</span>
                             </mat-error>
                         </mat-form-field>
-                        <!-- {{f['activity:startDate'].value}} -->
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row py-4">
                     <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
@@ -187,7 +242,7 @@
                 <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button>
             </mat-card-actions>
     </form>
-</mat-card>
+</div>
 
 
              

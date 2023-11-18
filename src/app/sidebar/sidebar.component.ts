@@ -14,6 +14,7 @@ export class SidebarComponent implements OnInit {
   isOpen: boolean = true;
 
   routeName: string = '';
+  isMenuCollapsed = true;
 
   constructor() {}
 

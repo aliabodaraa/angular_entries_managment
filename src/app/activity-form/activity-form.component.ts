@@ -23,7 +23,7 @@ import { take } from 'rxjs/operators';
 import { UploadCoverService } from '../services/upload-cover.service';
 import { ToastrService } from 'ngx-toastr';
 type OrganizerObjectType = { id: string; name: string };
-
+// declare var Datepicker: any;
 @Component({
   selector: 'app-activity-form',
   templateUrl: './activity-form.component.html',
@@ -70,6 +70,16 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
       this.meridian2 = !this.meridian2;
     }
   }
+  // private initDatePickerElement(element: any): void {
+  //   new Datepicker(element, this.datePickerConfig);
+  //   element.addEventListener('changeDate', (e: any) => {
+  //     const value = e.target.value;
+  //     const formControlName = e.target.getAttribute('formControlNamePath');
+  //     const formControl = this.form.get(formControlName);
+  //     formControl?.setValue(value);
+  //     formControl?.markAsDirty();
+  //   });
+  // }
   ngOnInit() {
     this.form = this.formBuilder.group({
       'dc:title': ['', Validators.required],
