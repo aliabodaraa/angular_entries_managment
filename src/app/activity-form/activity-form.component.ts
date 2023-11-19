@@ -40,8 +40,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   organizers_objects!: OrganizerObjectType[];
   entry_organizer_name!: string | null;
-  coverPicture: { data: string } | null = null;
-
+  coverPicture: string | ArrayBuffer | null = null;
+  isImageLoading = false;
   constructor(
     private location: Location,
     private EntryService: EntryService,
@@ -83,29 +83,25 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   //   });
   // }
   ngOnInit() {
-    this.form = this.formBuilder.group(
-      {
-        'dc:title': ['', Validators.required],
-        'dc:description': ['', Validators.required],
-        'activity:categorization': ['categ1', Validators.required],
-        'activity:locations': this.formBuilder.group({
-          city: ['city1'],
-          geographicLocation: ['', Validators.required],
-        }),
-        'activity:organizers': ['', Validators.required],
-        'activity:startDate': ['', [Validators.required]],
-        'activity:endDate': ['', Validators.required],
-        'activity:timeFrom': ['', Validators.required],
-        'activity:timeTo': ['', Validators.required],
-        'activity:coverPicture': this.formBuilder.group({
-          'upload-batch': '',
-          'upload-fileId': '0',
-        }),
-      },
-      {
-        validators: [creatDateRangeValidator()],
-      }
-    );
+    this.form = this.formBuilder.group({
+      'dc:title': ['', Validators.required],
+      'dc:description': ['', Validators.required],
+      'activity:categorization': ['categ1', Validators.required],
+      'activity:locations': this.formBuilder.group({
+        city: ['city1'],
+        geographicLocation: ['', Validators.required],
+      }),
+      'activity:organizers': ['', Validators.required],
+      'activity:startDate': ['', [Validators.required]],
+      'activity:endDate': ['', Validators.required],
+      'activity:timeFrom': ['', Validators.required],
+      'activity:timeTo': ['', Validators.required],
+      'activity:coverPicture': this.formBuilder.group({
+        'upload-batch': ['', Validators.required],
+        'upload-fileId': '0',
+      }),
+    });
+    this.form.addValidators(creatDateRangeValidator);
     if (this.entry) {
       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
       this.mapEntryToForm();
@@ -201,6 +197,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
 
   private mapEntryToForm() {
     if (this.entry && isActivityEntry(this.entry)) {
+      this.mapImageUrlToForm(this.entry['activity:coverPicture']);
+
       this.form.patchValue({
         'dc:title': this.entry['dc:title'],
         'dc:description': this.entry['dc:description'],
@@ -210,7 +208,7 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         'activity:organizers': this.entry['activity:organizers'][0],
         'activity:timeFrom': this.entry['activity:timeFrom'],
         'activity:timeTo': this.entry['activity:timeTo'],
-        'activity:coverPicture': this.entry['activity:coverPicture']?.data,
+        // 'activity:coverPicture': this.entry['activity:coverPicture'],
         'activity:locations': this.entry['activity:locations'],
       });
       for (const key in this.entry) {
@@ -303,20 +301,90 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     }
     console.log(this.pageType);
   }
-  fun(ing_input: any) {
-    console.log(ing_input);
-    document.getElementById('coverPicture')?.click();
+  clickCoverPictureInput() {
+    document.getElementById('coverPictureInput')?.click();
+  }
+  resetCoverImage() {
+    this.accessCoverPicture.reset();
+    this.coverPicture = '';
+  }
+  swipeCoverPicture() {
+    var largeImage = document.getElementById('coverPicture')!;
+    largeImage.style.display = 'block';
+    largeImage.style.width = 200 + 'px';
+    largeImage.style.height = 200 + 'px';
+    var url = largeImage.getAttribute('src')!;
+    window.open(
+      url,
+      'Image',
+      'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1'
+    );
+    window.open(
+      url,
+      'targetWindow',
+      `toolbar=no,
+                                    location=no,
+                                    status=no,
+                                    menubar=no,
+                                    scrollbars=yes,
+                                    resizable=yes,
+                                    width=SomeSize,
+                                    height=SomeSize`
+    );
   }
   // on select image
-  onAttachFileChange(event: any): void {
-    let fileName = event.target.files[0];
-    this.uploadCoverService.uploadCover(fileName).subscribe((res: any) => {
+  private mapImageUrlToForm(image_url: string | File) {
+    this.isImageLoading = true;
+    this.uploadCoverService.uploadCover(image_url).subscribe((res: any) => {
       this.f['activity:coverPicture'].patchValue({
         'upload-batch': res.blob['upload-batch'],
         'upload-fileId': res.blob['upload-fileId'],
       });
+      //show loader until end this proccess
       console.log(res.blob);
+      this.isImageLoading = false;
     });
+  }
+  onAttachFileChange(event: any): void {
+    const file: File = event.target.files[0];
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      this.coverPicture = reader.result;
+    };
+    console.log(event, file, reader);
+
+    console.log('change________________');
+    this.isImageLoading = true;
+    this.mapImageUrlToForm(file);
+  }
+
+  setMinDate() {
+    let startDate = new Date(this.form.get('activity:startDate')?.value);
+    let month = '' + (startDate.getMonth() + 1);
+    let day = '' + startDate.getDate();
+    let year = startDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    document
+      .getElementById('endDate')
+      ?.setAttribute('min', [year, month, day].join('-'));
+  }
+  setMaxDate() {
+    let endDate = new Date(this.form.get('activity:endDate')?.value);
+    if (!endDate) return;
+    let month = '' + (endDate.getMonth() + 1);
+    let day = '' + endDate.getDate();
+    let year = endDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    document
+      .getElementById('startDate')
+      ?.setAttribute('max', [year, month, day].join('-'));
   }
   ngOnDestroy(): void {
     localStorage.removeItem('entry');

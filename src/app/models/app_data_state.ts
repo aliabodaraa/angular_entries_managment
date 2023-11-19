@@ -3,9 +3,7 @@ type LocationType = { city: string; geographicLocation: string };
 export type EmailType = { emailAddress: string; label: string };
 export type AddressType = { address: string; label: string };
 export type PhoneType = { phoneNumber: string; label: string };
-type CoverPictureType = {
-  data: string;
-};
+
 export interface EntryType {
   uid: string; //uid
   'dc:created': string; //dc:created
@@ -33,7 +31,7 @@ export interface ActivityEntry extends EntryType {
   'activity:endDate': string;
   'activity:timeFrom': string;
   'activity:timeTo': string;
-  'activity:coverPicture': CoverPictureType;
+  'activity:coverPicture': string;
 }
 export function isActivityEntry(entry: EntryType): entry is ActivityEntry {
   return (entry as ActivityEntry)['dc:description'] !== undefined;

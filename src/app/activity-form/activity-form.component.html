@@ -15,7 +15,7 @@
                         placeholder="Enter title"/>
                         <div *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
                             <span class="text-xs text-red-500" *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
-                        </div>                          
+                        </div>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         placeholder="Enter description"></textarea>
                         <div *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
                             <span class="text-xs text-red-500" *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
-                        </div>                          
+                        </div>
                     </div>
                 </div>
                 <div class="w-100 sm:w-1/2">
@@ -41,59 +41,51 @@
                         placeholder="Enter categorization"/>
                         <div *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
                             <span class="text-xs text-red-500" *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
-                        </div>                          
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="flex flex-col gap-4 sm:flex-row text-sm">
                 <div class="w-100 sm:w-1/2">
                     <div id="startDate_field">
-                        <mat-form-field class="w-full">
-                            <mat-label> startDate
-                            </mat-label>
-                            <input
-                            id="startDate"
-                            formControlName="activity:startDate"
-                            matInput 
-                            [matDatepicker]="picker_start_date"
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
-                            placeholder="Choose a date">
-                            <mat-datepicker-toggle matSuffix [for]="picker_start_date"></mat-datepicker-toggle>
-                            <mat-datepicker #picker_start_date></mat-datepicker>
-                            <mat-error *ngIf="f['dc:startDate']?.invalid &&(!f['dc:startDate'].value || f['dc:startDate'].touched || submitted)">
-                                <span *ngIf="f['dc:startDate'].errors?.required">This field is mandatory.</span>
-                            </mat-error>
-                        </mat-form-field>
+                        <label class="block text-sm font-medium text-slate-700" for="startDate">startDate :</label>
+                        <input
+                        id="startDate"
+                        formControlName="activity:startDate"
+                        [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
+                        placeholder="MM/DD/YYYY"
+                        type="date"
+                        (click)="setMaxDate()"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none">
                         <div class="date-level-validation">
                             <span *ngIf="form.errors?.dateRange" class="text-xs text-red-500">startDate must be before the endDate.</span>
                         </div>
                     </div>
-                </div>{{f['activity:startDate'].value}}
-
+                </div>
+                <!-- {{f['activity:startDate'].value}} -->
                 <div class="w-100 sm:w-1/2">
                     <div id="endDate_field">
-                        <mat-form-field class="w-full">
-                            <mat-label> endDate
-                            </mat-label>
+                        <div id="endDate_field">
+                            <label class="block text-sm font-medium text-slate-700" for="endDate">endDate :</label>
                             <input
                             id="endDate"
                             formControlName="activity:endDate"
-                            matInput 
-                            [matDatepicker]="picker_end_date"
+                            (click)="setMinDate()"
                             [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
-                            class="text-sm"
-                            placeholder="Choose a date">
-                            <mat-datepicker-toggle matSuffix [for]="picker_end_date"></mat-datepicker-toggle>
-                            <mat-datepicker #picker_end_date></mat-datepicker>
-                            <mat-error *ngIf="f['dc:endDate']?.invalid &&(f['dc:endDate'].touched || submitted)">
-                                <span *ngIf="f['dc:endDate'].errors?.required">This field is mandatory.</span>
-                            </mat-error>
-                        </mat-form-field>
+                            placeholder="MM/DD/YYYY"
+                            type="date"
+                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none">
+                            <div class="date-level-validation">
+                                <span *ngIf="form.errors?.dateRange" class="text-xs text-red-500">endDate must be before the endDate.</span>
+                            </div>
+                        </div>
                         <div class="date-level-validation">
                             <span *ngIf="form.errors?.dateRange" class="text-xs text-red-500">startDate must be before the endDate.</span>
                         </div>
                     </div>
-                    {{f['activity:endDate'].value}}
+                    <!-- {{f['activity:endDate'].value}} -->
                 </div>
             </div>
             <div class="flex flex-col gap-4 sm:flex-row text-sm">
@@ -102,7 +94,7 @@
                             <label class="block text-sm font-medium text-slate-700" for="organize_select">organize_select :</label>
                             <ng-select
                             id="organize_select"
-                            placeholder="select organizer" 
+                            placeholder="select organizer"
                             [items]="organizers_objects"
                             bindLabel="name"
                             bindValue="id"
@@ -114,6 +106,7 @@
                             </div>
                         </div>
                     </div>
+                    {{f['activity:organizers'].value}}
                     <div class="w-100 sm:w-1/2 flex justify-between">
                         <div id="timeFrom_field">
                             <label for="timeFrom">timeFrom</label>
@@ -145,7 +138,7 @@
                         placeholder="Enter city"/>
                         <div *ngIf="submitted && accessLocation.controls.city.errors">
                             <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
-                        </div> 
+                        </div>
                     </div>
                     <div id="geographicLocation_field">
                         <label class="block text-sm font-medium text-slate-700" for="geographicLocation">geographicLocation :</label>
@@ -155,32 +148,90 @@
                         placeholder="Enter geographicLocation"/>
                         <div *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
                             <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
-                        </div> 
+                        </div>
                     </div>
                 </div>
                 <div class="w-100 sm:w-1/2" [formGroup]="accessCoverPicture">
                     <label class="block text-sm font-medium text-slate-700" for="coverPicture">coverPicture :</label>
 
-                    <div id="coverPicture_field" class="flex">
-                        <input #ing_input hidden="true" id="coverPicture"
-                        placeholder="coverPicture" type="file"
+                    <div id="coverPicture_field" class="flex flex-col relative">
+                        <input
+                        hidden="true"
+                        id="coverPictureInput"
+                        type="file"
                         (change)="onAttachFileChange($event)"
-                        (load)="fun(ing_input)"
                         accept=".png, .jpg, .jpeg">
-                        <button type="button" mat-raised-button color="accent"
-                        (click)="fun(ing_input)">Upload</button>
-                        <div *ngIf="coverPicture">
-                            <img [src]="coverPicture" alt="cover_picture" style="width: 100px;" class="img-thumbnail float-end">
+
+                        <button type="button"
+                        (click)="clickCoverPictureInput()"
+                        *ngIf="!coverPicture"
+                        class="w-32 h-9 text-white text-sm text-center font-medium rounded-md bg-gray-600
+                              {{form.valid?'hover:bg-gray-700 cursor-pointer':'cursor-not-allowed'}}
+                              opacity-{{isImageLoading?'70':'100'}}
+                              focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700
+                              dark:focus:ring-blue-800 {{isImageLoading??'inline-flex items-center'}}"
+                        [disabled]="isImageLoading">
+                            <svg *ngIf="isImageLoading" aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                            </svg>
+                            {{isImageLoading?'Uploading ...':'Upload'}}
+                        </button>
+                        <div *ngIf="coverPicture" class="relative">
+                            <img id="coverPicture" [src]="coverPicture" alt="cover_picture" class="w-full max-h-52 object-contain img-thumbnail {{isImageLoading?'opacity-40':''}}" style="top: 38%;right: 41%;">
+                            <div *ngIf="!isImageLoading" class="absolute top-2 right-2" (click)="resetCoverImage()">
+                                <i class="bi bi-trash3-fill text-danger text-md cursor-pointer"></i>
+                            </div>
+                            <div *ngIf="coverPicture && !isImageLoading" class="w-8 absolute right-4 top-2 left-2" (click)="clickCoverPictureInput()">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <!-- <div *ngIf="coverPicture && !isImageLoading" class="w-8 absolute" (click)="swipeCoverPicture()">
+                                <i class="bi bi-aspect-ratio"></i>
+                            </div> -->
                         </div>
-                        <div *ngIf="submitted && accessLocation.controls.city.errors">
-                            <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
-                        </div> 
+                        <ng-container *ngIf="isImageLoading">
+                            <svg aria-hidden="true" role="status" class="absolute w-full h-5 top-1/2 right-0 inline text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
+                            </svg>
+                        </ng-container>
+                        <div *ngIf="submitted && accessCoverPicture.controls?.['upload-batch']?.errors">
+                            <span *ngIf="accessCoverPicture.controls?.['upload-batch']?.errors?.required">This field is mandatory.</span>
+                        </div>
                     </div>
+
+<!--
+                    <Image [src]="coverPicture" rounded width="100px" />
+                    <Form.Label style={{ position: "relative" }}>
+                      <svg style={{ position: "absolute", right: "81px", top: "-40px" }}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-pen"
+                        viewBox="0 0 16 16">
+                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                      </svg>
+                      <input
+                        type="file"
+                        onChange={handleImageUpload}
+                        style={{ display: "contents" }}
+                      />
+                    </Form.Label> -->
+
                 </div>
             </div>
-        <mat-card-actions>
-            <button mat-raised-button color="accent" type="submit">SAVE</button>
-            <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button>
-        </mat-card-actions>
+            <button type="submit" class="mt-10 w-1/6 h-11 text-white text-sm text-center font-medium rounded-md bg-gray-600
+            {{!form.valid || isImageLoading?'cursor-not-allowed':'hover:bg-gray-700 cursor-pointer'}}
+            opacity-{{!form.valid || submitted || isImageLoading?'60':'100'}}
+            focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700
+            dark:focus:ring-blue-800 {{submitted??'inline-flex items-center'}}"
+            >
+                <svg *ngIf="submitted" aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                </svg>
+                {{submitted?'saving ...':'save'}}
+            </button>
 </form>
 </div>

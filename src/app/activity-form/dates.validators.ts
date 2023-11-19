@@ -12,7 +12,7 @@ export function creatDateRangeValidator() {
     if (start && end) {
       let s = new Date(start).getTime();
       let e = new Date(end).getTime();
-      const isRangeValid = e - s > 0;
+      const isRangeValid = e - s >= 0;
       //console.log(start , end)
       return isRangeValid ? null : { dateRange: true };
     }
