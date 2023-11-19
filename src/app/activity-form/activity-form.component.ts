@@ -22,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { UploadCoverService } from '../services/upload-cover.service';
 import { ToastrService } from 'ngx-toastr';
+import { creatDateRangeValidator } from './dates.validators';
 type OrganizerObjectType = { id: string; name: string };
 // declare var Datepicker: any;
 @Component({
@@ -38,6 +39,7 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   today = this.calendar.getToday();
   form!: FormGroup;
   organizers_objects!: OrganizerObjectType[];
+  entry_organizer_name!: string | null;
   coverPicture: { data: string } | null = null;
 
   constructor(
@@ -81,37 +83,61 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   //   });
   // }
   ngOnInit() {
-    this.form = this.formBuilder.group({
-      'dc:title': ['', Validators.required],
-      'dc:description': ['', Validators.required],
-      'activity:categorization': ['categ1', Validators.required],
-      'activity:locations': this.formBuilder.group({
-        city: ['city1'],
-        geographicLocation: ['', Validators.required],
-      }),
-      'activity:organizers': ['', Validators.required],
-      'activity:startDate': ['', [Validators.required]],
-      'activity:endDate': ['', Validators.required],
-      'activity:timeFrom': ['', Validators.required],
-      'activity:timeTo': ['', Validators.required],
-      'activity:coverPicture': this.formBuilder.group({
-        'upload-batch': '',
-        'upload-fileId': '0',
-      }),
-    });
+    this.form = this.formBuilder.group(
+      {
+        'dc:title': ['', Validators.required],
+        'dc:description': ['', Validators.required],
+        'activity:categorization': ['categ1', Validators.required],
+        'activity:locations': this.formBuilder.group({
+          city: ['city1'],
+          geographicLocation: ['', Validators.required],
+        }),
+        'activity:organizers': ['', Validators.required],
+        'activity:startDate': ['', [Validators.required]],
+        'activity:endDate': ['', Validators.required],
+        'activity:timeFrom': ['', Validators.required],
+        'activity:timeTo': ['', Validators.required],
+        'activity:coverPicture': this.formBuilder.group({
+          'upload-batch': '',
+          'upload-fileId': '0',
+        }),
+      },
+      {
+        validators: [creatDateRangeValidator()],
+      }
+    );
     if (this.entry) {
       console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
       this.mapEntryToForm();
     }
-    //here request
+
+    //here request for a specific organizer id to get his name and set it topair name
+
+    //here request for all organizers id pair name
     this.EntryService.getEntries(ProviderTypeEnum.Organizer).subscribe((x) => {
       let organizers_obj = x.entries.map((entry: any) => {
         let org_obj: OrganizerObjectType = { id: '', name: '' };
         org_obj.id = entry.uid;
         org_obj.name = entry.properties['organizer:name'];
+        //added
+        if (
+          this.entry &&
+          isActivityEntry(this.entry) &&
+          this.entry['activity:organizers'][0] == org_obj.id
+        ) {
+          this.entry_organizer_name = org_obj.name;
+          console.log('Fetch the Organizer---------------------------');
+        }
+        //added
+
         return org_obj;
       });
       this.organizers_objects = organizers_obj;
+      console.log(
+        this.organizers_objects.filter((or) => or.id),
+        this.entry,
+        '{{{{{{{{{{{{{{{{{{'
+      );
     });
   }
   get f() {

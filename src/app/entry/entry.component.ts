@@ -28,6 +28,7 @@ export class EntryComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.entry = this.EntryService.getEntryInfo();
+
     if (this.entry) this.is_organizer = isOrganizerEntry(this.entry) ?? false;
     this.data = this.entry;
     this.route.queryParamMap.pipe(take(1)).subscribe((queryParams) => {
@@ -36,6 +37,12 @@ export class EntryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('providerType', this.providerType, 'entry', this.entry);
+    console.log(
+      'providerType',
+      this.providerType,
+      'entry',
+      this.entry,
+      this.data
+    );
   }
 }

@@ -1,102 +1,58 @@
+{{entry_organizer_name??"aaaaaaaaa"}}
+
+
+{{form.errors|json}}
 <div class="shadow-md p-3 rounded-md">
-        <h1>{{pageType=="Edit"?"Edit Activity":"Create Activity"}}</h1>
-        <form [formGroup]="form" (ngSubmit)="save()" class="sm:text-3xl flex flex-col gap-4">
-                <div class="flex flex-col gap-4 sm:flex-row">
-                    <div class="w-100 sm:w-1/2">
-                        <div id="title_field">
-                            <label class="block text-sm font-medium text-slate-700" for="title">title :</label>
-                            <input type="text" id="title" formControlName="dc:title"
-                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
-                                    border border-transparent focus:outline-none"
-                            placeholder="Enter title"/>
-                            <div *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
-                                <span class="text-xs text-red-500" *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
-                            </div>                          
-                        </div>
+    <h1>{{pageType=="Edit"?"Edit Activity":"Create Activity"}}</h1>
+    <form [formGroup]="form" (ngSubmit)="save()" class="sm:text-3xl flex flex-col gap-4">
+            <div class="flex flex-col gap-4 sm:flex-row">
+                <div class="w-100 sm:w-1/2">
+                    <div id="title_field">
+                        <label class="block text-sm font-medium text-slate-700" for="title">title :</label>
+                        <input type="text" id="title" formControlName="dc:title"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none"
+                        placeholder="Enter title"/>
+                        <div *ngIf="f['dc:title']?.invalid &&(f['dc:title'].touched || submitted)">
+                            <span class="text-xs text-red-500" *ngIf="f['dc:title'].errors?.required">This field is mandatory.</span>
+                        </div>                          
                     </div>
                 </div>
-                <div class="flex flex-col gap-4 sm:flex-row">
-                    <div class="w-100 sm:w-1/2">
-                        <div id="description_field">
-                            <label class="block text-sm font-medium text-slate-700" for="description">description :</label>
-                            <textarea formControlName="dc:description" id="description" cols="30" rows="20"
-                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
-                                    border border-transparent focus:outline-none"
-                            placeholder="Enter description"></textarea>
-                            <div *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
-                                <span class="text-xs text-red-500" *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
-                            </div>                          
-                        </div>
-                    </div>
-                    <div class="w-100 sm:w-1/2">
-                        <div id="categorization_field">
-                            <label class="block text-sm font-medium text-slate-700" for="categorization">categorization :</label>
-                            <input type="text" id="categorization" formControlName="activity:categorization"
-                            class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
-                                    border border-transparent focus:outline-none"
-                            placeholder="Enter categorization"/>
-                            <div *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
-                                <span class="text-xs text-red-500" *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
-                            </div>                          
-                        </div>
+            </div>
+            <div class="flex flex-col gap-4 sm:flex-row">
+                <div class="w-100 sm:w-1/2">
+                    <div id="description_field">
+                        <label class="block text-sm font-medium text-slate-700" for="description">description :</label>
+                        <textarea formControlName="dc:description" id="description" cols="30" rows="20"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none"
+                        placeholder="Enter description"></textarea>
+                        <div *ngIf="f['dc:description']?.invalid &&(f['dc:description'].touched || submitted)">
+                            <span class="text-xs text-red-500" *ngIf="f['dc:description'].errors?.required">This field is mandatory.</span>
+                        </div>                          
                     </div>
                 </div>
-                <div class="flex flex-col gap-4 sm:flex-row">
-                    
-                        <div date-rangepicker class="flex  flex-col gap-4 sm:flex-row">
-                                <div class="relative">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                    </svg>
-                                </div>
-                                <input name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date start">
-                                </div>
-                                <span class="mx-4 text-gray-500">to</span>
-                                <div class="relative">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                    </svg>
-                                </div>
-                                <input name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date end">
-                            </div>
-                        </div>
-  
-                    
-
-                        <div class="flex flex-wrap -mx-1">
-                            <ng-container >
-                              <div style="width: 14.28%" class="text-center border-none p-1 border-transparent text-sm"></div>
-                            </ng-container>
-                            <ng-container>
-                              <div style="width: 14.28%" class="px-1 mb-1">
-                                <div
-                                  class="
-                                    cursor-pointer
-                                    text-center text-sm
-                                    rounded-full
-                                    leading-loose
-                                    transition
-                                    ease-in-out
-                                    duration-100
-                                  "
-                                  [ngClass]="{
-                                  }"
-                                >
-                                 
-                                </div>
-                              </div>
-                            </ng-container>
-                          </div>
-
-
-<!-- 
-                    <div class="w-100 sm:w-1/2">
-                        <mat-form-field class="form-field">
+                <div class="w-100 sm:w-1/2">
+                    <div id="categorization_field">
+                        <label class="block text-sm font-medium text-slate-700" for="categorization">categorization :</label>
+                        <input type="text" id="categorization" formControlName="activity:categorization"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none"
+                        placeholder="Enter categorization"/>
+                        <div *ngIf="f['activity:categorization']?.invalid &&(f['activity:categorization'].touched || submitted)">
+                            <span class="text-xs text-red-500" *ngIf="f['activity:categorization'].errors?.required">This field is mandatory.</span>
+                        </div>                          
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 sm:flex-row text-sm">
+                <div class="w-100 sm:w-1/2">
+                    <div id="startDate_field">
+                        <mat-form-field class="w-full">
                             <mat-label> startDate
                             </mat-label>
                             <input
+                            id="startDate"
                             formControlName="activity:startDate"
                             matInput 
                             [matDatepicker]="picker_start_date"
@@ -108,18 +64,24 @@
                                 <span *ngIf="f['dc:startDate'].errors?.required">This field is mandatory.</span>
                             </mat-error>
                         </mat-form-field>
-                    </div> -->
-                </div>
-                <div class="row py-4">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <mat-form-field class="form-field">
+                        <div class="date-level-validation">
+                            <span *ngIf="form.errors?.dateRange" class="text-xs text-red-500">startDate must be before the endDate.</span>
+                        </div>
+                    </div>
+                </div>{{f['activity:startDate'].value}}
+
+                <div class="w-100 sm:w-1/2">
+                    <div id="endDate_field">
+                        <mat-form-field class="w-full">
                             <mat-label> endDate
                             </mat-label>
                             <input
+                            id="endDate"
                             formControlName="activity:endDate"
                             matInput 
                             [matDatepicker]="picker_end_date"
                             [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
+                            class="text-sm"
                             placeholder="Choose a date">
                             <mat-datepicker-toggle matSuffix [for]="picker_end_date"></mat-datepicker-toggle>
                             <mat-datepicker #picker_end_date></mat-datepicker>
@@ -127,318 +89,98 @@
                                 <span *ngIf="f['dc:endDate'].errors?.required">This field is mandatory.</span>
                             </mat-error>
                         </mat-form-field>
-                    </div>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: -19px;">
-                        <div class="row">
-                            <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                <label for="timeFrom">timeFrom</label>
-                                <ngb-timepicker formControlName="activity:timeFrom" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeFrom'].errors, 'meridian-blue':meridian1}" [ngStyle]="{backgroundColor:'red'}" (click)="toggleMeridian('meridian1')"></ngb-timepicker>
-                                <!-- {{f['activity:timeFrom'].value|json}} -->
-                                {{meridian1}}
-                                <div *ngIf="submitted && f['activity:timeFrom'].errors" class="invalid-feedback">
-                                    <div *ngIf="f['activity:timeFrom'].errors.required">timeFrom is required</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                <label for="timeTo">timeTo</label>
-                                <ngb-timepicker formControlName="activity:timeTo" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeTo'].errors, 'meridian-blue':meridian2}" (click)="toggleMeridian('meridian2')"></ngb-timepicker>
-                                <!-- {{f['activity:timeTo'].value|json}}
-                                {{meridian2}} -->
-                                <div *ngIf="submitted && f['activity:timeTo'].errors" class="invalid-feedback">
-                                    <div *ngIf="f['activity:timeTo'].errors.required">timeTo is required</div>
-                                </div>
-                            </div>
+                        <div class="date-level-validation">
+                            <span *ngIf="form.errors?.dateRange" class="text-xs text-red-500">startDate must be before the endDate.</span>
                         </div>
                     </div>
+                    {{f['activity:endDate'].value}}
                 </div>
-                <div class="row py-4">
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <h3 class="locations">locations</h3>
-                        <div class="list-group-item p-2">
-                            <div class="row" [formGroup]="accessLocation">
-                                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                        <mat-form-field class="form-field">
-                                            <mat-label> city
-                                            </mat-label>
-                                            <input matInput 
-                                            formControlName="city" 
-                                            type="text" 
-                                            id="city" 
-                                            placeholder="City" 
-                                            [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
-                                            <mat-error *ngIf="submitted && accessLocation.controls.city.errors">
-                                                <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
-                                            </mat-error>
-                                        </mat-form-field>
-                                </div>
-                                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                    <mat-form-field class="form-field">
-                                        <mat-label> geographicLocation
-                                        </mat-label>
-                                        <input matInput 
-                                        formControlName="geographicLocation" 
-                                        type="text" 
-                                        id="geographicLocation" 
-                                        placeholder="geographicLocation" 
-                                        [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
-                                        <mat-error *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
-                                            <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" style="margin-top: 38px;">
-                            <ng-select  
-                            id="floatingSelect"
+            </div>
+            <div class="flex flex-col gap-4 sm:flex-row text-sm">
+                    <div class="w-100 sm:w-1/2">
+                        <div id="organize_select_field" style="margin-top: 38px;">
+                            <label class="block text-sm font-medium text-slate-700" for="organize_select">organize_select :</label>
+                            <ng-select
+                            id="organize_select"
                             placeholder="select organizer" 
                             [items]="organizers_objects"
                             bindLabel="name"
                             bindValue="id"
+                            class="text-sm"
                             [searchable]="true"
-                            formControlName="activity:organizers"
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:organizers'].errors }"></ng-select>
-                        <div *ngIf="submitted && f['activity:organizers'].errors" class="invalid-feedback">
-                            <div *ngIf="f['activity:organizers'].errors.required">organizers is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row py-4 Locations">
-                    <mat-label> coverPicture
-                    </mat-label>
-                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6 d-flex" [formGroup]="accessCoverPicture" >
-                            <input
-                            #ing_input
-                            hidden="true"
-                            id="coverPicture"
-                            placeholder="coverPicture"
-                            type="file"
-                            (change)="onAttachFileChange($event)"
-                            (load)="fun(ing_input)"
-                            accept=".png, .jpg, .jpeg"
-                            >
-                            <button 
-                            type="button" 
-                            mat-raised-button color="accent"
-                            (click)="fun(ing_input)">Upload</button>
-                            <div *ngIf="coverPicture">
-                                <img [src]="coverPicture" alt="cover_picture" style="width: 100px;" class="img-thumbnail float-end">
-                                <!-- {{coverPicture}} -->
+                            formControlName="activity:organizers"></ng-select>
+                            <div *ngIf="submitted && f['activity:organizers'].errors">
+                                <div *ngIf="f['activity:organizers'].errors.required">organizers is required</div>
                             </div>
-                            <!-- <input matInput 
-                            formControlName="upload-batch" 
-                            type="text" 
-                            id="coverPicture" 
-                            placeholder="coverPicture" 
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
-                            <mat-error *ngIf="submitted && f['activity:coverPicture'].errors">
-                                <span *ngIf="f['activity:coverPicture'].errors.required">This field is mandatory.</span>
-                            </mat-error> -->
-                    </div>
-                </div>
-            <mat-card-actions>
-                <button mat-raised-button color="accent" type="submit">SAVE</button>
-                <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button>
-            </mat-card-actions>
-    </form>
-</div>
-
-
-             
-            <!-- <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="title">title</label>
-                        <input formControlName="dc:title" type="text" class="form-control form-control-lg" id="title" placeholder="title" [ngClass]="{ 'is-invalid': submitted && f['dc:title'].errors }">
-                        <div *ngIf="submitted && f['dc:title'].errors" class="invalid-feedback">
-                            <div *ngIf="f['dc:title'].errors.required">title is required</div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="description">description</label>
-                        <input formControlName="dc:description" type="text" class="form-control form-control-lg" id="description" placeholder="description" [ngClass]="{ 'is-invalid': submitted && f['dc:description'].errors }">
-                        <div *ngIf="submitted && f['dc:description'].errors" class="invalid-feedback">
-                            <div *ngIf="f['dc:description'].errors.required">description is required</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="categorization">categorization</label>
-                        <input formControlName="activity:categorization" type="text" class="form-control form-control-lg" id="categorization" placeholder="categorization" [ngClass]="{ 'is-invalid': submitted && f['activity:categorization'].errors }">
-                        <div *ngIf="submitted && f['activity:categorization'].errors" class="invalid-feedback">
-                            <div *ngIf="f['activity:categorization'].errors.required">categorization is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <label for="startDate">startDate</label>
-                      <mat-form-field>
-                        <input
-                        formControlName="activity:startDate"
-                        matInput 
-                        [matDatepicker]="picker1"
-                        [ngClass]="{ 'is-invalid': submitted && f['activity:startDate'].errors }"
-                        placeholder="Choose a date">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker #picker1></mat-datepicker>
-                      </mat-form-field>
-                    <div *ngIf="submitted && f['activity:startDate'].errors" class="invalid-feedback">
-                        <div *ngIf="f['activity:startDate'].errors.required">startDate is required</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="">
-                        <label for="endDate">endDate</label>
-                          <mat-form-field>
-                            <input
-                            formControlName="activity:endDate"
-                            matInput 
-                            [matDatepicker]="picker2"
-                            [ngClass]="{ 'is-invalid': submitted && f['activity:endDate'].errors }"
-                            placeholder="Choose a date">
-                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker2></mat-datepicker>
-                          </mat-form-field>
-                        {{f['activity:endDate'].value|json}}
-
-                        <div *ngIf="submitted && f['activity:endDate'].errors" class="invalid-feedback">
-                            <div *ngIf="f['activity:endDate'].errors.required">endDate is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                    <div class="row">
-                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                    <div class="w-100 sm:w-1/2 flex justify-between">
+                        <div id="timeFrom_field">
                             <label for="timeFrom">timeFrom</label>
                             <ngb-timepicker formControlName="activity:timeFrom" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeFrom'].errors, 'meridian-blue':meridian1}" [ngStyle]="{backgroundColor:'red'}" (click)="toggleMeridian('meridian1')"></ngb-timepicker>
                             {{f['activity:timeFrom'].value|json}}
                             {{meridian1}}
-                            <div *ngIf="submitted && f['activity:timeFrom'].errors" class="invalid-feedback">
+                            <div *ngIf="submitted && f['activity:timeFrom'].errors">
                                 <div *ngIf="f['activity:timeFrom'].errors.required">timeFrom is required</div>
                             </div>
                         </div>
-                        <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
+                        <div id="timeTo_field">
                             <label for="timeTo">timeTo</label>
-                            <ngb-timepicker formControlName="activity:timeTo" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeTo'].errors, 'meridian-blue':meridian2}" (click)="toggleMeridian('meridian2')"></ngb-timepicker>
+                            <ngb-timepicker formControlName="activity:timeTo" [meridian]="true" [spinners]="false" [ngClass]="{ 'is-invalid': submitted && f['activity:timeTo'].errors, 'meridian-blue':meridian1}" [ngStyle]="{backgroundColor:'red'}" (click)="toggleMeridian('meridian1')"></ngb-timepicker>
                             {{f['activity:timeTo'].value|json}}
                             {{meridian2}}
-                            <div *ngIf="submitted && f['activity:timeTo'].errors" class="invalid-feedback">
+                            <div *ngIf="submitted && f['activity:timeTo'].errors">
                                 <div *ngIf="f['activity:timeTo'].errors.required">timeTo is required</div>
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
-            <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6" [formGroup]="accessCoverPicture">
-                    <label for="coverPicture">coverPicture</label>
-                    <input formControlName="upload-batch" type="text" class="form-control form-control-lg" id="coverPicture" placeholder="coverPicture" [ngClass]="{ 'is-invalid': submitted && f['activity:coverPicture'].errors }">
-                    <div *ngIf="submitted && f['activity:coverPicture'].errors" class="invalid-feedback">
-                        <div *ngIf="f['activity:coverPicture'].errors.required">coverPicture is required</div>
+            <div class="flex flex-col gap-4 sm:flex-row">
+                <div class="w-100 sm:w-1/2" [formGroup]="accessLocation">
+                    <div id="city_field">
+                        <label class="block text-sm font-medium text-slate-700" for="city">city :</label>
+                        <input type="text" id="city" formControlName="city"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none"
+                        placeholder="Enter city"/>
+                        <div *ngIf="submitted && accessLocation.controls.city.errors">
+                            <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
+                        </div> 
+                    </div>
+                    <div id="geographicLocation_field">
+                        <label class="block text-sm font-medium text-slate-700" for="geographicLocation">geographicLocation :</label>
+                        <input type="text" id="geographicLocation" formControlName="geographicLocation"
+                        class="h-11 block w-full px-2 py-1 bg-white rounded-md text-sm shadow-sm
+                                border border-transparent focus:outline-none"
+                        placeholder="Enter geographicLocation"/>
+                        <div *ngIf="submitted && accessLocation.controls.geographicLocation.errors">
+                            <span *ngIf="accessLocation.controls.geographicLocation.errors.required">This field is mandatory.</span>
+                        </div> 
                     </div>
                 </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6 organizers">
-                    <div class="form-floating">
-                        <ng-select  
-                        class="form-select" 
-                        id="floatingSelect" 
-                        aria-label="Floating label select example"
-                        [items]="organizers_objects"
-                        bindLabel="name"
-                        bindValue="id"
-                        [searchable]="true"
-                        formControlName="activity:organizers"
-                        [ngClass]="{ 'is-invalid': submitted && f['activity:organizers'].errors }"></ng-select>
-                        <label for="floatingSelect">select Organizer</label>
-                    </div>
-                    <div *ngIf="submitted && f['activity:organizers'].errors" class="invalid-feedback">
-                        <div *ngIf="f['activity:organizers'].errors.required">organizers is required</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row py-4 Locations">
-                    <h3 class="locations">locations</h3>
-                    <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <div class="list-group-item p-2">
-                            <div class="row" [formGroup]="accessLocation">
-                              <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                <div class="">
-                                  <label for="City">City</label>
-                                  <input formControlName="city" type="email" class="form-control form-control-lg" id="city" placeholder="City" [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.city.errors }">
-                                  <div *ngIf="submitted && accessLocation.controls.city.errors" class="invalid-feedback">
-                                    <div *ngIf="accessLocation.controls.city.errors.required">city is required</div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                                <div class="">
-                                  <label for="geographicLocation">geographicLocation</label>
-                                  <input formControlName="geographicLocation" type="email" class="form-control form-control-lg" id="geographicLocation" placeholder="GeographicLocation" [ngClass]="{ 'is-invalid': submitted && accessLocation.controls.geographicLocation.errors }">
-                                  <div *ngIf="submitted && accessLocation.controls.geographicLocation.errors" class="invalid-feedback">
-                                    <div *ngIf="accessLocation.controls.geographicLocation.errors.required">geographicLocation is required</div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                <div class="w-100 sm:w-1/2" [formGroup]="accessCoverPicture">
+                    <label class="block text-sm font-medium text-slate-700" for="coverPicture">coverPicture :</label>
+
+                    <div id="coverPicture_field" class="flex">
+                        <input #ing_input hidden="true" id="coverPicture"
+                        placeholder="coverPicture" type="file"
+                        (change)="onAttachFileChange($event)"
+                        (load)="fun(ing_input)"
+                        accept=".png, .jpg, .jpeg">
+                        <button type="button" mat-raised-button color="accent"
+                        (click)="fun(ing_input)">Upload</button>
+                        <div *ngIf="coverPicture">
+                            <img [src]="coverPicture" alt="cover_picture" style="width: 100px;" class="img-thumbnail float-end">
                         </div>
+                        <div *ngIf="submitted && accessLocation.controls.city.errors">
+                            <span *ngIf="accessLocation.controls.city.errors.required">This field is mandatory.</span>
+                        </div> 
                     </div>
-            </div> -->
-
-
-
-    <!--  -->
-<!-- 
-    <div>
-        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
-            <div fxLayout="column" fxFlex  >
-                <mat-toolbar color="primary" fxLayoutAlign="center center">
-                        <span>Clocked In</span>
-                </mat-toolbar>
+                </div>
             </div>
-        </div>
-    
-        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
-            <div fxLayout="column" fxFlex >
-                <mat-toolbar color="primary"fxLayoutAlign="center center" >
-                        <span>Clocked Out</span>
-                </mat-toolbar>
-            </div>
-        </div>
-    </div>
-    
-    
-    <div>
-        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
-            <div fxLayout="column" fxFlex  >
-                <mat-list>
-                    <mat-list-item *ngFor="let user of [{firstName:'firstName',lastName:'lastName'}]"
-                    fxLayoutAlign="center center" > 
-                            <button mat-raised-button color="warn">
-                                    {{user.firstName}} {{user.lastName}}
-                            </button>
-                    </mat-list-item>
-                </mat-list> 
-            </div>
-        </div>
-    
-        <div fxLayout="row" fxFlex="50%" fxFlex.gt-sm="50%" >
-            <div fxLayout="column" fxFlex>
-                <mat-list>
-                    <mat-list-item *ngFor="let user of [{firstName:'firstName',lastName:'lastName'}]"
-                    fxLayoutAlign="center center" > 
-                            <button mat-raised-button color="accent">
-                                {{user.firstName}} {{user.lastName}}
-                            </button>
-                    </mat-list-item>
-                </mat-list> 
-            </div>
-        </div>
-    </div> -->
+        <mat-card-actions>
+            <button mat-raised-button color="accent" type="submit">SAVE</button>
+            <button mat-raised-button color="warn" type="reset" (click)="onReset()">RESET</button>
+        </mat-card-actions>
+</form>
+</div>

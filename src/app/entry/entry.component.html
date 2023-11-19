@@ -1,153 +1,157 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>Entry Page</mat-card-title>
-      <mat-card-subtitle>{{providerType}}</mat-card-subtitle>
-      <mat-card-actions>
-        <button type="button" mat-raised-button color="basic" [routerLink]="providerType === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:providerType,page_type:'New'}" >create {{providerType}}</button>
-        <button type="button" mat-raised-button color="primary" [routerLink]="providerType === 'Organizer'?'/organizers':'/activities'" [queryParams]="{provider_type:providerType,page_type:'New'}" >{{providerType}}'s page</button>
-      </mat-card-actions>
-    </mat-card-header>
-    <div>
-        <mat-card *ngIf="is_organizer;else ali">
-                <mat-list>
-                    <h3 matSubheader>Email</h3>
-                    <div *ngFor="let email of data?.['organizer:emails']">
-                      <mat-list-item>
-                         <mat-icon matListIcon>email</mat-icon>
-                         <span> {{email.emailAddress}}
-                            <!-- <span matSubheader>{{email.label}}</span> -->
-                         </span>
-                      </mat-list-item>
-                    </div>
-                </mat-list>
-                <mat-divider></mat-divider>
-                <mat-list>
-                    <h3 matSubheader>Phones</h3>
-                    <div *ngFor="let phone of data?.['organizer:phones']">
-                        <mat-list-item>
-                           <mat-icon matListIcon>phone</mat-icon>
-                           <span> {{phone.phoneNumber}}
-                            <!-- <span matSubheader>{{phone.label}}</span> -->
-                           </span>
-                        </mat-list-item>
-                      </div>
-                </mat-list>
-                <mat-divider></mat-divider>
-                <mat-list>
-                    <h3 matSubheader>Addresses</h3>
-                    <div *ngFor="let address of data?.['organizer:addresses']">
-                        <mat-list-item>
-                            <mat-icon matListIcon>address</mat-icon>
-                            <span> {{address.address}}
-                             <!-- <span matSubheader>{{address.label}}</span> -->
-                            </span>
-                         </mat-list-item>
-                      </div>
-                </mat-list>
-                <mat-divider></mat-divider>
-                <mat-list>
-                    <h3 matSubheader>Website</h3>
-                    <div>
-                        <mat-list-item>
-                            <mat-icon matListIcon>website</mat-icon>
-                            <span>{{data?.["organizer:website"]}}</span>
-                        </mat-list-item>
-                      </div>
-                </mat-list>
-                <mat-divider></mat-divider>
-                <mat-list>
-                    <h3 matSubheader>Other Info</h3>
-                    <mat-list-item>
-                        <h3 matSubheader>creator</h3>
-                        <span class="pe-4">{{data?.["dc:creator"]}}</span>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <h3 matSubheader>created</h3>
-                        <span class="pe-4">{{data?.["dc:created"]|date}}</span>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <h3 matSubheader>modified</h3>
-                        <span class="pe-4">{{data?.["dc:modified"]|date}}</span>
-                    </mat-list-item>
-                </mat-list>
-        </mat-card>
-        <ng-template #ali>
-            <div class="row py-4">
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                <mat-list>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">title</h3>
-                            <span>{{data?.["dc:title"]}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">description</h3>
-                            <span>{{data?.["dc:description"]}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">categorization</h3>
-                            <span>{{data?.["activity:categorization"]}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">startDate</h3>
-                            <span>{{data?.["activity:startDate"]|date}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">endDate</h3>
-                            <span>{{data?.["activity:endDate"]|date}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">timeFrom</h3>
-                            <span>{{data?.["activity:timeFrom"]}}</span>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <h3 matSubheader class="w-75">timeTo</h3>
-                            <span>{{data?.["activity:timeTo"]}}</span>
-                        </mat-list-item>
-                        <mat-list>
-                            <h3 matSubheader>Location</h3>
-                            <mat-list-item>
-                                <h3 matSubheader class="w-75">city</h3>
-                                <span class="pe-4">{{data?.['activity:locations'].city}}</span>
-                            </mat-list-item>
-                            <mat-list-item>
-                                <h3 matSubheader class="w-75">geographicLocation</h3>
-                                <span class="pe-4">{{data?.['activity:locations'].geographicLocation}}</span>
-                            </mat-list-item>
-                        </mat-list>
-                        <mat-list>
-                            <h3 matSubheader>Other Info</h3>
-                            <mat-list-item>
-                                <h3 matSubheader class="w-75">creator</h3>
-                                <span class="pe-4">{{data?.["dc:creator"]}}</span>
-                            </mat-list-item>
-                        </mat-list>
-                </mat-list>
-                </div>
-                <div class="col-lg-offset-0 col-lg-6 col-xs-12 col-sm-6">
-                        <mat-card class="example-card">
-                            <mat-card-header>
-                              <mat-card-subtitle>Activity</mat-card-subtitle>
-                              <mat-card-title>Picture</mat-card-title>
-                            </mat-card-header>
-                            <mat-card-content>
-                              <img [src]="data?.['activity:coverPicture'].data" alt="immage">
-                              <mat-divider></mat-divider>
-                            </mat-card-content>
-                            <!-- <mat-card-actions>
-                              <button mat-button>LIKE</button>
-                              <button mat-button>SHARE</button>
-                            </mat-card-actions> -->
-                            <!-- <mat-card-footer>
-                              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-                            </mat-card-footer> -->
-                        </mat-card>
-                </div>
-            </div>
-        </ng-template>
-        
+<div class="shadow-md p-3 rounded-md">
+    <div class="flex justify-between mb-3">
+        <div class="flex flex-col">
+            <span class="mb-0 text-xl font-bold">Entry Page</span>
+            <span class="text-gray-400 text-sm">{{providerType}}'s</span>     
+        </div>
+      <div class="flex gap-1">
+        <button type="button" class="h-9 py-2 px-4 text-white text:xs sm:text-sm text-center font-normal sm:font-medium rounded-md bg-gray-700 
+        hover:bg-gray-800 cursor-pointer focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700"
+        [routerLink]="providerType === 'Organizer'?'/organizers/new':'/activities/new'" [queryParams]="{provider_type:providerType,page_type:'New'}" >create {{providerType}}</button>
+        <button type="button" class="h-9 py-2 px-4 text-gray-700 text:xs sm:text-sm text-center font-normal sm:font-medium rounded-md bg-yellow-50 border border-gray-700
+        hover:bg-yellow-200 cursor-pointer focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700"
+        [routerLink]="providerType === 'Organizer'?'/organizers':'/activities'" [queryParams]="{provider_type:providerType,page_type:'New'}" >{{providerType}}'s page</button>
+      </div>
     </div>
-    <!-- <mat-card-actions align="end">
-      <button mat-button>LIKE</button>
-      <button mat-button>SHARE</button>
-    </mat-card-actions> -->
-</mat-card>
+        <div class="shadow-inner p-3 rounded-md">
+            <dl *ngIf="is_organizer;else activity"
+                class="w-full text-gray-900 divide-y divide-gray-200 
+                       dark:text-white dark:divide-gray-700">
+                <div class="flex flex-col py-3 gap-3">
+                    <dt class="mb-2 text-gray-500 md:text-lg dark:text-gray-400">Emails Addresses :</dt>
+                    <ng-container *ngFor="let email of data?.['organizer:emails']">
+                    <dd class="text-lg font-normal md:font-semibold flex gap-1 pl-5">
+                        <mat-icon matListIcon>email</mat-icon>
+                        <span> {{email.emailAddress}}</span>
+                    </dd>
+                    </ng-container>
+                </div>
+                <div class="flex flex-col py-3 gap-3">
+                    <dt class="mb-2 text-gray-500 md:text-lg dark:text-gray-400">Phones Numbers :</dt>
+                    <ng-container *ngFor="let phone of data?.['organizer:phones']">
+                    <dd class="text-lg font-normal md:font-semibold flex gap-1 pl-5">
+                        <mat-icon matListIcon>phone</mat-icon>
+                        <span> {{phone.phoneNumber}}</span>
+                    </dd>
+                    </ng-container>
+                </div>
+                <div class="flex flex-col py-3 gap-3">
+                    <dt class="mb-2 text-gray-500 md:text-lg dark:text-gray-400">Addresses :</dt>
+                    <ng-container *ngFor="let address of data?.['organizer:addresses']">
+                    <dd class="text-lg font-normal md:font-semibold flex gap-1 pl-5">
+                        <mat-icon matListIcon>address</mat-icon>
+                        <span> {{address.address}}</span>
+                    </dd>
+                    </ng-container>
+                </div>
+                <div class="flex flex-col py-3 gap-3">
+                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Dates :</dt>
+                    <dd class="text-lg font-normal md:font-semibold pl-5">
+                        <ul class="flex flex-row">
+                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">created :</li>
+                            <li class="w-2/4 md:font-semibold">{{data?.["dc:created"]|date}}</li>
+                        </ul>
+                        <ul class="flex flex-row">
+                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">modified :</li>
+                            <li class="w-2/4 md:font-semibold">{{data?.["dc:modified"]|date}}</li>
+                        </ul>
+                    </dd>
+                </div>
+                <div class="flex flex-col py-3 gap-3">
+                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Other Info :</dt>
+                    <dd class="text-lg font-normal md:font-semibold pl-5">
+                        <ul class="flex flex-row">
+                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Creator :</li>
+                            <li class="w-2/4 md:font-semibold">{{data?.["dc:creator"]}}</li>
+                        </ul>
+                        <ul class="flex flex-row">
+                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Website :</li>
+                            <li class="w-2/4 md:font-semibold">{{data?.["organizer:website"]}}</li>
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+
+            <ng-template #activity>
+                <div class="flex gap-4">
+                    <div class="info w-full">
+                        <dl class="w-full text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+                                <div class="flex flex-col-reverse md:flex-row">
+                                    <div class="w-full md:w-3/4">
+                                        <div class="flex flex-row py-3 gap-3">
+                                            <dt class="text-gray-500 md:text-xl dark:text-gray-400">title :</dt>
+                                            <dd class="md:font-semibold">{{data?.["dc:title"]}}</dd>
+                                        </div>
+                                        <div class="flex flex-row py-3 gap-3">
+                                            <dt class="text-gray-500 md:text-xl dark:text-gray-400">description :</dt>
+                                            <dd class="md:font-semibold">{{data?.["dc:description"]}}</dd>
+                                        </div>
+                                    </div>
+                                    <div class="w-full md:w-1/4 pb-3">
+                                        <div class="border vorder-gray-500 rounded-md">
+                                            <img class="max-h-28 md:max-h-36 md:h-48 block m-auto" [src]="data['activity:coverPicture']" alt="image description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col py-3 gap-3" *ngIf="data?.['activity:locations'].city">
+                                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Location :</dt>
+                                    <dd class="text-lg md:font-semibold pl-5">
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">City :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.['activity:locations'].city}}</li>
+                                        </ul>
+                                        <ul class="flex flex-row" *ngIf="data?.['activity:locations'].geographicLocation">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">GeographicLocation :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.['activity:locations'].geographicLocation}}</li>
+                                        </ul>
+                                    </dd>
+                                </div>
+                                <div class="flex flex-col py-3 gap-3">
+                                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Dates :</dt>
+                                    <dd class="text-lg md:font-semibold pl-5">
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Start Date :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["activity:startDate"]|date}}</li>
+                                        </ul>
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">End Date :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["activity:endDate"]|date}}</li>
+                                        </ul>
+                                    </dd>
+                                </div>
+                                <div class="flex flex-col py-3 gap-3">
+                                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Times :</dt>
+                                    <dd class="text-lg md:font-semibold pl-5">
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Time From :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["activity:timeFrom"]}}</li>
+                                        </ul>
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Time To :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["activity:timeTo"]}}</li>
+                                        </ul>
+                                    </dd>
+                                </div>
+                                <div class="flex flex-col py-3 gap-3">
+                                    <dt class="text-gray-500 md:text-xl dark:text-gray-400">Other Info :</dt>
+                                    <dd class="text-lg font-normal md:font-semibold pl-5">
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Creator :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["dc:creator"]}}</li>
+                                        </ul>
+                                        <ul class="flex flex-row">
+                                            <li class="w-2/4 mb-1 text-gray-500 md:text-lg dark:text-gray-400">Categorization :</li>
+                                            <li class="w-2/4 md:font-semibold">{{data?.["activity:categorization"]}}</li>
+                                        </ul>
+                                    </dd>
+                                </div>
+                        </dl>
+                    </div>
+                </div>
+            </ng-template>
+
+
+
+        </div>
+        
+</div>
